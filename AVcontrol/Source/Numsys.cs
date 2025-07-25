@@ -229,7 +229,9 @@ namespace AVcontrol
             return result;
         }
 
-        static public string    AsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+
+
+        static public string        CustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
             if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
                 throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
@@ -259,7 +261,7 @@ namespace AVcontrol
                 return new string(result.Reverse().ToArray());
             }
         }
-        static public string    AsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+        static public string        CustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
         {
             if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
                 throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
@@ -268,7 +270,7 @@ namespace AVcontrol
             Int64 decimalValue = 0;
             foreach (char c in oldValue)
             {
-                Int32 digit = CharToDigit(c, customDigits);
+                Int32 digit = CharToDigit(c);
                 if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
 
                 decimalValue = decimalValue * oldBase + digit;
@@ -292,9 +294,139 @@ namespace AVcontrol
 
             return new string(result.Reverse().ToArray());
         }
-        static public Int32[]    AsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits) => AsList(oldValue, oldBase, newBase, customDigits).ToArray();
-        static public Int32[]    AsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength) => AsList(oldValue, oldBase, newBase, customDigits, outputLength).ToArray();
-        static public List<Int32> AsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+        static public string      ToCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+        {
+            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
+                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+
+            //  Convert number to decimal
+            Int64 decimalValue = 0;
+            foreach (char c in oldValue)
+            {
+                Int32 digit = CharToDigit(c);
+                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
+
+                decimalValue = decimalValue * oldBase + digit;
+            }
+
+            //  Convert decimal to requested base
+            string result = "";
+            if (decimalValue == 0) return "0";
+            else
+            {
+                Int64 current = decimalValue;
+                while (current > 0)
+                {
+                    Int32 remainder = (Int32)(current % newBase);
+                    result += customDigits[remainder];
+                    current /= newBase;
+                }
+                return new string(result.Reverse().ToArray());
+            }
+        }
+        static public string      ToCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+        {
+            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
+                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+
+            //  Convert number to decimal
+            Int64 decimalValue = 0;
+            foreach (char c in oldValue)
+            {
+                Int32 digit = CharToDigit(c);
+                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
+
+                decimalValue = decimalValue * oldBase + digit;
+            }
+
+            //  Convert decimal to requested base
+            string result = "";
+            if (decimalValue == 0) result = "0";
+            else
+            {
+                Int64 current = decimalValue;
+                while (current > 0)
+                {
+                    Int32 remainder = (Int32)(current % newBase);
+                    result += customDigits[remainder];
+                    current /= newBase;
+                }
+            }
+
+            for (Int32 curId = result.Length; curId < outputLength; curId++) result += "0";
+
+            return new string(result.Reverse().ToArray());
+        }
+        static public string    FromCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+        {
+            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
+                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+
+            //  Convert number to decimal
+            Int64 decimalValue = 0;
+            foreach (char c in oldValue)
+            {
+                Int32 digit = CharToDigit(c, customDigits);
+                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
+
+                decimalValue = decimalValue * oldBase + digit;
+            }
+
+            const string digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            //  Convert decimal to requested base
+            string result = "";
+            if (decimalValue == 0) return "0";
+            else
+            {
+                Int64 current = decimalValue;
+                while (current > 0)
+                {
+                    Int32 remainder = (Int32)(current % newBase);
+                    result += digits[remainder];
+                    current /= newBase;
+                }
+                return new string(result.Reverse().ToArray());
+            }
+        }
+        static public string    FromCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+        {
+            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
+                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+
+            //  Convert number to decimal
+            Int64 decimalValue = 0;
+            foreach (char c in oldValue)
+            {
+                Int32 digit = CharToDigit(c, customDigits);
+                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
+
+                decimalValue = decimalValue * oldBase + digit;
+            }
+
+            const string digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            //  Convert decimal to requested base
+            string result = "";
+            if (decimalValue == 0) result = "0";
+            else
+            {
+                Int64 current = decimalValue;
+                while (current > 0)
+                {
+                    Int32 remainder = (Int32)(current % newBase);
+                    result += digits[remainder];
+                    current /= newBase;
+                }
+            }
+
+            for (Int32 curId = result.Length; curId < outputLength; curId++) result += "0";
+
+            return new string(result.Reverse().ToArray());
+        }
+        static public Int32[]    FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits) => FromCustomAsList(oldValue, oldBase, newBase, customDigits).ToArray();
+        static public Int32[]    FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength) => FromCustomAsList(oldValue, oldBase, newBase, customDigits, outputLength).ToArray();
+        static public List<Int32> FromCustomAsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
             if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
                 throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
@@ -326,7 +458,7 @@ namespace AVcontrol
 
             return result;
         }
-        static public List<Int32> AsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+        static public List<Int32> FromCustomAsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
         {
             if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
                 throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
