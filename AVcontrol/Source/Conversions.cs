@@ -326,7 +326,7 @@ namespace AVcontrol
 
 
 
-        static public List<Char> ToStringList(Char[] array, Int32 startId, Int32 endId)
+        static public List<char> ToStringList(char[] array, Int32 startId, Int32 endId)
         {
             if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
             var length = array.Length;
@@ -337,7 +337,7 @@ namespace AVcontrol
                 array.ToList().GetRange(startId, endId - startId) :
                 array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
         }
-        static public Char[] ToStringArray(List<Char> list, Int32 startId, Int32 endId)
+        static public char[] ToStringArray(List<char> list, Int32 startId, Int32 endId)
         {
             if (list == null) throw new ArgumentNullException("list", "List cannot be null");
             var count = list.Count;

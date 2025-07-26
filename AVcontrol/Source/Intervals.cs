@@ -227,7 +227,7 @@ namespace AVcontrol
 
 
 
-        static public Char[] SubArray(Char[] array, Int32 startId, Int32 endId)
+        static public char[] SubArray(char[] array, Int32 startId, Int32 endId)
         {
             if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
             var length = array.Length;
@@ -237,12 +237,12 @@ namespace AVcontrol
             if (startId < endId) return array.ToList().GetRange(startId, endId - startId).ToArray();
             else
             {
-                List<Char> list = array.ToList().GetRange(endId, startId - endId);
+                List<char> list = array.ToList().GetRange(endId, startId - endId);
                 list.Reverse();
                 return list.ToArray();
             }
         }
-        static public List<Char> SubList(List<Char> list, Int32 startId, Int32 endId)
+        static public List<char> SubList(List<char> list, Int32 startId, Int32 endId)
         {
             if (list == null) throw new ArgumentNullException("list", "List cannot be null");
             var count = list.Count;

@@ -248,7 +248,7 @@ namespace AVcontrol
 
             //  Convert decimal to requested base
             string result = "";
-            if (decimalValue == 0) return "0";
+            if (decimalValue == 0) return customDigits[0].ToString();
             else
             {
                 Int64 current = decimalValue;
@@ -278,7 +278,7 @@ namespace AVcontrol
 
             //  Convert decimal to requested base
             string result = "";
-            if (decimalValue == 0) result = "0";
+            if (decimalValue == 0) result = customDigits[0].ToString();
             else
             {
                 Int64 current = decimalValue;
@@ -290,7 +290,7 @@ namespace AVcontrol
                 }
             }
 
-            for (Int32 curId = result.Length; curId < outputLength; curId++) result += "0";
+            for (Int32 curId = result.Length; curId < outputLength; curId++) result += customDigits[0];
 
             return new string(result.Reverse().ToArray());
         }
@@ -311,7 +311,7 @@ namespace AVcontrol
 
             //  Convert decimal to requested base
             string result = "";
-            if (decimalValue == 0) return "0";
+            if (decimalValue == 0) return customDigits[0].ToString();
             else
             {
                 Int64 current = decimalValue;
@@ -341,7 +341,7 @@ namespace AVcontrol
 
             //  Convert decimal to requested base
             string result = "";
-            if (decimalValue == 0) result = "0";
+            if (decimalValue == 0) result = customDigits[0].ToString();
             else
             {
                 Int64 current = decimalValue;
@@ -353,7 +353,7 @@ namespace AVcontrol
                 }
             }
 
-            for (Int32 curId = result.Length; curId < outputLength; curId++) result += "0";
+            for (Int32 curId = result.Length; curId < outputLength; curId++) result += customDigits[0];
 
             return new string(result.Reverse().ToArray());
         }
