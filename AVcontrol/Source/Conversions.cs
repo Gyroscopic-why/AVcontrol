@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace AVcontrol
@@ -134,241 +133,170 @@ namespace AVcontrol
 
 
 
-        //-------------------  Array and List conversion  ------------------------------------------------------//
 
-        
-
-        static public List<Byte> ToByteList(Byte[] array, Int32 startId, Int32 endId)
+        static public List<Byte> Int16ToBEBytes(List<Int16> values)
         {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ? 
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count * 2);
+            foreach (var value in values)
+            {
+                result.Add((Byte)(value >> 8));
+                result.Add((Byte)(value & 0xFF));
+            }
+            return result;
         }
-        static public List<SByte> ToSByteList(SByte[] array, Int32 startId, Int32 endId)
+        static public List<Byte> Int16ToLEBytes(List<Int16> values)
         {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ? 
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count * 2);
+            foreach (var value in values)
+            {
+                result.Add((Byte)(value & 0xFF));
+                result.Add((Byte)(value >> 8));
+            }
+            return result;
         }
-        static public Byte[] ToByteArray(List<Byte> list, Int32 startId, Int32 endId)
-        {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
 
-            return startId < endId ? 
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
+        static public List<Byte> UInt16ToBEBytes(List<UInt16> values)
+        {
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count * 2);
+            foreach (var value in values)
+            {
+                result.Add((Byte)(value >> 8));
+                result.Add((Byte)(value & 0xFF));
+            }
+            return result;
         }
-        static public SByte[] ToSByteArray(List<SByte> list, Int32 startId, Int32 endId)
+        static public List<Byte> UInt16ToLEBytes(List<UInt16> values)
         {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count * 2);
+            foreach (var value in values)
+            {
+                result.Add((Byte)(value & 0xFF));
+                result.Add((Byte)(value >> 8));
+            }
+            return result;
         }
 
 
 
-        static public List<Int16> ToInt16List(Int16[] array, Int32 startId, Int32 endId)
-        {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
 
-            return startId < endId ?
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
+
+        static public List<Int16> ToInt16List(List<Byte> bytes)
+        {
+            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+            var result = new List<Int16>(bytes.Count);
+            foreach (var b in bytes) result.Add((Int16)b);
+            return result;
         }
-        static public List<UInt16> ToUInt16List(UInt16[] array, Int32 startId, Int32 endId)
+        static public List<UInt16> ToUInt16List(List<Byte> bytes)
         {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
+            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+            var result = new List<UInt16>(bytes.Count);
+            foreach (var b in bytes) result.Add((UInt16)b);
+            return result;
         }
-        static public Int16[] ToInt16Array(List<Int16> list, Int32 startId, Int32 endId)
+        static public List<Byte> FromInt16List(List<Int16> values)
         {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count);
+            foreach (var v in values)
+            {
+                if (v < 0 || v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All Int16 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)v);
+            }
+            return result;
         }
-        static public UInt16[] ToUInt16Array(List<UInt16> list, Int32 startId, Int32 endId)
+        static public List<Byte> FromUInt16List(List<UInt16> values)
         {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count);
+            foreach (var v in values)
+            {
+                if (v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All UInt16 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)v);
+            }
+            return result;
         }
 
 
 
-        static public List<Int32> ToInt32List(Int32[] array, Int32 startId, Int32 endId)
+        static public List<Int32> ToInt32List(List<Byte> bytes)
         {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
+            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+            var result = new List<Int32>(bytes.Count);
+            foreach (var b in bytes) result.Add((Int32)b);
+            return result;
         }
-        static public List<UInt32> ToUInt32List(UInt32[] array, Int32 startId, Int32 endId)
+        static public List<UInt32> ToUInt32List(List<Byte> bytes)
         {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
+            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+            var result = new List<UInt32>(bytes.Count);
+            foreach (var b in bytes) result.Add((UInt32)b);
+            return result;
         }
-        static public Int32[] ToInt32Array(List<Int32> list, Int32 startId, Int32 endId)
+        static public List<Byte> FromInt32List(List<Int32> values)
         {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count);
+            foreach (var v in values)
+            {
+                if (v < 0 || v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All Int32 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)v);
+            }
+            return result;
         }
-        static public UInt32[] ToUInt32Array(List<UInt32> list, Int32 startId, Int32 endId)
+        static public List<Byte> FromUInt32List(List<UInt32> values)
         {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count);
+            foreach (var v in values)
+            {
+                if (v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All UInt32 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)v);
+            }
+            return result;
         }
 
 
 
-        static public List<Int64> ToInt64List(Int64[] array, Int32 startId, Int32 endId)
+        static public List<Int64> ToInt64List(List<Byte> bytes)
         {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
+            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+            var result = new List<Int64>(bytes.Count);
+            foreach (var b in bytes) result.Add((Int64)b);
+            return result;
         }
-        static public List<UInt64> ToUInt64List(UInt64[] array, Int32 startId, Int32 endId)
+        static public List<UInt64> ToUInt64List(List<Byte> bytes)
         {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
+            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+            var result = new List<UInt64>(bytes.Count);
+            foreach (var b in bytes) result.Add((UInt64)b);
+            return result;
         }
-        static public Int64[] ToInt64Array(List<Int64> list, Int32 startId, Int32 endId)
+        static public List<Byte> FromInt64List(List<Int64> values)
         {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count);
+            foreach (var v in values)
+            {
+                if (v < 0 || v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All Int64 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)v);
+            }
+            return result;
         }
-        static public UInt64[] ToUInt64Array(List<UInt64> list, Int32 startId, Int32 endId)
+        static public List<Byte> FromUInt64List(List<UInt64> values)
         {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
-        }
-
-
-
-        static public List<char> ToStringList(char[] array, Int32 startId, Int32 endId)
-        {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
-        }
-        static public char[] ToStringArray(List<char> list, Int32 startId, Int32 endId)
-        {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId < 0 || endId > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
-        }
-        static public List<string> ToStringList(string[] array, Int32 startId, Int32 endId)
-        {
-            if (array == null) throw new ArgumentNullException("array", "Array cannot be null");
-            var length = array.Length;
-            if (startId < 0 || startId > length) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId   < 0 || endId   > length) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                array.ToList().GetRange(startId, endId - startId) :
-                array.ToList().GetRange(endId, startId - endId).AsEnumerable().Reverse().ToList();
-        }
-        static public string[] ToStringArray(List<string> list, Int32 startId, Int32 endId)
-        {
-            if (list == null) throw new ArgumentNullException("list", "List cannot be null");
-            var count = list.Count;
-            if (startId < 0 || startId > count) throw new ArgumentOutOfRangeException("startId", "StartIndex is out of bounds");
-            if (endId   < 0 || endId   > count) throw new ArgumentOutOfRangeException("endId", "EndIndex is out of bounds");
-
-            return startId < endId ?
-                list.GetRange(startId, endId - startId).ToArray() :
-                list.GetRange(endId, startId - endId).AsEnumerable().Reverse().ToArray();
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            var result = new List<Byte>(values.Count);
+            foreach (var v in values)
+            {
+                if (v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All UInt64 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)v);
+            }
+            return result;
         }
     }
 }

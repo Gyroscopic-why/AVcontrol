@@ -132,5 +132,61 @@ namespace AVcontrol
             (Byte) (value >> 48),
             (Byte) (value >> 56)
         };
+
+
+
+
+        static public Byte[] BigEndian(List<Int16> values)
+        {
+            List<Byte> result = new List<Byte>();
+            foreach (var value in values) result.AddRange(BigEndian(value));
+            return result.ToArray();
+        }
+        static public Byte[] BigEndian(List<UInt16> values)
+        {
+            List<Byte> result = new List<Byte>();
+            foreach (var value in values) result.AddRange(BigEndian(value));
+            return result.ToArray();
+        }
+
+        static public Byte[] BigEndian(List<Int32> values)
+        {
+            List<Byte> result = new List<Byte>();
+            foreach (var value in values) result.AddRange(BigEndian(value));
+            return result.ToArray();
+        }
+        static public Byte[] BigEndian(List<UInt32> values)
+        {
+            List<Byte> result = new List<Byte>();
+            foreach (var value in values) result.AddRange(BigEndian(value));
+            return result.ToArray();
+        }
+
+
+        static public Byte[] LittleEndian(List<Int16> values)
+        {
+            List<Byte> result = new List<Byte>();
+            foreach (var value in values) result.AddRange(LittleEndian(value));
+            return result.ToArray();
+        }
+        static public Byte[] LittleEndian(List<UInt16> values)
+        {
+            List<Byte> result = new List<Byte>();
+            foreach (var value in values) result.AddRange(LittleEndian(value));
+            return result.ToArray();
+        }
+
+        static public Byte[] LittleEndian(List<Int32> values)
+        {
+            List<Byte> result = new List<Byte>();
+            foreach (var value in values) result.AddRange(LittleEndian(value));
+            return result.ToArray();
+        }
+        static public Byte[] LittleEndian(List<UInt32> values)
+        {
+            List<Byte> result = new List<Byte>();
+            foreach (var value in values) result.AddRange(LittleEndian(value));
+            return result.ToArray();
+        }
     }
 }

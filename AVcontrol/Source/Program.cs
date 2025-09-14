@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using static System.Console;
+
 
 namespace AVcontrol
 {
@@ -9,28 +11,44 @@ namespace AVcontrol
     {
         static void Main()
         {
-            string baobab = Numsys.Auto<string>
+            string baobab = "aboba";
+            string external = "abo";
+            Byte[] external2 = new byte[] { 0, 1, 2 }; // a, b, o
+            Byte[] overflows = { 0, 0, 4, 4, 0 };
+
+            List<Int16> ids = new List<Int16>();
+            for (var i = 0; i < baobab.Length; i++)
+                ids.Add((Int16)external.IndexOf(baobab[i]));
+
+            Byte[] decoded = Conversions.FromInt16List
             (
+                Numsys.FromCustomAsUtf16Binary
                 (
-                    13 + 0
-                ).ToString(),
-                8,
-                3,
-                10
-            );
-            Write("\n\t13 to base 3: " + baobab);
+                    Numsys.ToCustomAsUtf16Binary
+                    (
+                        Conversions.ToInt16List
+                        (
+                            overflows.ToList()
+                        ),
+                        10,
+                        3,
+                        Conversions.ToInt16List
+                        (
+                            external2.ToList()
+                        )
+                    ),
+                    3,
+                    10,
+                    Conversions.ToInt16List
+                    (
+                        external2.ToList()
+                    )
+                )
+            ).ToArray();
 
 
-            Int32 oldv = 123;
-            List<Int32> newv   = Numsys.AsList(oldv.ToString(), 10, 16);
-            List<Int32> filled = Numsys.AsList(oldv.ToString(), 10, 16, 0);
-
-            Write("\n\tBase 10:              " + oldv);
-            Write("\n\tBase 16:              ");
-            for (Int32 curId = 0; curId < newv.Count;   curId++) Write(newv[curId] + " ");
-            Write("\n\tBase 16 [с приколом]: ");
-            for (Int32 curId = 0; curId < filled.Count; curId++) Write(filled[curId] + " ");
-
+            Write("\n\tРезультат за-декодирования: ");
+            for (var i = 0; i < decoded.Length; i++) Write(decoded[i] + " ");
 
             ReadKey();
         }

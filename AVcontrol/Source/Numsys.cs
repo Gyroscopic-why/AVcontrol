@@ -7,19 +7,130 @@ namespace AVcontrol
 {
     public class Numsys
     {
-        private static Int32 CharToDigit(char c)
+        static private readonly string gDigits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        static private readonly List<Int16> gInt16Digits = new List<Int16>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
+
+        static private Int32 CharToDigit(char c)
         {
             if (c >= '0' && c <= '9') return c - '0';
             else if (c >= 'A' && c <= 'Z') return c - 'A' + 10;
             else if (c >= 'a' && c <= 'z') return c - 'a' + 10;
             else throw new ArgumentException($"Invalid character: {c}");
         }
-        private static Int32 CharToDigit(char c, string customDigits)
+        static private Int32 CharToDigit(char c, Int32 oldBase, string customDigits)
         {
             Int32 buffer = customDigits.IndexOf(c);
             if (buffer < 0) throw new ArgumentException($"Invalid character: {c} in custom digits.");
+            else if (buffer >= oldBase) throw new ArgumentException($"Digit '{buffer}' is invalid for base {oldBase}.");
 
             return buffer;
+        }
+
+
+
+        static private bool BaseArgumentCheck(Int32 oldBase, Int32 newBase)
+        {
+            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
+                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+            if (oldBase == newBase) return false;
+            return true;
+        }
+        static private Int64 ToDecimal(string oldValue, Int32 oldBase)
+        {
+            Int64 decimalValue = 0;
+            foreach (char c in oldValue)
+            {
+                Int32 digit = CharToDigit(c);
+                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
+                decimalValue = decimalValue * oldBase + digit;
+            }
+            return decimalValue;
+        }
+        static private Int64 ToDecimal(List<Int16> oldValue, Int32 oldBase)
+        {
+            Int64 decimalValue = 0;
+            foreach (Int16 digit in oldValue)
+            {
+                if (digit >= oldBase) throw new ArgumentException($"Digit '{digit}' is invalid for base {oldBase}.");
+                decimalValue = decimalValue * oldBase + digit;
+            }
+            return decimalValue;
+        }
+        static private Int64 ToDecimalFromCustom(string oldValue, Int32 oldBase, string customDigits)
+        {
+            Int64 decimalValue = 0;
+            foreach (char c in oldValue)
+            {
+                Int32 digit = CharToDigit(c, oldBase, customDigits);
+                decimalValue = decimalValue * oldBase + digit;
+            }
+
+            return decimalValue;
+        }
+        static private Int64 ToDecimalFromCustom(List<Int16> oldValue, Int32 oldBase)
+        {
+            Int64 decimalValue = 0;
+            foreach (Int16 digit in oldValue) decimalValue = decimalValue * oldBase + digit;
+            return decimalValue;
+        }
+        static private string FromDecimal(Int64 decimalValue, Int32 newBase)
+        {
+            string result = "";
+            Int64 current = decimalValue;
+
+            while (current > 0)
+            {
+                Int32 remainder = (Int32)(current % newBase);
+                result += gDigits[remainder];
+                current /= newBase;
+            }
+
+            result.Reverse();
+            return result;
+        }
+        static private string FromDecimalToCustom(Int64 decimalValue, Int32 newBase, string customDigits)
+        {
+            string result = "";
+            Int64 current = decimalValue;
+            while (current > 0)
+            {
+                Int32 remainder = (Int32)(current % newBase);
+                result += customDigits[remainder];
+                current /= newBase;
+            }
+
+            result.Reverse();
+            return result;
+        }
+        static private List<Byte> FromDecimalToCustomAsBinary(Int64 decimalValue, Int32 newBase, string customDigits)
+        {
+            List<Byte> result = new List<Byte>();
+            Int64 current = decimalValue;
+
+            while (current > 0)
+            {
+                Int32 remainder = (Int32)(current % newBase);
+                result.Add((Byte)customDigits[remainder]);
+                current /= newBase;
+            }
+
+            result.Reverse();
+            return result;
+        }
+        static private List<Int16> FromDecimalToCustomAsBinary(Int64 decimalValue, Int32 newBase, List<Int16> customDigits)
+        {
+            List<Int16> result = new List<Int16>();
+            Int64 current = decimalValue;
+
+            while (current > 0)
+            {
+                Int32 remainder = (Int32)(current % newBase);
+                result.Add(customDigits[remainder]);
+                current /= newBase;
+            }
+
+            result.Reverse();
+            return result;
         }
 
 
@@ -94,138 +205,31 @@ namespace AVcontrol
 
         static public string    AsString(string oldValue, Int32 oldBase, Int32 newBase)
         {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
-
-            const string digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            string result = "";
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
+            
+            Int64 decimalValue = ToDecimal(oldValue, oldBase);
+            
             if (decimalValue == 0) return "0";
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result += digits[remainder];
-                    current /= newBase;
-                }
-                return new string(result.Reverse().ToArray());
-            }
+            else return FromDecimal(decimalValue, newBase);
         }
         static public string    AsString(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-        {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
-
-            const string digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            string result = "";
-            if (decimalValue == 0) result = "0";
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result += digits[remainder];
-                    current /= newBase;
-                }
-            }
-
-            for (Int32 curId = result.Length; curId < outputLength; curId++) result += "0";
-
-            return new string(result.Reverse().ToArray());
-        }
+            => AsString(oldValue, oldBase, newBase).PadLeft(outputLength, '0');
         static public Int32[]    AsArray(string oldValue, Int32 oldBase, Int32 newBase) => AsList(oldValue, oldBase, newBase).ToArray();
         static public Int32[]    AsArray(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength) => AsList(oldValue, oldBase, newBase, outputLength).ToArray();
         static public List<Int32> AsList(string oldValue, Int32 oldBase, Int32 newBase)
         {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue.Select(c => (Int32)c).ToList();
 
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
+            Int64 decimalValue = ToDecimal(oldValue, oldBase);
 
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            List<Int32> result = new List<Int32>();
-            if (decimalValue == 0) result.Add(0);
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result.Add(remainder);
-                    current /= newBase;
-                }
-                result.Reverse();
-            }
-
-            return result;
+            if (decimalValue == 0) return new List<Int32>() { 0 };
+            else return FromDecimalToCustomAsBinary(decimalValue, newBase, gDigits).Select(b => (Int32)b).ToList();
         }
         static public List<Int32> AsList(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
         {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+            List<Int32> result = AsList(oldValue, oldBase, newBase);
 
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            List<Int32> result = new List<Int32>();
-            if (decimalValue == 0) result.Add(0);
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result.Add(remainder);
-                    current /= newBase;
-                }
-                result.Reverse();
-            }
-
-            //  Extend the length to min requested
             while (result.Count < outputLength) result.Insert(0, 0);
-
             return result;
         }
 
@@ -233,220 +237,53 @@ namespace AVcontrol
 
         static public string        CustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
 
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c, customDigits);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            string result = "";
             if (decimalValue == 0) return customDigits[0].ToString();
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result += customDigits[remainder];
-                    current /= newBase;
-                }
-                return new string(result.Reverse().ToArray());
-            }
+            else return FromDecimalToCustom(decimalValue, newBase, customDigits);
         }
         static public string        CustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-        {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
-
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            string result = "";
-            if (decimalValue == 0) result = customDigits[0].ToString();
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result += customDigits[remainder];
-                    current /= newBase;
-                }
-            }
-
-            for (Int32 curId = result.Length; curId < outputLength; curId++) result += customDigits[0];
-
-            return new string(result.Reverse().ToArray());
-        }
+            => CustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
         static public string      ToCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
 
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            string result = "";
+            Int64 decimalValue = ToDecimal(oldValue, oldBase);
+            
             if (decimalValue == 0) return customDigits[0].ToString();
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result += customDigits[remainder];
-                    current /= newBase;
-                }
-                return new string(result.Reverse().ToArray());
-            }
+            else return FromDecimalToCustom(decimalValue, newBase, customDigits);
         }
         static public string      ToCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-        {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
-
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            string result = "";
-            if (decimalValue == 0) result = customDigits[0].ToString();
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result += customDigits[remainder];
-                    current /= newBase;
-                }
-            }
-
-            for (Int32 curId = result.Length; curId < outputLength; curId++) result += customDigits[0];
-
-            return new string(result.Reverse().ToArray());
-        }
+            => ToCustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
         static public string    FromCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
 
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c, customDigits);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            const string digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            //  Convert decimal to requested base
-            string result = "";
             if (decimalValue == 0) return "0";
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result += digits[remainder];
-                    current /= newBase;
-                }
-                return new string(result.Reverse().ToArray());
-            }
+            else return FromDecimal(decimalValue, newBase);
         }
         static public string    FromCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-        {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
-
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c, customDigits);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            const string digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            //  Convert decimal to requested base
-            string result = "";
-            if (decimalValue == 0) result = "0";
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result += digits[remainder];
-                    current /= newBase;
-                }
-            }
-
-            for (Int32 curId = result.Length; curId < outputLength; curId++) result += "0";
-
-            return new string(result.Reverse().ToArray());
-        }
-        static public Int32[]    FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits) => FromCustomAsList(oldValue, oldBase, newBase, customDigits).ToArray();
-        static public Int32[]    FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength) => FromCustomAsList(oldValue, oldBase, newBase, customDigits, outputLength).ToArray();
+            => FromCustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, '0');
+        static public Int32[]    FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits) 
+            => FromCustomAsList(oldValue, oldBase, newBase, customDigits).ToArray();
+        static public Int32[]    FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength) 
+            => FromCustomAsList(oldValue, oldBase, newBase, customDigits, outputLength).ToArray();
         static public List<Int32> FromCustomAsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue.Select(c => (Int32)c).ToList();
+            
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c, customDigits);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            List<Int32> result = new List<Int32>();
-            if (decimalValue == 0) result.Add(0);
+            if (decimalValue == 0) return new List<Int32>() { 0 };
             else
             {
+                List<Int32> result = new List<Int32>();
                 Int64 current = decimalValue;
+
                 while (current > 0)
                 {
                     Int32 remainder = (Int32)(current % newBase);
@@ -454,45 +291,135 @@ namespace AVcontrol
                     current /= newBase;
                 }
                 result.Reverse();
+                return result;
             }
-
-            return result;
         }
         static public List<Int32> FromCustomAsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
         {
-            if (oldBase < 2 || oldBase > 36 || newBase < 2 || newBase > 36)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 36.");
+            List<Int32> result = FromCustomAsList(oldValue, oldBase, newBase, customDigits);
 
-            //  Convert number to decimal
-            Int64 decimalValue = 0;
-            foreach (char c in oldValue)
-            {
-                Int32 digit = CharToDigit(c, customDigits);
-                if (digit >= oldBase) throw new ArgumentException($"Digit '{c}' is invalid for base {oldBase}.");
-
-                decimalValue = decimalValue * oldBase + digit;
-            }
-
-            //  Convert decimal to requested base
-            List<Int32> result = new List<Int32>();
-            if (decimalValue == 0) result.Add(0);
-            else
-            {
-                Int64 current = decimalValue;
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result.Add(remainder);
-                    current /= newBase;
-                }
-                result.Reverse();
-            }
-
-            //  Extend the length to min requested
             while (result.Count < outputLength) result.Insert(0, 0);
-
             return result;
         }
+
+
+
+        static public List<Byte> CustomAsBinary(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+        {
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue.Select(c => (Byte)c).ToList();
+
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
+            
+            if (decimalValue == 0) return new List<byte>() { (Byte)customDigits[0] };
+            else return FromDecimalToCustomAsBinary(decimalValue, newBase, customDigits);
+        }
+        static public List<Byte> CustomAsBinary(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+        {
+            List<Byte> result = CustomAsBinary(oldValue, oldBase, newBase, customDigits);
+
+            while (result.Count < outputLength) result.Insert(0, (Byte)customDigits[0]);
+            return result;
+        }
+        static public List<Byte> ToCustomAsBinary(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+        {
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue.Select(c => (Byte)c).ToList();
+
+            Int64 decimalValue = ToDecimal(oldValue, oldBase);
+
+            if (decimalValue == 0) return new List<byte>() { (Byte)customDigits[0] };
+            else return FromDecimalToCustomAsBinary(decimalValue, newBase, customDigits);
+        }
+        static public List<Byte> ToCustomAsBinary(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+        {
+            List<Byte> result = ToCustomAsBinary(oldValue, oldBase, newBase, customDigits);
+
+            while (result.Count < outputLength) result.Insert(0, (Byte)customDigits[0]);
+            return result;
+        }
+        static public List<Byte> FromCustomAsBinary(List<Byte> oldValue, Int32 oldBase, Int32 newBase, List<Byte> customDigits)
+        {
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
+
+            Int64 decimalValue = ToDecimalFromCustom(Conversions.ToInt16List(oldValue), oldBase);
+
+            if (decimalValue == 0) return new List<byte>() { (Byte)'0' };
+            else return FromDecimalToCustomAsBinary(decimalValue, newBase, gDigits);
+        }
+        static public List<Byte> FromCustomAsBinary(List<Byte> oldValue, Int32 oldBase, Int32 newBase, List<Byte> customDigits, Int32 outputLength)
+        {
+            List<Byte> result = FromCustomAsBinary(oldValue, oldBase, newBase, customDigits);
+            
+            while (result.Count < outputLength) result.Insert(0, (Byte)'0');
+            return result;
+        }
+
+
+
+        static public List<Int16> CustomAsUtf16Binary(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits)
+        {
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
+
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase);
+
+            if (decimalValue == 0) return new List<Int16>() { customDigits[0] };
+            else return FromDecimalToCustomAsBinary(decimalValue, newBase, customDigits);
+        }
+        static public List<Int16> CustomAsUtf16Binary(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits, Int32 outputLength)
+        {
+            List<Int16> result = CustomAsUtf16Binary(oldValue, oldBase, newBase, customDigits);
+
+            while (result.Count < outputLength) result.Insert(0, customDigits[0]);
+            return result;
+        }
+        static public List<Int16> ToCustomAsUtf16Binary(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits)
+        {
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
+
+            Int64 decimalValue = ToDecimal(oldValue, oldBase);
+
+            if (decimalValue == 0) return new List<Int16>() { customDigits[0] };
+            else return FromDecimalToCustomAsBinary(decimalValue, newBase, customDigits);
+        }
+        static public List<Int16> ToCustomAsUtf16Binary(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits, Int32 outputLength)
+        {
+            List<Int16> result = ToCustomAsUtf16Binary(oldValue, oldBase, newBase, customDigits);
+
+            while (result.Count < outputLength) result.Insert(0, customDigits[0]);
+            return result;
+        }
+        static public List<Int16> FromCustomAsUtf16Binary(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits)
+        {
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
+
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase);
+
+            if (decimalValue == 0) return new List<Int16>() { (Int16)'0' };
+            else return FromDecimalToCustomAsBinary(decimalValue, newBase, gInt16Digits);
+        }
+        static public List<Int16> FromCustomAsUtf16Binary(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits, Int32 outputLength)
+        {
+            List<Int16> result = FromCustomAsUtf16Binary(oldValue, oldBase, newBase, customDigits);
+
+            while (result.Count < outputLength) result.Insert(0, (Int16)'0');
+            return result;
+        }
+        static public string FromCustomAsString(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits)
+        {
+            if (!BaseArgumentCheck(oldBase, newBase)) 
+            {
+                string buffer = "";
+                foreach (Int16 i in oldValue) buffer += (char)i;
+                return buffer;
+            }
+
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase);
+
+            if (decimalValue == 0) return "0";
+            else return FromDecimal(decimalValue, newBase);
+        }
+        static public string FromCustomAsString(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits, Int32 outputLength)
+            => FromCustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, '0');
+        
 
 
 
@@ -546,136 +473,52 @@ namespace AVcontrol
         }
 
 
-        static private string    Unsafe_2_8_10_16_AsString(string oldValue, Int32 oldBase, Int32 newBase)
-        {
-            //  Convert the old value to decimal
-            Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-
-            //  Convert decimal value to the new base
-            return Convert.ToString(decimalValue, newBase).ToUpper();
-        }
+        static private string Unsafe_2_8_10_16_AsString(string oldValue, Int32 oldBase, Int32 newBase)
+            => Convert.ToString(Convert.ToInt64(oldValue, oldBase), newBase).ToUpper();
         static private string    Unsafe_2_8_10_16_AsString(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-        {
-            //  Convert the old value to decimal
-            Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-
-            //  Convert decimal value to the new base
-            string result = Convert.ToString(decimalValue, newBase).ToUpper(), buffer = "";
-            for (Int32 curId = result.Length; curId < outputLength; curId++) buffer += "0";
-            return buffer + result;
-        }
+            => Unsafe_2_8_10_16_AsString(oldValue, oldBase, newBase).PadLeft(outputLength, '0');
         static private Int32[]    Unsafe_2_8_10_16_AsArray(string oldValue, Int32 oldBase, Int32 newBase)
-        {
-            //  Convert the old value to decimal
-            Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-
-            //  Calculate the length through string conversion
-            string newValue = Convert.ToString(decimalValue, newBase).ToUpper();
-            Int32[] result = new Int32[newValue.Length];
-
-            for (Int32 curId = 0; curId < newValue.Length; curId++)
-                result[curId] = Convert.ToInt32(newValue[curId].ToString(), newBase);
-
-            return result;
-        }
+            => Unsafe_2_8_10_16_AsList(oldValue, oldBase, newBase).ToArray();
         static private Int32[]    Unsafe_2_8_10_16_AsArray(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-        {
-            //  Convert the old value to decimal
-            Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-
-            //  Calculate the length through string conversion
-            string newValue = Convert.ToString(decimalValue, newBase).ToUpper();
-            Int32[] result = new Int32[Math.Max(newValue.Length, outputLength)];
-            Int32 realstartId = 0;
-
-            for (Int32 curId = newValue.Length; curId < outputLength; curId++)
-            {
-                result[curId - newValue.Length] = 0;
-                realstartId++;
-            }
-
-            for (Int32 curId = realstartId; curId < result.Length; curId++)
-                result[curId] = Convert.ToInt32(newValue[curId - realstartId].ToString(), newBase);
-
-            return result;
-        }
+            => Unsafe_2_8_10_16_AsList(oldValue, oldBase, newBase, outputLength).ToArray();
         static private List<Int32> Unsafe_2_8_10_16_AsList(string oldValue, Int32 oldBase, Int32 newBase)
         {
-            //  Convert the old value to decimal
             Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-
-            //  Convert dec to new base string
             string newValue = Convert.ToString(decimalValue, newBase).ToUpper();
-            List<Int32> result = new List<Int32>();
 
-            foreach (char c in newValue)
-                result.Add(Convert.ToInt32(c.ToString(), newBase));
+            List<Int32> result = new List<Int32>();
+            foreach (char c in newValue) result.Add(Convert.ToInt32(c.ToString(), newBase));
 
             return result;
         }
         static private List<Int32> Unsafe_2_8_10_16_AsList(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
         {
-            //  Convert the old value to decimal
-            Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
+            List<Int32> result = Unsafe_2_8_10_16_AsList(oldValue, oldBase, newBase);
 
-            //  Convert dec to new base string
-            string newValue = Convert.ToString(decimalValue, newBase).ToUpper();
-            List<Int32> result = new List<Int32>();
-
-            for (Int32 curId = newValue.Length; curId < outputLength; curId++)
-                result.Add(0);
-
-            foreach (char c in newValue)
-                result.Add(Convert.ToInt32(c.ToString(), newBase));
-
+            while (result.Count < outputLength) result.Insert(0, 0);
             return result;
         }
-
 
 
 
         static public Int32   LowBase(string oldValue, Int32 oldBase, Int32 newBase)
         {
-            if (oldBase < 2 || oldBase > 10 || newBase < 2 || newBase > 10)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 10.");
+            if (!BaseArgumentCheck(oldBase, newBase)) return Convert.ToInt32(oldValue);
 
-            //  Convert the old value to decimal
             Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-
-            //  Convert decimal value to the new base
             return Convert.ToInt32(Convert.ToString(decimalValue, newBase).ToUpper());
         }
         static public Int32[] LowBaseArray(string oldValue, Int32 oldBase, Int32 newBase)
-        {
-            if (oldBase < 2 || oldBase > 10 || newBase < 2 || newBase > 10)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 10.");
-
-            //  Convert the old value to decimal
-            Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-
-            //  Calculate the length through string conversion
-            string newValue = Convert.ToString(decimalValue, newBase).ToUpper();
-            Int32[] result = new Int32[newValue.Length];
-
-            for (Int32 curId = 0; curId < newValue.Length; curId++)
-                result[curId] = Convert.ToInt32(newValue[curId].ToString(), newBase);
-
-            return result;
-        }
+            => LowBaseList(oldValue, oldBase, newBase).ToArray();
         static public List<Int32> LowBaseList(string oldValue, Int32 oldBase, Int32 newBase)
         {
-            if (oldBase < 2 || oldBase > 10 || newBase < 2 || newBase > 10)
-                throw new ArgumentOutOfRangeException("Bases must be between 2 and 10.");
+            if (!BaseArgumentCheck(oldBase, newBase)) return oldValue.Select(c => Convert.ToInt32(c.ToString())).ToList();
 
-            //  Convert the old value to decimal
             Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-
-            //  Convert dec to new base string
             string newValue = Convert.ToString(decimalValue, newBase).ToUpper();
-            List<Int32> result = new List<Int32>();
 
-            foreach (char c in newValue)
-                result.Add(Convert.ToInt32(c.ToString(), newBase));
+            List<Int32> result = new List<Int32>();
+            foreach (char c in newValue) result.Add(Convert.ToInt32(c.ToString(), newBase));
 
             return result;
         }
