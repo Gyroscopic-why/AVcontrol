@@ -13,14 +13,14 @@ namespace AVcontrol
         {
             string baobab = "aboba";
             string external = "abo";
-            Byte[] external2 = new byte[] { 0, 1, 2 }; // a, b, o
+            Byte[] external2 = new byte[] { 0, 1, 2 };  // a, b, o
             Byte[] overflows = { 0, 0, 4, 4, 0 };
 
             List<Int16> ids = new List<Int16>();
             for (var i = 0; i < baobab.Length; i++)
                 ids.Add((Int16)external.IndexOf(baobab[i]));
 
-            Byte[] decoded = Conversions.FromInt16List
+            Byte[] decoded = Conversions.ToByteList
             (
                 Numsys.FromCustomAsUtf16Binary
                 (
@@ -42,7 +42,8 @@ namespace AVcontrol
                     Conversions.ToInt16List
                     (
                         external2.ToList()
-                    )
+                    ),
+                    6
                 )
             ).ToArray();
 

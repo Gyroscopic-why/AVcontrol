@@ -5,177 +5,159 @@ namespace AVcontrol
 {
     public class Conversions
     {
-        static public List<Int16> BigEndianBytesToInt16(List<Byte> bytes)
+        static public List<Byte> ToByteList(List<SByte>  initial)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
-
-            var result = new List<Int16>(bytes.Count / 2);
-
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Byte>(initial.Count);
+            foreach (var i in initial)
             {
-                Int16 value = (Int16)((bytes[curId] << 8) | bytes[curId + 1]);
-                result.Add(value);
-            }
-
-            return result;
-        }
-        static public List<Int16> AutoBEBytesToInt16(List<Byte> bytes)
-        {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
-            var result = new List<Int16>((bytes.Count + 1) / 2);
-
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Byte high = bytes[curId];
-                Byte low = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
-                result.Add((Int16)((high << 8) | low));
-            }
-
-            return result;
-        }
-
-        static public List<Int16> LEBytesToInt16(List<Byte> bytes)
-        {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
-
-            var result = new List<Int16>(bytes.Count / 2);
-
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Int16 value = (Int16)(bytes[curId] | (bytes[curId + 1] << 8));
-                result.Add(value);
-            }
-
-            return result;
-        }
-        static public List<Int16> AutoLEBytesToInt16(List<Byte> bytes)
-        {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
-            var result = new List<Int16>((bytes.Count + 1) / 2);
-
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Byte low = bytes[curId];
-                Byte high = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
-                result.Add((Int16)(low | (high << 8)));
-            }
-
-            return result;
-        }
-
-
-
-        static public List<UInt16> BEBytesToUInt16(List<Byte> bytes)
-        {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
-
-            var result = new List<UInt16>(bytes.Count / 2);
-
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
-            {
-                UInt16 value = (UInt16)((bytes[curId] << 8) | bytes[curId + 1]);
-                result.Add(value);
-            }
-
-            return result;
-        }
-        static public List<UInt16> AutoBEBytesToUInt16(List<Byte> bytes)
-        {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
-            var result = new List<UInt16>((bytes.Count + 1) / 2);
-
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Byte high = bytes[curId];
-                Byte low = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
-                result.Add((UInt16)((high << 8) | low));
-            }
-
-            return result;
-        }
-
-        static public List<UInt16> LEBytesToUInt16(List<Byte> bytes)
-        {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
-
-            var result = new List<UInt16>(bytes.Count / 2);
-
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
-            {
-                UInt16 value = (UInt16)(bytes[curId] | (bytes[curId + 1] << 8));
-                result.Add(value);
-            }
-
-            return result;
-        }
-        static public List<UInt16> AutoLEBytesToUInt16(List<Byte> bytes)
-        {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
-            var result = new List<UInt16>((bytes.Count + 1) / 2);
-
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Byte low = bytes[curId];
-                Byte high = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
-                result.Add((UInt16)(low | (high << 8)));
-            }
-
-            return result;
-        }
-
-
-
-
-        static public List<Byte> Int16ToBEBytes(List<Int16> values)
-        {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count * 2);
-            foreach (var value in values)
-            {
-                result.Add((Byte)(value >> 8));
-                result.Add((Byte)(value & 0xFF));
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All SByte values must be non-negative to convert to Byte.");
+                result.Add((Byte)i);
             }
             return result;
         }
-        static public List<Byte> Int16ToLEBytes(List<Int16> values)
+        static public List<Byte> ToByteList(List<Int16>  initial)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count * 2);
-            foreach (var value in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Byte>(initial.Count);
+            foreach (var i in initial)
             {
-                result.Add((Byte)(value & 0xFF));
-                result.Add((Byte)(value >> 8));
+                if (i < 0 || i > 255) throw new ArgumentOutOfRangeException(nameof(initial), "All Int16 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)i);
+            }
+            return result;
+        }
+        static public List<Byte> ToByteList(List<UInt16> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Byte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 255) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt16 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)i);
+            }
+            return result;
+        }
+        static public List<Byte> ToByteList(List<Int32>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Byte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0 || i > 255) throw new ArgumentOutOfRangeException(nameof(initial), "All Int32 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)i);
+            }
+            return result;
+        }
+        static public List<Byte> ToByteList(List<UInt32> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Byte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 255) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt32 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)i);
+            }
+            return result;
+        }
+        static public List<Byte> ToByteList(List<Int64>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Byte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0 || i > 255) throw new ArgumentOutOfRangeException(nameof(initial), "All Int64 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)i);
+            }
+            return result;
+        }
+        static public List<Byte> ToByteList(List<UInt64> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Byte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 255) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt64 values must be in the range 0-255 to convert to Byte.");
+                result.Add((Byte)i);
             }
             return result;
         }
 
-        static public List<Byte> UInt16ToBEBytes(List<UInt16> values)
+
+        static public List<SByte> ToSByteList(List<Byte>   initial)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count * 2);
-            foreach (var value in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<SByte>(initial.Count);
+            foreach (var i in initial)
             {
-                result.Add((Byte)(value >> 8));
-                result.Add((Byte)(value & 0xFF));
+                if (i > 127) throw new ArgumentOutOfRangeException(nameof(initial), "All Byte values must be in the range 0-127 to convert to SByte.");
+                result.Add((SByte)i);
             }
             return result;
         }
-        static public List<Byte> UInt16ToLEBytes(List<UInt16> values)
+        static public List<SByte> ToSByteList(List<Int16>  initial)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count * 2);
-            foreach (var value in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<SByte>(initial.Count);
+            foreach (var i in initial)
             {
-                result.Add((Byte)(value & 0xFF));
-                result.Add((Byte)(value >> 8));
+                if (i < -128 || i > 127) throw new ArgumentOutOfRangeException(nameof(initial), "All Int16 values must be in the range -128+127 to convert to SByte.");
+                result.Add((SByte)i);
+            }
+            return result;
+        }
+        static public List<SByte> ToSByteList(List<UInt16> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<SByte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 127) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt16 values must be in the range 0-127 to convert to SByte.");
+                result.Add((SByte)i);
+            }
+            return result;
+        }
+        static public List<SByte> ToSByteList(List<Int32>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<SByte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < -128 || i > 127) throw new ArgumentOutOfRangeException(nameof(initial), "All Int32 values must be in the range -128+127 to convert to SByte.");
+                result.Add((SByte)i);
+            }
+            return result;
+        }
+        static public List<SByte> ToSByteList(List<UInt32> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<SByte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 127) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt32 values must be in the range 0-127 to convert to SByte.");
+                result.Add((SByte)i);
+            }
+            return result;
+        }
+        static public List<SByte> ToSByteList(List<Int64>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<SByte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < -128 || i > 127) throw new ArgumentOutOfRangeException(nameof(initial), "All Int64 values must be in the range -128+127 to convert to SByte.");
+                result.Add((SByte)i);
+            }
+            return result;
+        }
+        static public List<SByte> ToSByteList(List<UInt64> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<SByte>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 127) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt64 values must be in the range 0-127 to convert to SByte.");
+                result.Add((SByte)i);
             }
             return result;
         }
@@ -184,117 +166,413 @@ namespace AVcontrol
 
 
 
-        static public List<Int16> ToInt16List(List<Byte> bytes)
+        static public List<Int16> ToInt16List(List<Byte>   initial)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            var result = new List<Int16>(bytes.Count);
-            foreach (var b in bytes) result.Add((Int16)b);
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int16>(initial.Count);
+            foreach (var i in initial) result.Add((Int16)i);
             return result;
         }
-        static public List<UInt16> ToUInt16List(List<Byte> bytes)
+        static public List<Int16> ToInt16List(List<SByte>  initial)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            var result = new List<UInt16>(bytes.Count);
-            foreach (var b in bytes) result.Add((UInt16)b);
-            return result;
-        }
-        static public List<Byte> FromInt16List(List<Int16> values)
-        {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count);
-            foreach (var v in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int16>(initial.Count);
+            foreach (var i in initial)
             {
-                if (v < 0 || v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All Int16 values must be in the range 0-255 to convert to Byte.");
-                result.Add((Byte)v);
+                if (i < -128) throw new ArgumentOutOfRangeException(nameof(initial), "All SByte values must be in the range -128+127 to convert to Int16.");
+                result.Add((Int16)i);
             }
             return result;
         }
-        static public List<Byte> FromUInt16List(List<UInt16> values)
+        static public List<Int16> ToInt16List(List<UInt16> initial)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count);
-            foreach (var v in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int16>(initial.Count);
+            foreach (var i in initial)
             {
-                if (v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All UInt16 values must be in the range 0-255 to convert to Byte.");
-                result.Add((Byte)v);
+                if (i > 32767) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt16 values must be in the range 0-32,767 to convert to Int16.");
+                result.Add((Int16)i);
+            }
+            return result;
+        }
+        static public List<Int16> ToInt16List(List<Int32>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < -32768 || i > 32767) throw new ArgumentOutOfRangeException(nameof(initial), "All Int32 values must be in the range -32,768+32,767 to convert to Int16.");
+                result.Add((Int16)i);
+            }
+            return result;
+        }
+        static public List<Int16> ToInt16List(List<UInt32> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 32767) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt32 values must be in the range 0-32,767 to convert to Int16.");
+                result.Add((Int16)i);
+            }
+            return result;
+        }
+        static public List<Int16> ToInt64List(List<Int64>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < -32768 || i > 32767) throw new ArgumentOutOfRangeException(nameof(initial), "All Int64 values must be in the range -32,768+32,767 to convert to Int16.");
+                result.Add((Int16)i);
+            }
+            return result;
+        }
+        static public List<Int16> ToInt16List(List<UInt64> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 32767) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt64 values must be in the range 0-32,767 to convert to Int16.");
+                result.Add((Int16)i);
+            }
+            return result;
+        }
+
+
+        static public List<UInt16> ToUInt16List(List<Byte>   initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt16>(initial.Count);
+            foreach (var i in initial) result.Add((UInt16)i);
+            return result;
+        }
+        static public List<UInt16> ToUInt16List(List<SByte>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All SByte values must be non-negative to convert to UInt16.");
+                result.Add((UInt16)i);
+            }
+            return result;
+        }
+        static public List<UInt16> ToUInt16List(List<Int16>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All Int16 values must be non-negative to convert to UInt16.");
+                result.Add((UInt16)i);
+            }
+            return result;
+        }
+        static public List<UInt16> ToUInt16List(List<Int32>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0 || i > 65535) throw new ArgumentOutOfRangeException(nameof(initial), "All Int32 values must be in the range 0-65,535 to convert to UInt16.");
+                result.Add((UInt16)i);
+            }
+            return result;
+        }
+        static public List<UInt16> ToUInt16List(List<UInt32> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 65535) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt32 values must be in the range 0-65,535 to convert to UInt16.");
+                result.Add((UInt16)i);
+            }
+            return result;
+        }
+        static public List<UInt16> ToUInt16List(List<Int64>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0 || i > 65535) throw new ArgumentOutOfRangeException(nameof(initial), "All Int64 values must be in the range 0-65,535 to convert to UInt16.");
+                result.Add((UInt16)i);
+            }
+            return result;
+        }
+        static public List<UInt16> ToUInt16List(List<UInt64> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt16>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > 65535) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt64 values must be in the range 0-65,535 to convert to UInt16.");
+                result.Add((UInt16)i);
             }
             return result;
         }
 
 
 
-        static public List<Int32> ToInt32List(List<Byte> bytes)
+
+
+        static public List<Int32> ToInt32List(List<Byte>   initial)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            var result = new List<Int32>(bytes.Count);
-            foreach (var b in bytes) result.Add((Int32)b);
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int32>(initial.Count);
+            foreach (var i in initial) result.Add((Int32)i);
             return result;
         }
-        static public List<UInt32> ToUInt32List(List<Byte> bytes)
+        static public List<Int32> ToInt32List(List<SByte>  initial)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            var result = new List<UInt32>(bytes.Count);
-            foreach (var b in bytes) result.Add((UInt32)b);
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int32>(initial.Count);
+            foreach (var i in initial) result.Add((Int32)i);
             return result;
         }
-        static public List<Byte> FromInt32List(List<Int32> values)
+        static public List<Int32> ToInt32List(List<Int16>  initial)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count);
-            foreach (var v in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int32>(initial.Count);
+            foreach (var i in initial) result.Add((Int32)i);
+            return result;
+        }
+        static public List<Int32> ToInt32List(List<UInt16> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int32>(initial.Count);
+            foreach (var i in initial) result.Add((Int32)i);
+            return result;
+        }
+        static public List<Int32> ToInt32List(List<UInt32> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int32>(initial.Count);
+            foreach (var i in initial)
             {
-                if (v < 0 || v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All Int32 values must be in the range 0-255 to convert to Byte.");
-                result.Add((Byte)v);
+                if (i > Int32.MaxValue) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt32 values must be in the range 0 to 2,147,483,647 to convert to Int32.");
+                result.Add((Int32)i);
             }
             return result;
         }
-        static public List<Byte> FromUInt32List(List<UInt32> values)
+        static public List<Int32> ToInt32List(List<Int64>  initial)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count);
-            foreach (var v in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int32>(initial.Count);
+            foreach (var i in initial)
             {
-                if (v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All UInt32 values must be in the range 0-255 to convert to Byte.");
-                result.Add((Byte)v);
+                if (i < Int32.MinValue || i > Int32.MaxValue) throw new ArgumentOutOfRangeException(nameof(initial), "All Int64 values must be in the range -2,147,483,648 to 2,147,483,647 to convert to Int32.");
+                result.Add((Int32)i);
+            }
+            return result;
+        }
+        static public List<Int32> ToInt32List(List<UInt64> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int32>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > Int32.MaxValue) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt64 values must be in the range 0 to 2,147,483,647 to convert to Int32.");
+                result.Add((Int32)i);
+            }
+            return result;
+        }
+
+
+        static public List<UInt32> ToUInt32List(List<Byte>   initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt32>(initial.Count);
+            foreach (var i in initial) result.Add((UInt32)i);
+            return result;
+        }
+        static public List<UInt32> ToUInt32List(List<SByte>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt32>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All SByte values must be non-negative to convert to UInt32.");
+                result.Add((UInt32)i);
+            }
+            return result;
+        }
+        static public List<UInt32> ToUInt32List(List<Int16>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt32>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All Int16 values must be non-negative to convert to UInt32.");
+                result.Add((UInt32)i);
+            }
+            return result;
+        }
+        static public List<UInt32> ToUInt32List(List<UInt16> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt32>(initial.Count);
+            foreach (var i in initial) result.Add((UInt32)i);
+            return result;
+        }
+        static public List<UInt32> ToUInt32List(List<Int32>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt32>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All Int32 values must be non-negative to convert to UInt32.");
+                result.Add((UInt32)i);
+            }
+            return result;
+        }
+        static public List<UInt32> ToUInt32List(List<Int64>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt32>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0 || i > UInt32.MaxValue) throw new ArgumentOutOfRangeException(nameof(initial), "All Int64 values must be in the range 0 to 4,294,967,295 to convert to UInt32.");
+                result.Add((UInt32)i);
+            }
+            return result;
+        }
+        static public List<UInt32> ToUInt32List(List<UInt64> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt32>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i > UInt32.MaxValue) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt64 values must be in the range 0 to 4,294,967,295 to convert to UInt32.");
+                result.Add((UInt32)i);
             }
             return result;
         }
 
 
 
-        static public List<Int64> ToInt64List(List<Byte> bytes)
+
+
+        static public List<Int64> ToInt64List(List<Byte>   initial)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            var result = new List<Int64>(bytes.Count);
-            foreach (var b in bytes) result.Add((Int64)b);
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int64>(initial.Count);
+            foreach (var i in initial   ) result.Add((Int64)i);
             return result;
         }
-        static public List<UInt64> ToUInt64List(List<Byte> bytes)
+        static public List<Int64> ToInt64List(List<SByte>  initial)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            var result = new List<UInt64>(bytes.Count);
-            foreach (var b in bytes) result.Add((UInt64)b);
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int64>(initial.Count);
+            foreach (var i in initial) result.Add((Int64)i);
             return result;
         }
-        static public List<Byte> FromInt64List(List<Int64> values)
+        static public List<Int64> ToInt64List(List<Int16>  initial)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count);
-            foreach (var v in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int64>(initial.Count);
+            foreach (var i in initial) result.Add((Int64)i);
+            return result;
+        }
+        static public List<Int64> ToInt64List(List<UInt16> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int64>(initial.Count);
+            foreach (var i in initial) result.Add((Int64)i);
+            return result;
+        }
+        static public List<Int64> ToInt64List(List<Int32>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int64>(initial.Count);
+            foreach (var i in initial) result.Add((Int64)i);
+            return result;
+        }
+        static public List<Int64> ToInt64List(List<UInt32> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int64>(initial.Count);
+            foreach (var i in initial) result.Add((Int64)i);
+            return result;
+        }
+        static public List<Int64> ToInt64List(List<UInt64> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<Int64>(initial.Count);
+            foreach (var i in initial)
             {
-                if (v < 0 || v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All Int64 values must be in the range 0-255 to convert to Byte.");
-                result.Add((Byte)v);
+                if (i > Int64.MaxValue) throw new ArgumentOutOfRangeException(nameof(initial), "All UInt64 values must be in the range 0 to 9,223,372,036,854,775,807 to convert to Int64.");
+                result.Add((Int64)i);
             }
             return result;
         }
-        static public List<Byte> FromUInt64List(List<UInt64> values)
+
+
+        static public List<UInt64> ToUInt64List(List<Byte>   initial)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count);
-            foreach (var v in values)
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt64>(initial.Count);
+            foreach (var i in initial) result.Add((UInt64)i);
+            return result;
+        }
+        static public List<UInt64> ToUInt64List(List<SByte>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt64>(initial.Count);
+            foreach (var i in initial)
             {
-                if (v > 255) throw new ArgumentOutOfRangeException(nameof(values), "All UInt64 values must be in the range 0-255 to convert to Byte.");
-                result.Add((Byte)v);
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All SByte values must be non-negative to convert to UInt64.");
+                result.Add((UInt64)i);
+            }
+            return result;
+        }
+        static public List<UInt64> ToUInt64List(List<Int16>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt64>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All Int16 values must be non-negative to convert to UInt64.");
+                result.Add((UInt64)i);
+            }
+            return result;
+        }
+        static public List<UInt64> ToUInt64List(List<UInt16> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt64>(initial.Count);
+            foreach (var i in initial) result.Add((UInt64)i);
+            return result;
+        }
+        static public List<UInt64> ToUInt64List(List<Int32>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt64>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All Int32 values must be non-negative to convert to UInt64.");
+                result.Add((UInt64)i);
+            }
+            return result;
+        }
+        static public List<UInt64> ToUInt64List(List<UInt32> initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt64>(initial.Count);
+            foreach (var i in initial) result.Add((UInt64)i);
+            return result;
+        }
+        static public List<UInt64> ToUInt64List(List<Int64>  initial)
+        {
+            if (initial == null) throw new ArgumentNullException(nameof(initial));
+            var result = new List<UInt64>(initial.Count);
+            foreach (var i in initial)
+            {
+                if (i < 0) throw new ArgumentOutOfRangeException(nameof(initial), "All Int64 values must be non-negative to convert to UInt64.");
+                result.Add((UInt64)i);
             }
             return result;
         }

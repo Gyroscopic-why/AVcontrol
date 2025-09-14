@@ -8,7 +8,6 @@ namespace AVcontrol
     public class Numsys
     {
         static private readonly string gDigits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        static private readonly List<Int16> gInt16Digits = new List<Int16>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
 
         static private Int32 CharToDigit(char c)
         {
@@ -67,10 +66,10 @@ namespace AVcontrol
 
             return decimalValue;
         }
-        static private Int64 ToDecimalFromCustom(List<Int16> oldValue, Int32 oldBase)
+        static private Int64 ToDecimalFromCustom(List<Int16> oldValue, Int32 oldBase, List<Int16> customDigits)
         {
             Int64 decimalValue = 0;
-            foreach (Int16 digit in oldValue) decimalValue = decimalValue * oldBase + digit;
+            foreach (Int16 digit in oldValue) decimalValue = decimalValue * oldBase + customDigits[digit];
             return decimalValue;
         }
         static private string FromDecimal(Int64 decimalValue, Int32 newBase)
@@ -85,6 +84,19 @@ namespace AVcontrol
                 current /= newBase;
             }
 
+            result.Reverse();
+            return result;
+        }
+        static private List<Int32> FromDecimalAsBinary(Int64 decimalValue, Int32 newBase)
+        {
+            List<Int32> result = new List<Int32>();
+            Int64 current = decimalValue;
+            while (current > 0)
+            {
+                Int32 remainder = (Int32)(current % newBase);
+                result.Add(remainder);
+                current /= newBase;
+            }
             result.Reverse();
             return result;
         }
@@ -279,20 +291,7 @@ namespace AVcontrol
             Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
             if (decimalValue == 0) return new List<Int32>() { 0 };
-            else
-            {
-                List<Int32> result = new List<Int32>();
-                Int64 current = decimalValue;
-
-                while (current > 0)
-                {
-                    Int32 remainder = (Int32)(current % newBase);
-                    result.Add(remainder);
-                    current /= newBase;
-                }
-                result.Reverse();
-                return result;
-            }
+            else return FromDecimalAsBinary(decimalValue, newBase);
         }
         static public List<Int32> FromCustomAsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
         {
@@ -340,7 +339,7 @@ namespace AVcontrol
         {
             if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
 
-            Int64 decimalValue = ToDecimalFromCustom(Conversions.ToInt16List(oldValue), oldBase);
+            Int64 decimalValue = ToDecimalFromCustom(Conversions.ToInt16List(oldValue), oldBase, Conversions.ToInt16List(customDigits));
 
             if (decimalValue == 0) return new List<byte>() { (Byte)'0' };
             else return FromDecimalToCustomAsBinary(decimalValue, newBase, gDigits);
@@ -359,7 +358,7 @@ namespace AVcontrol
         {
             if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
 
-            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase);
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
             if (decimalValue == 0) return new List<Int16>() { customDigits[0] };
             else return FromDecimalToCustomAsBinary(decimalValue, newBase, customDigits);
@@ -391,16 +390,16 @@ namespace AVcontrol
         {
             if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
 
-            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase);
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
             if (decimalValue == 0) return new List<Int16>() { (Int16)'0' };
-            else return FromDecimalToCustomAsBinary(decimalValue, newBase, gInt16Digits);
+            else return Conversions.ToInt16List(FromDecimalAsBinary(decimalValue, newBase));
         }
         static public List<Int16> FromCustomAsUtf16Binary(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits, Int32 outputLength)
         {
             List<Int16> result = FromCustomAsUtf16Binary(oldValue, oldBase, newBase, customDigits);
 
-            while (result.Count < outputLength) result.Insert(0, (Int16)'0');
+            while (result.Count < outputLength) result.Insert(0, customDigits[0]);
             return result;
         }
         static public string FromCustomAsString(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits)
@@ -412,13 +411,13 @@ namespace AVcontrol
                 return buffer;
             }
 
-            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase);
+            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
             if (decimalValue == 0) return "0";
             else return FromDecimal(decimalValue, newBase);
         }
         static public string FromCustomAsString(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits, Int32 outputLength)
-            => FromCustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, '0');
+            => FromCustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, (char)customDigits[0]);
         
 
 
