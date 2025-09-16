@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 using static System.Console;
+
 
 
 namespace AVcontrol
@@ -11,46 +12,55 @@ namespace AVcontrol
     {
         static void Main()
         {
-            string baobab = "aboba";
-            string external = "abo";
-            Byte[] external2 = new byte[] { 0, 1, 2 };  // a, b, o
-            Byte[] overflows = { 0, 0, 4, 4, 0 };
+            Stopwatch timer = new Stopwatch();
 
-            List<Int16> ids = new List<Int16>();
-            for (var i = 0; i < baobab.Length; i++)
-                ids.Add((Int16)external.IndexOf(baobab[i]));
-
-            Byte[] decoded = Conversions.ToByteList
+            Int32 parsedEncoding = Numsys.ToSmallDecimalFromCustom
             (
-                Numsys.FromCustomAsUtf16Binary
+                Intervals.SubList
                 (
-                    Numsys.ToCustomAsUtf16Binary
+                    new List<Int16>() { 97, 97, 98, 97, 111, 98}, 1, 1 + 1
+                ),
+                10,
+                new List<Int16>() { 97, 98, 111, 49, 50, 51, 51, 52, 53, 54, 55 }
+            );
+
+
+
+            /*
+            timer.Start();
+            for (var i = 0; i < 20_000_000; i++)
+            {
+                Int32 parsedEncoding = Convert.ToInt32
+                (
+                    Numsys.ToDecimalFromCustom
                     (
-                        Conversions.ToInt16List
-                        (
-                            overflows.ToList()
-                        ),
-                        10,
-                        3,
-                        Conversions.ToInt16List
-                        (
-                            external2.ToList()
-                        )
-                    ),
-                    3,
-                    10,
-                    Conversions.ToInt16List
-                    (
-                        external2.ToList()
-                    ),
-                    6
-                )
-            ).ToArray();
+                        new List<Int16>() { 1, 0 },
+                    8,
+                    new List<Int16>() { 0, 1, 2, 3, 4, 5, 6, 7 }
+                    )
+                );
+            }
+            timer.Stop();
+            Write("Convert to Int32: " + timer.ElapsedMilliseconds + " ms\n");
 
 
-            Write("\n\tРезультат за-декодирования: ");
-            for (var i = 0; i < decoded.Length; i++) Write(decoded[i] + " ");
+            timer.Reset();
+            timer.Start();
+            for (var i = 0; i < 20_000_000; i++)
+            {
+                Int32 parsedEncoding = Numsys.ToSmallDecimalFromCustom
+                (
+                    new List<Int16>() { 1, 0 },
+                    8,
+                    new List<Int16>() { 0, 1, 2, 3, 4, 5, 6, 7 }
+                );
+            }
+            timer.Stop();
+            Write("Direct Int32: " + timer.ElapsedMilliseconds + " ms\n");*/
 
+
+
+            Write("\n\t\tDone! ");
             ReadKey();
         }
     }
