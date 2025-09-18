@@ -1,6 +1,6 @@
 # AVcontrol - C# library for some additional operations on variables
 
-# All functionality (v1.9.1):
+# All functionality (v2.1):
 - Numsys (short for numeric systems) - for Conversions of numbers from one ns to another, supports:
      - Auto<output Type here> (uses Fast versions if possible)
      - Fast conversions (only) for bases 2, 8, 10, 16 
@@ -11,28 +11,63 @@
 - Conversions, for:
      - Conversions of Lists of different sized integers (supports BigEndian, LittleEndian)
      - Bytes lists to Int16/UInt16 conversions (supports BigEndian, LittleEndian, fast unsafe version, and last element filling to 0
-- Intervals, for:
-     - Intervals for strings, arrays and list
-     - With startId and endId parameters for a more intuitive usage
-     - Based on standart Linq functionality (though you are still absolutely free to use the standart C# implemetations)
+- Utils, for:
+     - Getting Intervals for strings, arrays and list (startId, endId)
+     - Reverse methods for string, Lists, arrays, and some other collection (To replace the standart C# Linq implemetation)
 - ToBinary, for:
      - Converting 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)
      - Converting text (strings) to binary (bytes), supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
      - Converting Lists of 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)
 - FromBinary, for:
-     - Converting text (strings) to binary (bytes), supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
+     - Converting Byte arrays to any integer type, supports: BigEndian, LittleEndian
      - Converting Byte arrays into List<Int16>, supports BigEndian, LittleEndian
-     - For text conversion use the standart BitConverter as of now
+
 
 # Most stable versions
-- **[AVcontrol v1.9.1](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.1)**
-- **[AVcontrol v1.8.2](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
-- **[AVcontrol v1.7](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
+- **> [AVcontrol v2.1](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1)**
+- [AVcontrol v1.9.2](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
+- **> [AVcontrol v1.8.2](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
+- **> [AVcontrol v1.7](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
 - [AVcontrol v1.4.1](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
 
 
 
 # Changes
+
+## v2.1 Changes
+### Massive optimisation
+- **Rewrote most of the functionality with the C# T operator**
+- **Improved ToBinary & FromBinary performance by using pointer magic**
+- Conversions typechanging instead of converting
+
+### Bugfixes: Fixed .Reverse() issues, i hate the standart implementation so much
+
+### Added Utils class
+- **Added Better Reverse() methods**
+- Removed Intervals class and moved the functions to Utils
+
+
+
+## v2.0 Test changes
+**Added new Numsys methods to Numsys:**
+- LowBase with custom character support
+- ToDecimal (not final)
+- FromDecimal (not final)
+
+- lots of bugfixes in Numsys
+- optimised Numsys further
+
+**Added new methods to Split**
+- Splits a number to digets
+- Supports BigEndian & LittleEndian
+- Supports different number bases
+
+
+
+## v1.9.2 Changes
+- **Fixed all Numsys bugs assotiated with .Reverse() working improperly
+
+
 
 ## v1.9.1 Changes
 - **Added more Conversions. methods**
