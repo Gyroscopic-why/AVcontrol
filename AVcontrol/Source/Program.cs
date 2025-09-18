@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
 
 using static System.Console;
 
@@ -13,17 +12,6 @@ namespace AVcontrol
         static void Main()
         {
             Stopwatch timer = new Stopwatch();
-
-            Int32 parsedEncoding = Numsys.ToSmallDecimalFromCustom
-            (
-                Intervals.SubList
-                (
-                    new List<Int16>() { 97, 97, 98, 97, 111, 98}, 1, 1 + 1
-                ),
-                10,
-                new List<Int16>() { 97, 98, 111, 49, 50, 51, 51, 52, 53, 54, 55 }
-            );
-
 
 
             /*

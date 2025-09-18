@@ -1,200 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+
 
 namespace AVcontrol
 {
     public class FromBinary
     {
-        static public Int16 BigEndian16(Byte[] bytes, Int32 startId, Int32 endId)
+        public static T BigEndian<T>(Byte[] bytes) where T : unmanaged
         {
-            Int16 result = 0;
+            Byte[] reversed = new Byte[bytes.Length];
 
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result = (Int16)((result << 8) + bytes[id]);
-                //  Shift the result to the left by 8 bits and add the current Byte until we are done
+            Array.Copy(bytes, reversed, bytes.Length);
+            Utils.Reverse(reversed);
 
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
+            return LittleEndian<T>(reversed);
         }
-        static public Int32 BigEndian32(Byte[] bytes, Int32 startId, Int32 endId)
+        public static T LittleEndian<T>(Byte[] bytes) where T : unmanaged
         {
-            Int32 result = 0;
+            if (bytes.Length != Marshal.SizeOf<T>())
+                throw new ArgumentException("Byte array size doesn't match type size");
 
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
+            unsafe
             {
-                for (Int32 id = startId; id < endId; id++)
-                    result = (result << 8) + bytes[id];
-                //  Shift the result to the left by 8 bits and add the current Byte until we are done
-
+                fixed (Byte* ptr = bytes)
+                {
+                    return *(T*)ptr;
+                }
             }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
         }
-        static public Int64 BigEndian64(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            Int64 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result = (result << 8) + bytes[id];
-                //  Shift the result to the left by 8 bits and add the current Byte until we are done
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-        static public UInt16 BigEndianU16(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            UInt16 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result = (UInt16)((result << 8) + bytes[id]);
-                //  Shift the result to the left by 8 bits and add the current Byte until we are done
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-        static public UInt32 BigEndianU32(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            UInt32 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result = (result << 8) + bytes[id];
-                //  Shift the result to the left by 8 bits and add the current Byte until we are done
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-        static public UInt64 BigEndianU64(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            UInt64 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result = (result << 8) + bytes[id];
-                //  Shift the result to the left by 8 bits and add the current Byte until we are done
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-
-
-
-        static public Int16 LittleEndian16(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            Int16 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result += (Int16) (bytes[id] << (8 * (id - startId)));
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-        static public Int32 LittleEndian32(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            Int32 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result += bytes[id] << (8 * (id - startId));
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-        static public Int64 LittleEndian64(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            Int64 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result += bytes[id] << (8 * (id - startId));
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-        static public UInt16 LittleEndianU16(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            UInt16 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result += (UInt16) (bytes[id] << (8 * (id - startId)));
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-        static public UInt32 LittleEndianU32(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            UInt32 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result += (UInt32) (bytes[id] << (8 * (id - startId)));
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-        static public UInt64 LittleEndianU64(Byte[] bytes, Int32 startId, Int32 endId)
-        {
-            UInt64 result = 0;
-
-            if (startId >= 0 && startId < bytes.Length &&
-                endId > startId && endId <= bytes.Length)
-            {
-                for (Int32 id = startId; id < endId; id++)
-                    result += (UInt64) (bytes[id] << (8 * (id - startId)));
-
-            }
-            else throw new ArgumentException("StartId or EndId is out of bounds", "startId or endId");
-
-            return result;
-        }
-
 
 
 
@@ -322,55 +157,6 @@ namespace AVcontrol
                 result.Add((UInt16)(low | (high << 8)));
             }
 
-            return result;
-        }
-
-
-
-
-        static public List<Byte> Int16ToBEBytes(List<Int16> values)
-        {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count * 2);
-            foreach (var value in values)
-            {
-                result.Add((Byte)(value >> 8));
-                result.Add((Byte)(value & 0xFF));
-            }
-            return result;
-        }
-        static public List<Byte> Int16ToLEBytes(List<Int16> values)
-        {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count * 2);
-            foreach (var value in values)
-            {
-                result.Add((Byte)(value & 0xFF));
-                result.Add((Byte)(value >> 8));
-            }
-            return result;
-        }
-
-        static public List<Byte> UInt16ToBEBytes(List<UInt16> values)
-        {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count * 2);
-            foreach (var value in values)
-            {
-                result.Add((Byte)(value >> 8));
-                result.Add((Byte)(value & 0xFF));
-            }
-            return result;
-        }
-        static public List<Byte> UInt16ToLEBytes(List<UInt16> values)
-        {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            var result = new List<Byte>(values.Count * 2);
-            foreach (var value in values)
-            {
-                result.Add((Byte)(value & 0xFF));
-                result.Add((Byte)(value >> 8));
-            }
             return result;
         }
     }

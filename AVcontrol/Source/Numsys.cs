@@ -145,8 +145,7 @@ namespace AVcontrol
                 current /= newBase;
             }
 
-            result.Reverse();
-            return result;
+            return Utils.Reverse(result);
         }
         static public string FromDecimalToCustom(Int64 decimalValue, Int32 newBase, string customDigits)
         {
@@ -159,21 +158,21 @@ namespace AVcontrol
                 current /= newBase;
             }
 
-            result.Reverse();
-            return result;
+            return Utils.Reverse(result);
         }
         static public List<Int32> FromDecimalAsBinary(Int64 decimalValue, Int32 newBase)
         {
             List<Int32> result = new List<Int32>();
             Int64 current = decimalValue;
+
             while (current > 0)
             {
                 Int32 remainder = (Int32)(current % newBase);
                 result.Add(remainder);
                 current /= newBase;
             }
-            result.Reverse();
-            return result;
+
+            return Utils.Reverse(result);
         }
         static public List<Byte>  FromDecimalToCustomAsBinary(Int64 decimalValue, Int32 newBase, string customDigits)
         {
@@ -187,8 +186,7 @@ namespace AVcontrol
                 current /= newBase;
             }
 
-            result.Reverse();
-            return result;
+            return Utils.Reverse(result);
         }
         static public List<Int16> FromDecimalToCustomAsBinary(Int64 decimalValue, Int32 newBase, List<Int16> customDigits)
         {
@@ -202,8 +200,7 @@ namespace AVcontrol
                 current /= newBase;
             }
 
-            result.Reverse();
-            return result;
+            return Utils.Reverse(result);
         }
 
 

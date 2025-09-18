@@ -1,6 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+
 
 namespace AVcontrol
 {
@@ -23,170 +26,92 @@ namespace AVcontrol
 
 
 
-
-        static public Byte[] Byte(Byte value) => new[] { value };
-        static public Byte[] SByte(SByte value) => new[] { (Byte)value };
-
-
-        static public Byte[] BigEndian(Int16 value) => new[]
+        public static Byte[] LittleEndian<T>(T value) where T : unmanaged
         {
-            (Byte) (value >> 8),
-            (Byte)  value
-        };
-        static public Byte[] BigEndian(UInt16 value) => new[]
-        {
-            (Byte) (value >> 8),
-            (Byte)  value
-        };
+            Int32 size = Marshal.SizeOf<T>();
+            Byte[] bytes = new Byte[size];
 
+            unsafe
+            {
+                fixed (Byte* ptr = bytes)
+                {
+                    *(T*)ptr = value;
+                }
+            }
 
-        static public Byte[] BigEndian(Int32 value) => new[]
-        {
-            (Byte) (value >> 24),
-            (Byte) (value >> 16),
-            (Byte) (value >> 8),
-            (Byte)  value
-        };
-        static public Byte[] BigEndian(UInt32 value) => new[]
-        {
-            (Byte) (value >> 24),
-            (Byte) (value >> 16),
-            (Byte) (value >> 8),
-            (Byte)  value
-        };
-
-
-        static public Byte[] BigEndian(Int64 value) => new[]
-        {
-            (Byte) (value >> 56),
-            (Byte) (value >> 48),
-            (Byte) (value >> 40),
-            (Byte) (value >> 32),
-            (Byte) (value >> 24),
-            (Byte) (value >> 16),
-            (Byte) (value >> 8),
-            (Byte)  value
-        };
-        static public Byte[] BigEndian(UInt64 value) => new[]
-        {
-            (Byte) (value >> 56),
-            (Byte) (value >> 48),
-            (Byte) (value >> 40),
-            (Byte) (value >> 32),
-            (Byte) (value >> 24),
-            (Byte) (value >> 16),
-            (Byte) (value >> 8),
-            (Byte)  value
-        };
-
-
-
-
-        static public Byte[] LittleEndian(Int16 value) => new[]
-        {
-            (Byte)  value,
-            (Byte) (value >> 8)
-        };
-        static public Byte[] LittleEndian(UInt16 value) => new[]
-        {
-            (Byte)  value,
-            (Byte) (value >> 8)
-        };
-
-
-        static public Byte[] LittleEndian(Int32 value) => new[]
-        {
-            (Byte)  value,
-            (Byte) (value >> 8),
-            (Byte) (value >> 16),
-            (Byte) (value >> 24)
-        };
-        static public Byte[] LittleEndian(UInt32 value) => new[]
-        {
-            (Byte)  value,
-            (Byte) (value >> 8),
-            (Byte) (value >> 16),
-            (Byte) (value >> 24)
-        };
-
-
-        static public Byte[] LittleEndian(Int64 value) => new[]
-        {
-            (Byte)  value,
-            (Byte) (value >> 8),
-            (Byte) (value >> 16),
-            (Byte) (value >> 24),
-            (Byte) (value >> 32),
-            (Byte) (value >> 40),
-            (Byte) (value >> 48),
-            (Byte) (value >> 56)
-        };
-        static public Byte[] LittleEndian(UInt64 value) => new[]
-        {
-            (Byte)  value,
-            (Byte) (value >> 8),
-            (Byte) (value >> 16),
-            (Byte) (value >> 24),
-            (Byte) (value >> 32),
-            (Byte) (value >> 40),
-            (Byte) (value >> 48),
-            (Byte) (value >> 56)
-        };
-
-
-
-
-        static public Byte[] BigEndian(List<Int16> values)
-        {
-            List<Byte> result = new List<Byte>();
-            foreach (var value in values) result.AddRange(BigEndian(value));
-            return result.ToArray();
+            return bytes;
         }
-        static public Byte[] BigEndian(List<UInt16> values)
+        public static Byte[] LittleEndian<T>(T[] values) where T : unmanaged
         {
-            List<Byte> result = new List<Byte>();
-            foreach (var value in values) result.AddRange(BigEndian(value));
-            return result.ToArray();
-        }
+            if (values == null) return null;
 
-        static public Byte[] BigEndian(List<Int32> values)
-        {
-            List<Byte> result = new List<Byte>();
-            foreach (var value in values) result.AddRange(BigEndian(value));
-            return result.ToArray();
+            Int32 elementSize = Marshal.SizeOf<T>();
+            Byte[] result = new Byte[values.Length * elementSize];
+            Int32 offset = 0;
+
+            foreach (var value in values)
+            {
+                Byte[] bytes = LittleEndian(value);
+                Array.Copy(bytes, 0, result, offset, elementSize);
+                offset += elementSize;
+            }
+
+            return result;
         }
-        static public Byte[] BigEndian(List<UInt32> values)
+        public static List<Byte> LittleEndian<T>(List<T> values) where T : unmanaged
         {
-            List<Byte> result = new List<Byte>();
-            foreach (var value in values) result.AddRange(BigEndian(value));
-            return result.ToArray();
+            if (values == null) return null;
+
+            Int32 elementSize = Marshal.SizeOf<T>();
+            List<Byte> result = new List<Byte>(values.Count * elementSize);
+
+            foreach (var value in values)
+            {
+                Byte[] bytes = LittleEndian(value);
+                result.AddRange(bytes);
+            }
+
+            return result;
         }
 
 
-        static public Byte[] LittleEndian(List<Int16> values)
-        {
-            List<Byte> result = new List<Byte>();
-            foreach (var value in values) result.AddRange(LittleEndian(value));
-            return result.ToArray();
-        }
-        static public Byte[] LittleEndian(List<UInt16> values)
-        {
-            List<Byte> result = new List<Byte>();
-            foreach (var value in values) result.AddRange(LittleEndian(value));
-            return result.ToArray();
-        }
 
-        static public Byte[] LittleEndian(List<Int32> values)
+        public static Byte[] BigEndian<T>(T value) where T : unmanaged
         {
-            List<Byte> result = new List<Byte>();
-            foreach (var value in values) result.AddRange(LittleEndian(value));
-            return result.ToArray();
+            Byte[] bytes = LittleEndian(value);
+            return Utils.Reverse(bytes);
         }
-        static public Byte[] LittleEndian(List<UInt32> values)
+        public static Byte[] BigEndian<T>(T[] values) where T : unmanaged
         {
-            List<Byte> result = new List<Byte>();
-            foreach (var value in values) result.AddRange(LittleEndian(value));
-            return result.ToArray();
+            if (values == null) return null;
+
+            Int32 elementSize = Marshal.SizeOf<T>();
+            Byte[] result = new Byte[values.Length * elementSize];
+            Int32 offset = 0;
+
+            foreach (var value in values)
+            {
+                Byte[] bytes = BigEndian(value);
+                Array.Copy(bytes, 0, result, offset, elementSize);
+                offset += elementSize;
+            }
+
+            return result;
+        }
+        public static List<Byte> BigEndian<T>(List<T> values) where T : unmanaged
+        {
+            if (values == null) return null;
+
+            Int32 elementSize = Marshal.SizeOf<T>();
+            List<Byte> result = new List<Byte>(values.Count * elementSize);
+
+            foreach (var value in values)
+            {
+                Byte[] bytes = BigEndian(value);
+                result.AddRange(bytes);
+            }
+
+            return result;
         }
     }
 }
