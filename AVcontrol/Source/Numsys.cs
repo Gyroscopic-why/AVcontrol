@@ -28,8 +28,6 @@ namespace AVcontrol
 
 
 
-        static private bool BaseArgumentCheck(Int32 oldBase, Int32 newBase)
-            => BaseArgumentCheck(oldBase, newBase, 36);
         static private bool BaseArgumentCheck(Int32 oldBase, Int32 newBase, Int32 maxBaseLimit)
         {
             if (oldBase < 2 || oldBase > maxBaseLimit || newBase < 2 || newBase > maxBaseLimit)
@@ -37,6 +35,10 @@ namespace AVcontrol
             if (oldBase == newBase) return false;
             return true;
         }
+        static private bool BaseArgumentCheck(Int32 oldBase, Int32 newBase)
+            => BaseArgumentCheck(oldBase, newBase, 36);
+
+
 
         static private string DefaultBaseToCustom(string oldValue, string customDigits)
         {
@@ -133,20 +135,11 @@ namespace AVcontrol
             foreach (Int16 digit in oldValue) decimalValue = decimalValue * oldBase + customDigits.IndexOf(digit);
             return decimalValue;
         }
+
+
+
         static public string FromDecimal(Int64 decimalValue, Int32 newBase)
-        {
-            string result = "";
-            Int64 current = decimalValue;
-
-            while (current > 0)
-            {
-                Int32 remainder = (Int32)(current % newBase);
-                result += gDigits[remainder];
-                current /= newBase;
-            }
-
-            return Utils.Reverse(result);
-        }
+            => FromDecimalToCustom(decimalValue, newBase, gDigits);
         static public string FromDecimalToCustom(Int64 decimalValue, Int32 newBase, string customDigits)
         {
             string result = "";
@@ -306,7 +299,7 @@ namespace AVcontrol
 
 
 
-        static public string        CustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+        static public string CustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
             if (!BaseArgumentCheck(oldBase, newBase)) return oldValue;
 
@@ -315,9 +308,9 @@ namespace AVcontrol
             if (decimalValue == 0) return customDigits[0].ToString();
             else return FromDecimalToCustom(decimalValue, newBase, customDigits);
         }
-        static public string        CustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+        static public string CustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
             => CustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
-        static public string      ToCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+        static public string ToCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
             if (!BaseArgumentCheck(oldBase, newBase)) return DefaultBaseToCustom(oldValue, customDigits);
 
@@ -326,22 +319,22 @@ namespace AVcontrol
             if (decimalValue == 0) return customDigits[0].ToString();
             else return FromDecimalToCustom(decimalValue, newBase, customDigits);
         }
-        static public string      ToCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+        static public string ToCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
             => ToCustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
-        static public string    FromCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
+        static public string FromCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
             if (!BaseArgumentCheck(oldBase, newBase)) return DefaultBaseFromCustom(oldValue, customDigits);
 
             Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
-            if (decimalValue == 0) return customDigits[0].ToString();
+            if (decimalValue == 0) return "0";
             else return FromDecimal(decimalValue, newBase);
         }
-        static public string    FromCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-            => FromCustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
-        static public Int32[]    FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits) 
+        static public string FromCustomAsString(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
+            => FromCustomAsString(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, '0');
+        static public Int32[] FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits) 
             => FromCustomAsList(oldValue, oldBase, newBase, customDigits).ToArray();
-        static public Int32[]    FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength) 
+        static public Int32[] FromCustomAsArray(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength) 
             => FromCustomAsList(oldValue, oldBase, newBase, customDigits, outputLength).ToArray();
         static public List<Int32> FromCustomAsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
@@ -349,14 +342,14 @@ namespace AVcontrol
             
             Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
-            if (decimalValue == 0) return new List<Int32>() { (Int32)customDigits[0] };
+            if (decimalValue == 0) return new List<Int32>() { 0 };
             else return FromDecimalAsBinary(decimalValue, newBase);
         }
         static public List<Int32> FromCustomAsList(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
         {
             List<Int32> result = FromCustomAsList(oldValue, oldBase, newBase, customDigits);
 
-            while (result.Count < outputLength) result.Insert(0, customDigits[0]);
+            while (result.Count < outputLength) result.Insert(0, 0);
             return result;
         }
 
@@ -405,14 +398,14 @@ namespace AVcontrol
 
             Int64 decimalValue = ToDecimalFromCustom(Conversions.ToInt16List(oldValue), oldBase, Conversions.ToInt16List(customDigits));
 
-            if (decimalValue == 0) return new List<byte>() { (Byte)customDigits[0] };
+            if (decimalValue == 0) return new List<byte>() { 0 };
             else return FromDecimalToCustomAsBinary(decimalValue, newBase, gDigits);
         }
         static public List<Byte> FromCustomAsBinary(List<Byte> oldValue, Int32 oldBase, Int32 newBase, List<Byte> customDigits, Int32 outputLength)
         {
             List<Byte> result = FromCustomAsBinary(oldValue, oldBase, newBase, customDigits);
             
-            while (result.Count < outputLength) result.Insert(0, (Byte)customDigits[0]);
+            while (result.Count < outputLength) result.Insert(0, 0);
             return result;
         }
 
@@ -456,14 +449,14 @@ namespace AVcontrol
 
             Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
 
-            if (decimalValue == 0) return new List<Int16>() { (Int16)customDigits[0] };
+            if (decimalValue == 0) return new List<Int16>() { 0 };
             else return Conversions.ToInt16List(FromDecimalAsBinary(decimalValue, newBase));
         }
         static public List<Int16> FromCustomAsUtf16Binary(List<Int16> oldValue, Int32 oldBase, Int32 newBase, List<Int16> customDigits, Int32 outputLength)
         {
             List<Int16> result = FromCustomAsUtf16Binary(oldValue, oldBase, newBase, customDigits);
 
-            while (result.Count < outputLength) result.Insert(0, customDigits[0]);
+            while (result.Count < outputLength) result.Insert(0, 0);
             return result;
         }
         
@@ -519,6 +512,7 @@ namespace AVcontrol
         }
 
 
+
         static private string Unsafe_2_8_10_16_AsString(string oldValue, Int32 oldBase, Int32 newBase)
             => Convert.ToString(Convert.ToInt64(oldValue, oldBase), newBase).ToUpper();
         static private string    Unsafe_2_8_10_16_AsString(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
@@ -551,58 +545,13 @@ namespace AVcontrol
         {
             if (!BaseArgumentCheck(oldBase, newBase, 10)) return Convert.ToInt32(oldValue);
 
-            Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-            return Convert.ToInt32(Convert.ToString(decimalValue, newBase).ToUpper());
-        }
-        static public Int32 LowBaseCustom(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
-        {
-            if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length)) return Convert.ToInt32(oldValue);
-
-            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
-
-            if (decimalValue == 0) return 0;
-
-            Int32 result = 0;
-            for (var i = 0; i < oldValue.Length; i++) result = result * newBase + customDigits.IndexOf(oldValue[i]);
-            return result;
-        }
-        static public Int32 LowBaseCustom(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-        {
-            Int32 result = LowBaseCustom(oldValue, oldBase, newBase, customDigits);
-            return Convert.ToInt32(result.ToString().PadLeft(outputLength, customDigits[0]));
-        }
-        static public Int32 LowBaseFromCustom(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
-        {
-            if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length)) 
-                return Convert.ToInt32(DefaultBaseFromCustom(oldValue, customDigits));
-
-            Int64 decimalValue = ToDecimalFromCustom(oldValue, oldBase, customDigits);
-            return Convert.ToInt32(Convert.ToString(decimalValue, newBase).ToUpper());
-        }
-        static public Int32 LowBaseFromCustom(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-        {
-            Int32 result = LowBaseFromCustom(oldValue, oldBase, newBase, customDigits);
-            return Convert.ToInt32(result.ToString().PadLeft(outputLength, customDigits[0]));
-        }
-        static public Int32 LowBaseToCustom(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
-        {
-            if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length)) 
-                return Convert.ToInt32(DefaultBaseToCustom(oldValue, customDigits));
-
-            Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-            if (decimalValue == 0) return customDigits[0];
-
-            Int32 result = 0;
-            for (var i = 0; i < oldValue.Length; i++) result = result * newBase + customDigits.IndexOf(oldValue[i]);
-            return result;
-        }
-        static public Int32 LowBaseToCustom(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-        {
-            Int32 result = LowBaseToCustom(oldValue, oldBase, newBase, customDigits);
-            return Convert.ToInt32(result.ToString().PadLeft(outputLength, customDigits[0]));
+            Int64 decimalValue = ToDecimal(oldValue, oldBase);
+            return Convert.ToInt32(FromDecimal(decimalValue, newBase));
         }
         static public Int32[] LowBaseArray(string oldValue, Int32 oldBase, Int32 newBase)
-            => LowBaseList(oldValue, oldBase, newBase).ToArray();
+            => LowBaseList(oldValue, oldBase, newBase).ToArray(); 
+        static public Int32[] LowBaseArray(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
+            => LowBaseList(oldValue, oldBase, newBase, outputLength).ToArray();
         static public List<Int32> LowBaseList(string oldValue, Int32 oldBase, Int32 newBase)
         {
             if (!BaseArgumentCheck(oldBase, newBase, 10)) return oldValue.Select(c => Convert.ToInt32(c.ToString())).ToList();
@@ -613,6 +562,13 @@ namespace AVcontrol
             List<Int32> result = new List<Int32>();
             foreach (char c in newValue) result.Add(Convert.ToInt32(c.ToString(), newBase));
 
+            return result;
+        }
+        static public List<Int32> LowBaseList(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
+        {
+            List<Int32> result = LowBaseList(oldValue, oldBase, newBase);
+
+            while (result.Count < outputLength) result.Insert(0, 0);
             return result;
         }
     }

@@ -14,6 +14,18 @@ namespace AVcontrol
             Stopwatch timer = new Stopwatch();
 
 
+            string result = Numsys.FromCustomAsString
+            (
+                "22",
+                10,
+                8,
+                "23456789"
+            );
+            Write("FromCustom to NORMAL: " + result);
+            ReadKey();
+
+
+
             /*
             timer.Start();
             for (var i = 0; i < 20_000_000; i++)
