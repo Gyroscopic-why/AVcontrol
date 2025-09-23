@@ -1,11 +1,12 @@
 # AVcontrol - C# library for some additional operations on variables
 
-# All functionality (v2.1):
+# All functionality (v2.1.1):
 - Numsys (short for numeric systems) - for Conversions of numbers from one ns to another, supports:
      - Auto<output Type here> (uses Fast versions if possible)
      - Fast conversions (only) for bases 2, 8, 10, 16 
      - funcs supporting custom digits for conversions
      - Support for direct number conversions
+     - Support for binary variants of conversions (List<Byte> and List<Int16> (for more convinient operationwith Utf16 LittleEndian)
      - extending output to a minimal length
      - low base conversions (for bases less or equal to 10)
 - Conversions, for:
@@ -24,15 +25,27 @@
 
 
 # Most stable versions
-- **> [AVcontrol v2.1](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1)**
-- [AVcontrol v1.9.2](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
-- **> [AVcontrol v1.8.2](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
-- **> [AVcontrol v1.7](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
-- [AVcontrol v1.4.1](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
+- **> [AVcontrol v2.1.1_____(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
+- [AVcontrol v1.9.2________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
+- **> [AVcontrol v1.8.2_____(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
+- **> [AVcontrol v1.7_______(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
+- [AVcontrol v1.4.1________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
 
 
 
 # Changes
+
+## v2.1.1 Changes
+### Fixed Numsys. bugs:
+- custom digit filling in .FromCustom() methods
+(incorrect filling: customDigits[0] instead of "0" or gDigits[0])
+- fixed incorrect Converts. in LowBase overloads
+- removed LowBase overloads with custom digits since they are impossible to make
+(and honestly, they are pointless since you can just do Convert.ToInt32( ?CustomAsString( .. ))
+
+### Optimised Split. code amount by using the C# T operator
+
+
 
 ## v2.1 Changes
 ### Massive optimisation
