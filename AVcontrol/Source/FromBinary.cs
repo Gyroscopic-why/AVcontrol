@@ -41,7 +41,7 @@ namespace AVcontrol
 
             var result = new List<Int16>(bytes.Count / 2);
 
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            for (var curId = 0; curId < bytes.Count; curId += 2)
             {
                 Int16 value = (Int16)((bytes[curId] << 8) | bytes[curId + 1]);
                 result.Add(value);
@@ -55,7 +55,7 @@ namespace AVcontrol
 
             var result = new List<Int16>((bytes.Count + 1) / 2);
 
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            for (var curId = 0; curId < bytes.Count; curId += 2)
             {
                 Byte high = bytes[curId];
                 Byte low = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
@@ -72,7 +72,7 @@ namespace AVcontrol
 
             var result = new List<Int16>(bytes.Count / 2);
 
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            for (var curId = 0; curId < bytes.Count; curId += 2)
             {
                 Int16 value = (Int16)(bytes[curId] | (bytes[curId + 1] << 8));
                 result.Add(value);
@@ -86,7 +86,7 @@ namespace AVcontrol
 
             var result = new List<Int16>((bytes.Count + 1) / 2);
 
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            for (var curId = 0; curId < bytes.Count; curId += 2)
             {
                 Byte low = bytes[curId];
                 Byte high = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
@@ -105,7 +105,7 @@ namespace AVcontrol
 
             var result = new List<UInt16>(bytes.Count / 2);
 
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            for (var curId = 0; curId < bytes.Count; curId += 2)
             {
                 UInt16 value = (UInt16)((bytes[curId] << 8) | bytes[curId + 1]);
                 result.Add(value);
@@ -119,7 +119,7 @@ namespace AVcontrol
 
             var result = new List<UInt16>((bytes.Count + 1) / 2);
 
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            for (var curId = 0; curId < bytes.Count; curId += 2)
             {
                 Byte high = bytes[curId];
                 Byte low = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
@@ -136,7 +136,7 @@ namespace AVcontrol
 
             var result = new List<UInt16>(bytes.Count / 2);
 
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            for (var curId = 0; curId < bytes.Count; curId += 2)
             {
                 UInt16 value = (UInt16)(bytes[curId] | (bytes[curId + 1] << 8));
                 result.Add(value);
@@ -150,7 +150,7 @@ namespace AVcontrol
 
             var result = new List<UInt16>((bytes.Count + 1) / 2);
 
-            for (Int32 curId = 0; curId < bytes.Count; curId += 2)
+            for (var curId = 0; curId < bytes.Count; curId += 2)
             {
                 Byte low = bytes[curId];
                 Byte high = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;

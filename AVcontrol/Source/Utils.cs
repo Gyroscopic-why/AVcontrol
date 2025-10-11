@@ -38,7 +38,7 @@ namespace AVcontrol
             if (collection == null) return null;
 
             var result = new T[collection.Count];
-            for (int i = 0; i < collection.Count; i++)
+            for (var i = 0; i < collection.Count; i++)
             {
                 result[i] = collection[collection.Count - 1 - i];
             }
@@ -58,7 +58,7 @@ namespace AVcontrol
         }
         static public IEnumerable<T> FastReverse<T>(this IList<T> collection)
         {
-            for (int i = collection.Count - 1; i >= 0; i--)
+            for (var i = collection.Count - 1; i >= 0; i--)
             {
                 yield return collection[i];
             }
