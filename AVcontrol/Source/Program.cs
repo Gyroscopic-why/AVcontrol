@@ -57,7 +57,7 @@ namespace AVcontrol
                 }
 
                 double min1 = (double)ms1.Min() / 1000, max1 = (double)ms1.Max() / 1000;
-                double min2 = (double)ms1.Min() / 1000, max2 = (double)ms2.Max() / 1000;
+                double min2 = (double)ms2.Min() / 1000, max2 = (double)ms2.Max() / 1000;
                 double sum1 = (double)ms1.Sum() / 1000, sum2 = (double)ms2.Sum() / 1000;
                 double avg1 = ms1.Average() / 1000, avg2 = ms2.Average() / 1000, avgGlobal = (avg1 + avg2) / 2;
 
@@ -123,7 +123,7 @@ namespace AVcontrol
                 }
 
                 double min1 = (double)ms1.Min() / 1000, max1 = (double)ms1.Max() / 1000;
-                double min2 = (double)ms1.Min() / 1000, max2 = (double)ms2.Max() / 1000;
+                double min2 = (double)ms2.Min() / 1000, max2 = (double)ms2.Max() / 1000;
                 double sum1 = (double)ms1.Sum() / 1000, sum2 = (double)ms2.Sum() / 1000;
                 double avg1 = ms1.Average() / 1000, avg2 = ms2.Average() / 1000, avgGlobal = (avg1 + avg2) / 2;
 

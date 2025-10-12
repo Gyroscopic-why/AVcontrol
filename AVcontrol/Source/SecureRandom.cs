@@ -13,9 +13,18 @@ namespace AVcontrol
         private bool   _disposed = false;
 
         private UInt64 _bytesGenerated = 0;
-        private const UInt64 RESEED_INTERVAL = 1024 * 1024;  //  Reseed every 1MB
+        private readonly UInt64 RESEED_INTERVAL = 1024 * 1024;  //  Reseed every 1MB (default)
 
-        public SecureRandom() : this(GenerateTrueHardwareSeed()) { }
+        /// <summary>
+        /// For rng reseeding interval in bytes generated. Minimum is 128 bytes. 
+        /// If the minimum wi=ont be tolerated, it will be force set to 128 bytes.
+        /// </summary>
+        /// <param name="reseedAfterBytesGenerated"></param> min value = 128 bytes
+        public SecureRandom(UInt64 reseedAfterBytesGenerated = 1024 * 1024) : this(GenerateTrueHardwareSeed()) 
+        {
+            if (reseedAfterBytesGenerated < 128) reseedAfterBytesGenerated = 128;
+            RESEED_INTERVAL = reseedAfterBytesGenerated; 
+        }
         public SecureRandom(Byte[] seed)
         {
             if (seed == null || seed.Length != 32) throw new ArgumentException("Seed must be 32 bytes", nameof(seed));
