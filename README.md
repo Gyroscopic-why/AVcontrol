@@ -1,46 +1,78 @@
-# AVcontrol - C# library for some additional operations on variables
+# AVcontrol - C# library for additional operations on variables
 
-# All functionality (v2.1.1):
-- Numsys (short for numeric systems) - for Conversions of numbers from one ns to another, supports:
-     - Auto<output Type here> (uses Fast versions if possible)
+# All functionality (v2.2.1):
+- SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
+     - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
+     - **Funcs for generating: Int32, Int64, double**
+     - **Supports reseeding, autoReseeding, and SecureNext for reseeding before generating**
+     - **Accepts minValue and maxValue for generating limits**
+     - Is based on ChaCha20 algorithm
+     - slower than C# implementation
+- FastRandom (alternative to C# standart Random class)
+     - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
+     - **Funcs for generating: Int32, Int64, double**
+     - **Accepts minValue and maxValue for generating limits**
+     - Uses Xoshiro256++ algorithm
+     - a bit slower than C# Random
+- Numsys (short for numeric systems) - for Conversions of numbers from one numeric system to another, supports:
+     - **Auto<output Type here> (uses Fast versions if possible)**
+     - **Funcs supporting custom digits for conversions**
+     - **Support for binary variants of conversions (List<Byte> and List<Int16> (for more convinient operationwith Utf16 LittleEndian)**
      - Fast conversions (only) for bases 2, 8, 10, 16 
-     - funcs supporting custom digits for conversions
      - Support for direct number conversions
-     - Support for binary variants of conversions (List<Byte> and List<Int16> (for more convinient operationwith Utf16 LittleEndian)
      - extending output to a minimal length
      - low base conversions (for bases less or equal to 10)
 - Conversions, for:
-     - Conversions of Lists of different sized integers (supports BigEndian, LittleEndian)
-     - Bytes lists to Int16/UInt16 conversions (supports BigEndian, LittleEndian, fast unsafe version, and last element filling to 0
+     - **Conversions of Lists of different sized integers (supports BigEndian, LittleEndian)**
+     - Bytes lists to Int16/UInt16 conversions (supports BigEndian, LittleEndian, fast unsafe version, and last element filling to 0)
 - Utils, for:
+     - **Reverse methods for string, Lists, arrays, and some other collection (To replace the standart C# Linq implemetation)**
      - Getting Intervals for strings, arrays and list (startId, endId)
-     - Reverse methods for string, Lists, arrays, and some other collection (To replace the standart C# Linq implemetation)
 - ToBinary, for:
-     - Converting 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)
+     - **Converting Lists of 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
+     - **Converting 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
      - Converting text (strings) to binary (bytes), supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
-     - Converting Lists of 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)
 - FromBinary, for:
-     - Converting Byte arrays to any integer type, supports: BigEndian, LittleEndian
-     - Converting Byte arrays into List<Int16>, supports BigEndian, LittleEndian
+     - **Converting Byte arrays to any integer type, supports: BigEndian, LittleEndian**
+     - **Converting Byte arrays into List<Int16>, supports BigEndian, LittleEndian**
 
 
 # Most stable versions
+- **> [AVcontrol v2.2.1_____(31 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.1)**
 - **> [AVcontrol v2.1.1_____(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
-- [AVcontrol v1.9.2________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
+-  [AVcontrol v1.9.2________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
 - **> [AVcontrol v1.8.2_____(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
 - **> [AVcontrol v1.7_______(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
-- [AVcontrol v1.4.1________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
+-  [AVcontrol v1.4.1________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
 
 
 
 # Changes
 
+## v2.2.1 Changes
+- **Added support for custom autoReseeding, and failsafe to the setter**
+- Fix bugs
+
+
+
+## v2.2 Changes
+### Added 2 classes for rng:
+* **SecureRandom: alternative to C# Security.Cryptography RandomNumberGenerator**
+  - **more secure: cant be compromised, since it does not rely on external dependencies**
+  - **has 2 generation types: standart and ultra secure (second refreshes seed before every generation)**
+  - supports notcustom autoReseed
+* FastRandom: alternative to C# Random()
+  - a bit slower (about 50% on benchmarks)
+  - more secure: cant be compromised, since it does not rely on external dependencies
+
+
+          
 ## v2.1.1 Changes
 ### Fixed Numsys. bugs:
-- custom digit filling in .FromCustom() methods
+- custom digit filling in .FromCustom() methods  
 (incorrect filling: customDigits[0] instead of "0" or gDigits[0])
 - fixed incorrect Converts. in LowBase overloads
-- removed LowBase overloads with custom digits since they are impossible to make
+- removed LowBase overloads with custom digits since they are impossible to make  
 (and honestly, they are pointless since you can just do Convert.ToInt32( ?CustomAsString( .. ))
 
 ### Optimised Split. code amount by using the C# T operator
