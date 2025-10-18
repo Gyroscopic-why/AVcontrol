@@ -1,10 +1,10 @@
 # AVcontrol - C# library for additional operations on variables
 
-# All functionality (v2.2.1):
+# All functionality (v2.2.2):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
      - **Funcs for generating: Int32, Int64, double**
-     - **Supports reseeding, autoReseeding, and SecureNext for reseeding before generating**
+     - **Supports reseeding, autoReseeding, and SecureNext() for reseeding before generating**
      - **Accepts minValue and maxValue for generating limits**
      - Is based on ChaCha20 algorithm
      - slower than C# implementation
@@ -38,16 +38,22 @@
 
 
 # Most stable versions
-- **> [AVcontrol v2.2.1_____(31 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.1)**
-- **> [AVcontrol v2.1.1_____(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
--  [AVcontrol v1.9.2________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
-- **> [AVcontrol v1.8.2_____(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
-- **> [AVcontrol v1.7_______(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
--  [AVcontrol v1.4.1________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
+- **>  [AVcontrol v2.2.2_____(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2)**
+-   [AVcontrol v2.2.1________(31 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.1)
+- **> [AVcontrol v2.1.1______(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
+-   [AVcontrol v1.9.2________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
+- **>  [AVcontrol v1.8.2_____(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
+- **>  [AVcontrol v1.7_______(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
+-   [AVcontrol v1.4.1________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
 
 
 
 # Changes
+
+## v2.2.2 Changes
+- **Added support for O(√n) IsPrimary() check to Utils.cs**
+
+
 
 ## v2.2.1 Changes
 - **Added support for custom autoReseeding, and failsafe to the setter**
