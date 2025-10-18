@@ -100,5 +100,17 @@ namespace AVcontrol
                 return Utils.Reverse(list);
             }
         }
+
+
+        static public bool IsPrime(Int32 number)
+        {
+            if (number <= 1) return false;
+            if (number == 2) return true;
+            if (number % 2 == 0) return false;
+
+            Int32 boundary = (Int32)Math.Floor(Math.Sqrt(number));
+            for (Int32 i = 3; i <= boundary; i += 2) if (number % i == 0) return false;
+            return true;
+        }
     }
 }
