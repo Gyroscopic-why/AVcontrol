@@ -1,6 +1,6 @@
 # AVcontrol - C# library for additional operations on variables
 
-# All functionality (v2.2.2):
+# All functionality (v2.3):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
      - **Funcs for generating: Int32, Int64, double**
@@ -28,6 +28,7 @@
 - Utils, for:
      - **Reverse methods for string, Lists, arrays, and some other collection (To replace the standart C# Linq implemetation)**
      - Getting Intervals for strings, arrays and list (startId, endId)
+     - XOR operations on Arrays, Lists & <T> integers
 - ToBinary, for:
      - **Converting Lists of 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
      - **Converting 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
@@ -35,20 +36,28 @@
 - FromBinary, for:
      - **Converting Byte arrays to any integer type, supports: BigEndian, LittleEndian**
      - **Converting Byte arrays into List<Int16>, supports BigEndian, LittleEndian**
+     - Converting text from binary (bytes) to strings, supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
 
 
 # Most stable versions
-- **>  [AVcontrol v2.2.2_____(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2)**
--   [AVcontrol v2.2.1________(31 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.1)
-- **> [AVcontrol v2.1.1______(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
--   [AVcontrol v1.9.2________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
-- **>  [AVcontrol v1.8.2_____(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
-- **>  [AVcontrol v1.7_______(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
--   [AVcontrol v1.4.1________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
+- Core: [AVcontrol v2.3__________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.3)
+- **>  [AVcontrol v2.2.2___________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2)**
+-   [AVcontrol v2.2.1______________(31 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.1)
+- **> [AVcontrol v2.1.1____________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
+-   [AVcontrol v1.9.2______________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
+- **>  [AVcontrol v1.8.2___________(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
+- **>  [AVcontrol v1.7_____________(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
+-   [AVcontrol v1.4.1______________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
 
 
 
 # Changes
+
+## v2.3 Changes
+- **Added XOR operations on Arrays, Lists & <T> integers to Utils.cs**
+- Added text FromBinary.cs conversions
+
+
 
 ## v2.2.2 Changes
 - **Added support for O(√n) IsPrimary() check to Utils.cs**
