@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.36105.23
+VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVcontrol", "AVcontrol\AVcontrol.csproj", "{992804A8-2BBD-4110-86A3-EF5F90EA6C94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVcontrol", "AVcontrol\AVcontrol.csproj", "{A7C5DD74-94AB-43A3-AD67-05BB1AE71B73}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +16,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{992804A8-2BBD-4110-86A3-EF5F90EA6C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{992804A8-2BBD-4110-86A3-EF5F90EA6C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{992804A8-2BBD-4110-86A3-EF5F90EA6C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{992804A8-2BBD-4110-86A3-EF5F90EA6C94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7C5DD74-94AB-43A3-AD67-05BB1AE71B73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7C5DD74-94AB-43A3-AD67-05BB1AE71B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7C5DD74-94AB-43A3-AD67-05BB1AE71B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7C5DD74-94AB-43A3-AD67-05BB1AE71B73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {81ACA245-AD05-4E94-A249-6CA014B94072}
+		SolutionGuid = {4ACB1657-DF5C-42F4-85A5-BCB0A50B9BEB}
 	EndGlobalSection
 EndGlobal

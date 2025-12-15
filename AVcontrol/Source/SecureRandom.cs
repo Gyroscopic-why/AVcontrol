@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
+using System.Diagnostics;
+
 
 
 namespace AVcontrol
@@ -121,11 +122,11 @@ namespace AVcontrol
 
             Array.Clear(workingState, 0, workingState.Length);
         }
-        private void AddExtraEntropy(Byte[] seed)
+        private static void AddExtraEntropy(Byte[] seed)
         {
             //  Hardware entropy
             Int64 extraEntropy = Stopwatch.GetTimestamp() ^ Environment.TickCount;
-            extraEntropy ^= GC.GetTotalMemory(false) ^ Process.GetCurrentProcess().Id;
+            extraEntropy ^= GC.GetTotalMemory(false) ^ Environment.ProcessId;
 
             Byte[] extraBytes = BitConverter.GetBytes(extraEntropy);
             for (var i = 0; i < extraBytes.Length && i < seed.Length; i++) seed[i] ^= extraBytes[i];
@@ -145,21 +146,21 @@ namespace AVcontrol
 
 
 
-        public Int32 SecureNext()
+        public Int32  SecureNext()
         {
             Reseed();
             Int32 result = NextInternal();
             Reseed();
             return result;
         }
-        public Int32 SecureNext(Int32 maxValue)
+        public Int32  SecureNext(Int32 maxValue)
         {
             Reseed();
             Int32 result = NextInternal(maxValue);
             Reseed();
             return result;
         }
-        public Int32 SecureNext(Int32 minValue, Int32 maxValue)
+        public Int32  SecureNext(Int32 minValue, Int32 maxValue)
         {
             Reseed();
             Int32 result = NextInternal(minValue, maxValue);
@@ -190,9 +191,9 @@ namespace AVcontrol
 
 
 
-        public Int32 Next() => NextInternal();
-        public Int32 Next(Int32 maxValue) => NextInternal(maxValue);
-        public Int32 Next(Int32 minValue, Int32 maxValue) => NextInternal(minValue, maxValue);
+        public Int32  Next() => NextInternal();
+        public Int32  Next(Int32 maxValue) => NextInternal(maxValue);
+        public Int32  Next(Int32 minValue, Int32 maxValue) => NextInternal(minValue, maxValue);
 
         public UInt64 NextULong()  => NextULongInternal();
         public double NextDouble() => NextDoubleInternal();
@@ -202,13 +203,13 @@ namespace AVcontrol
 
         private Int32 NextInternal(Int32 maxValue)
         {
-            if (maxValue <= 0) throw new ArgumentOutOfRangeException(nameof(maxValue));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxValue);
 
             return (Int32)(NextULongInternal() % (UInt32)maxValue);
         }
         private Int32 NextInternal(Int32 minValue, Int32 maxValue)
         {
-            if (minValue > maxValue) throw new ArgumentOutOfRangeException(nameof(minValue));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(minValue, maxValue);
 
             Int64 range = (Int64)maxValue - minValue;
             if (range <= 0) return minValue;
@@ -226,8 +227,8 @@ namespace AVcontrol
         }
         private void   NextBytesInternal(Byte[] buffer)
         {
-            if (_disposed)      throw new ObjectDisposedException(nameof(SecureRandom));
-            if (buffer == null) throw new ArgumentNullException  (nameof(buffer));
+            ObjectDisposedException.ThrowIf(_disposed, nameof(SecureRandom));
+            ArgumentNullException.ThrowIfNull(buffer);
 
             for (var i = 0; i < buffer.Length; i++)
             {
@@ -256,15 +257,15 @@ namespace AVcontrol
             UInt64[] entropy = new UInt64[8];
 
             Int64 ticks1 = DateTime.UtcNow.Ticks;
-            Thread.Sleep(0);
+            Thread.Sleep(1);
             Int64 ticks2 = DateTime.UtcNow.Ticks;
 
             Int64 memory1 = GC.GetTotalMemory(!forceFullCollection);
-            Thread.Sleep(0);
+            Thread.Sleep(1);
             Int64 memory2 = GC.GetTotalMemory(forceFullCollection);
 
-            Int32 processId = Process.GetCurrentProcess().Id;
-            Int32 threadId = Thread.CurrentThread.ManagedThreadId;
+            Int32 processId = Environment.ProcessId;
+            Int32 threadId = Environment.CurrentManagedThreadId;
 
             Int64 timestamp = Stopwatch.GetTimestamp();
             Int32 tickCount = Environment.TickCount;
@@ -354,6 +355,7 @@ namespace AVcontrol
 
                 _disposed = true;
             }
+            GC.SuppressFinalize(this);
         }
 
 

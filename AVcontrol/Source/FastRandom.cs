@@ -17,25 +17,25 @@ namespace AVcontrol
 
 
 
-        public Int32 Next() => (Int32)(NextULong() & 0x7FFFFFFF);
-        public Int32 Next(Int32 maxValue)
+        public Int32  Next() => (Int32)(NextULong() & 0x7FFFFFFF);
+        public Int32  Next(Int32 maxValue)
         {
-            if (maxValue <= 0) throw new ArgumentOutOfRangeException(nameof(maxValue));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxValue);
 
             return (Int32)(NextULong() % (uint)maxValue);
         }
-        public Int32 Next(Int32 minValue, Int32 maxValue)
+        public Int32  Next(Int32 minValue, Int32 maxValue)
         {
-            if (minValue > maxValue) throw new ArgumentOutOfRangeException(nameof(minValue));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(minValue, maxValue);
 
             Int64 range = (Int64)maxValue - minValue;
             if (range <= 0) return minValue;
 
             return (Int32)(NextULong() % (UInt64)range) + minValue;
         }
-        public void NextBytes(byte[] buffer)
+        public void   NextBytes(byte[] buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            ArgumentNullException.ThrowIfNull(buffer);
 
             for (var i = 0; i < buffer.Length;)
             {
@@ -69,15 +69,13 @@ namespace AVcontrol
 
 
 
-        private class SplitMix64
+        private class SplitMix64(UInt64 seed)
         {
-            private UInt64 _x;
-
-            public SplitMix64(UInt64 seed) => _x = seed;
+            private UInt64 _seed = seed;
 
             public UInt64 Next()
             {
-                UInt64 z = (_x += 0x9E3779B97F4A7C15);
+                UInt64 z = (_seed += 0x9E3779B97F4A7C15);
                 z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9;
                 z = (z ^ (z >> 27)) * 0x94D049BB133111EB;
                 return z ^ (z >> 31);

@@ -14,10 +14,10 @@ namespace AVcontrol
     {
         static void Main()
         {
-            Stopwatch timer = new Stopwatch();
-            Random standart = new Random();
-            FastRandom fast = new FastRandom();
-            SecureRandom test = new SecureRandom();
+            Stopwatch   timer = new();
+            Random   standart = new();
+            FastRandom   fast = new();
+            SecureRandom test = new();
 
 
 
@@ -25,7 +25,7 @@ namespace AVcontrol
 
             for (var hide = 0; hide < 1; hide++)
             { 
-                List<Int64> ms1 = new List<Int64>(), ms2 = new List<Int64>();
+                List<Int64> ms1 = [], ms2 = [];
                 const Int64 totalAttempts = 100, iterationsPerAttempt = 100_000_000;
                 Write($"\n\n\n\t\t[i]  - Starting benchmark of {totalAttempts * iterationsPerAttempt / 1_000_000_000}b rng Int32");
 
@@ -92,7 +92,7 @@ namespace AVcontrol
 
             for (var hide = 0; hide < 1; hide++)
             {
-                List<Int64> ms1 = new List<Int64>(), ms2 = new List<Int64>();
+                List<Int64> ms1 = [], ms2 = [];
                 const Int32 totalAttempts = 100, iterationsPerAttempt = 100_000;
                 Write($"\n\n\n\t\t[i]  - Starting benchmark of {totalAttempts * iterationsPerAttempt / 1_000_000}m rng Int32");
 

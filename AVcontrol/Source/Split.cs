@@ -12,7 +12,7 @@ namespace AVcontrol
             if (numbase < 2 || numbase > 36)
                 throw new ArgumentOutOfRangeException
                 (
-                    "numbase",
+                    nameof(numbase),
                     "the number base must be between 2 and 36."
                 );
         }
@@ -24,7 +24,7 @@ namespace AVcontrol
             Int64 value = Convert.ToInt64(initial);
 
             BaseArgumentCheck(numbase);
-            if (value < numbase) return new List<Byte> { (Byte)value };
+            if (value < numbase) return [(Byte)value];
 
             Int32 digitCount = (Int32)(Math.Log(value, numbase) + 1);
             var result = new List<Byte>(digitCount);
@@ -39,7 +39,7 @@ namespace AVcontrol
             Int64 value = Convert.ToInt64(initial);
 
             BaseArgumentCheck(numbase);
-            if (value < numbase) return new List<Int16> { (Int16)value };
+            if (value < numbase) return [(Int16)value];
             
             Int32 digitCount = (Int32)(Math.Log(value, numbase) + 1);
             var result = new List<Int16>(digitCount);
@@ -54,7 +54,7 @@ namespace AVcontrol
             Int64 value = Convert.ToInt64(initial);
 
             BaseArgumentCheck(numbase);
-            if (value < numbase) return new List<Int32> { (Int32)value };
+            if (value < numbase) return [(Int32)value];
 
             Int32 digitCount = (Int32)(Math.Log(value, numbase) + 1);
             var result = new List<Int32>(digitCount);
@@ -69,7 +69,7 @@ namespace AVcontrol
             Int64 value = Convert.ToInt64(initial);
 
             BaseArgumentCheck(numbase);
-            if (value < numbase) return new List<Int64> { value };
+            if (value < numbase) return [value];
 
             Int32 digitCount = (Int32)(Math.Log(value, numbase) + 1);
             var result = new List<Int64>(digitCount);
@@ -82,7 +82,7 @@ namespace AVcontrol
 
 
 
-        static public List<Byte> BigEndianByteList<T>(T initial, Int32 numbase)
+        static public List<Byte>  BigEndianByteList<T>(T initial, Int32 numbase)
             => Utils.Reverse(LittleEndianByteList(initial, numbase));
         static public List<Int16> BigEndianInt16List<T>(T initial, Int32 numbase)
             => Utils.Reverse(LittleEndianInt16List(initial, numbase));

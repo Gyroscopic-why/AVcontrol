@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -8,6 +9,23 @@ namespace AVcontrol
 {
     public class FromBinary
     {
+        static public string ASCII(Byte[] ASCII)     => Encoding.ASCII.GetString(ASCII);
+        static public string ASCII(List<Byte> ASCII) => Encoding.ASCII.GetString(ASCII.ToArray());
+
+        static public string Utf8(Byte[] utf8bytes)     => Encoding.UTF8.GetString(utf8bytes);
+        static public string Utf8(List<Byte> utf8bytes) => Encoding.UTF8.GetString(utf8bytes.ToArray());
+
+        static public string Utf16(Byte[] utf16byte)     => Encoding.Unicode.GetString(utf16byte);
+        static public string Utf16(List<Byte> utf16byte) => Encoding.Unicode.GetString(utf16byte.ToArray());
+
+        static public string BigEndianUtf16(Byte[] utf16byte)     => Encoding.BigEndianUnicode.GetString(utf16byte);
+        static public string BigEndianUtf16(List<Byte> utf16byte) => Encoding.BigEndianUnicode.GetString(utf16byte.ToArray());
+
+        static public string Utf32(Byte[] utf32bytes)     => Encoding.UTF32.GetString(utf32bytes);
+        static public string Utf32(List<Byte> utf32bytes) => Encoding.UTF32.GetString(utf32bytes.ToArray());
+
+
+
         public static T BigEndian<T>(Byte[] bytes) where T : unmanaged
         {
             Byte[] reversed = new Byte[bytes.Length];
@@ -36,7 +54,6 @@ namespace AVcontrol
 
         static public List<Int16> BigEndianBytesToInt16(List<Byte> bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
             if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
 
             var result = new List<Int16>(bytes.Count / 2);
@@ -51,8 +68,6 @@ namespace AVcontrol
         }
         static public List<Int16> AutoBEBytesToInt16(List<Byte> bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
             var result = new List<Int16>((bytes.Count + 1) / 2);
 
             for (var curId = 0; curId < bytes.Count; curId += 2)
@@ -67,7 +82,6 @@ namespace AVcontrol
 
         static public List<Int16> LEBytesToInt16(List<Byte> bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
             if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
 
             var result = new List<Int16>(bytes.Count / 2);
@@ -82,8 +96,6 @@ namespace AVcontrol
         }
         static public List<Int16> AutoLEBytesToInt16(List<Byte> bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
             var result = new List<Int16>((bytes.Count + 1) / 2);
 
             for (var curId = 0; curId < bytes.Count; curId += 2)
@@ -100,7 +112,6 @@ namespace AVcontrol
 
         static public List<UInt16> BEBytesToUInt16(List<Byte> bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
             if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
 
             var result = new List<UInt16>(bytes.Count / 2);
@@ -115,8 +126,6 @@ namespace AVcontrol
         }
         static public List<UInt16> AutoBEBytesToUInt16(List<Byte> bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
             var result = new List<UInt16>((bytes.Count + 1) / 2);
 
             for (var curId = 0; curId < bytes.Count; curId += 2)
@@ -131,7 +140,6 @@ namespace AVcontrol
 
         static public List<UInt16> LEBytesToUInt16(List<Byte> bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
             if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
 
             var result = new List<UInt16>(bytes.Count / 2);
@@ -146,8 +154,6 @@ namespace AVcontrol
         }
         static public List<UInt16> AutoLEBytesToUInt16(List<Byte> bytes)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
             var result = new List<UInt16>((bytes.Count + 1) / 2);
 
             for (var curId = 0; curId < bytes.Count; curId += 2)

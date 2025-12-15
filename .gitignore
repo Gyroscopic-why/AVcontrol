@@ -302,3 +302,4 @@ __pycache__/
 *.vsidx
 *.xml
 */obj
+.editorconfig
