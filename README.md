@@ -1,6 +1,6 @@
 # AVcontrol - C# library for additional operations on variables
 
-# All functionality (v2.3):
+# All functionality (v2.3.10):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
      - **Funcs for generating: Int32, Int64, double**
@@ -40,18 +40,24 @@
 
 
 # Most stable versions
-- Core: [AVcontrol v2.3__________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.3)
-- **>  [AVcontrol v2.2.2___________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2)**
--   [AVcontrol v2.2.1______________(31 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.1)
-- **> [AVcontrol v2.1.1____________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
--   [AVcontrol v1.9.2______________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
-- **>  [AVcontrol v1.8.2___________(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
-- **>  [AVcontrol v1.7_____________(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
--   [AVcontrol v1.4.1______________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
+- Core 10: [AVcontrol v2.3.10_______(38 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.3.10)
+- **>  [AVcontrol v2.2.2_______________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2)**
+-   [AVcontrol v2.2.1__________________(31 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.1)
+- **> [AVcontrol v2.1.1________________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
+-   [AVcontrol v1.9.2__________________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
+- **>  [AVcontrol v1.8.2_______________(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
+- **>  [AVcontrol v1.7_________________(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
+-   [AVcontrol v1.4.1__________________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
 
 
 
 # Changes
+
+## v2.3.10 Changes
+- Switch from .NET Core 8.0 to .NET Core 10.0 (for increased supprot and performance)
+- Added NuGet package release (nupkg release)
+
+
 
 ## v2.3 Changes
 - **Added XOR operations on Arrays, Lists & <T> integers to Utils.cs**
