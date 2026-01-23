@@ -1,16 +1,16 @@
 # AVcontrol - C# library for additional operations on variables
 
-# All functionality (v2.3.10):
+# All functionality (v2.4):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
-     - **Funcs for generating: Int32, Int64, double**
+     - **Funcs for generating: Byte, Byte[], Int32, Int64, double**
      - **Supports reseeding, autoReseeding, and SecureNext() for reseeding before generating**
      - **Accepts minValue and maxValue for generating limits**
      - Is based on ChaCha20 algorithm
      - slower than C# implementation
 - FastRandom (alternative to C# standart Random class)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
-     - **Funcs for generating: Int32, Int64, double**
+     - **Funcs for generating: Byte, Byte[], Int32, Int64, double**
      - **Accepts minValue and maxValue for generating limits**
      - Uses Xoshiro256++ algorithm
      - a bit slower than C# Random
@@ -40,10 +40,9 @@
 
 
 # Most stable versions
-- Core 10: [AVcontrol v2.3.10_______(38 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.3.10)
+- **>  [AVcontrol v2.4_________________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2) (Core 10)**
 - **>  [AVcontrol v2.2.2_______________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2)**
--   [AVcontrol v2.2.1__________________(31 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.1)
-- **> [AVcontrol v2.1.1________________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)**
+-   [AVcontrol v2.1.1__________________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)
 -   [AVcontrol v1.9.2__________________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
 - **>  [AVcontrol v1.8.2_______________(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
 - **>  [AVcontrol v1.7_________________(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
@@ -52,6 +51,15 @@
 
 
 # Changes
+
+## v2.4 Changes
+- **Small features to SecureRandom class:**
+   + NextByte(minValue, maxValue)   (also added to FastRandom)
+   + SecureNextByte(minValue, maxValue)
+   (supports minValue & maxValue presetting for a precise interval)
+- **Fixed incorrect FromBinary.BigEndian behaviour**
+
+
 
 ## v2.3.10 Changes
 - Switch from .NET Core 8.0 to .NET Core 10.0 (for increased supprot and performance)
