@@ -33,6 +33,7 @@ namespace AVcontrol
 
             return (Int32)(NextULong() % (UInt64)range) + minValue;
         }
+        public Byte   NextByte() => (Byte)(NextULong() & 0xFF);
         public void   NextBytes(byte[] buffer)
         {
             ArgumentNullException.ThrowIfNull(buffer);

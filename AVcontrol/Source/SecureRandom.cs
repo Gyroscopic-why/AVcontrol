@@ -182,11 +182,19 @@ namespace AVcontrol
             Reseed();
             return result;
         }
-        public void   SecureNextBytes(Byte[] buffer)
+        public Byte   SecureNextByte(Byte inclusiveMinValue = 0, Byte inclusiveMaxValue = 255)
         {
             Reseed();
-            NextBytesInternal(buffer);
+            Byte result = NextBytesInternal(new Byte[1], inclusiveMinValue, inclusiveMaxValue)[0];
             Reseed();
+            return result;
+        }
+        public Byte[] SecureNextBytes(Int32 length)
+        {
+            Reseed();
+            Byte[] result = NextBytesInternal(new Byte[length], 0, 255);
+            Reseed();
+            return result;
         }
 
 
@@ -197,7 +205,9 @@ namespace AVcontrol
 
         public UInt64 NextULong()  => NextULongInternal();
         public double NextDouble() => NextDoubleInternal();
-        public void   NextBytes(Byte[] buffer) => NextBytesInternal(buffer);
+        public Byte   NextByte(Byte minValue = 0, Byte maxValue = 255)
+            => NextBytesInternal(new Byte[1], minValue, maxValue)[0];
+        public Byte[] NextBytes(Int32 length) => NextBytesInternal(new Byte[length], 0, 255);
 
 
 
@@ -222,10 +232,10 @@ namespace AVcontrol
         {
             Byte[] bytes = new Byte[8];
 
-            NextBytesInternal(bytes);
+            NextBytesInternal(bytes, 0, 255);
             return BitConverter.ToUInt64(bytes, 0);
         }
-        private void   NextBytesInternal(Byte[] buffer)
+        private Byte[] NextBytesInternal(Byte[] buffer, Byte inclusiveMinValue, Byte inclusiveMaxValue)
         {
             ObjectDisposedException.ThrowIf(_disposed, nameof(SecureRandom));
             ArgumentNullException.ThrowIfNull(buffer);
@@ -234,8 +244,25 @@ namespace AVcontrol
             {
                 if (_bufferPos >= 64) GenerateBlock();
 
-                buffer[i] = _buffer[_bufferPos++];
+                buffer[i] = CoerceByte(_buffer[_bufferPos++], inclusiveMinValue, inclusiveMaxValue);
             }
+            return buffer;
+        }
+        private Byte   CoerceByte(Byte value, Byte inclusiveMinValue, Byte inclusiveMaxValue)
+        {
+            if (inclusiveMinValue > inclusiveMaxValue)
+                throw new ArgumentOutOfRangeException(
+                    nameof(inclusiveMinValue), nameof(inclusiveMaxValue),
+                    "minValue must be less or equal than maxValue");
+
+            if (inclusiveMaxValue - inclusiveMinValue + 1 > 256 ||
+                inclusiveMaxValue - inclusiveMinValue + 1 < 1)
+                throw new ArgumentOutOfRangeException(
+                    nameof(inclusiveMinValue), nameof(inclusiveMaxValue),
+                    "The range between minValue and maxValue must be between 1 and 255");
+
+            if (inclusiveMaxValue == 0) return 0;
+            return (Byte)(value % (inclusiveMaxValue - inclusiveMinValue + 1) + inclusiveMinValue);
         }
         private double NextDoubleInternal() => (NextULongInternal() >> 11) * (1.0 / (1UL << 53));
 

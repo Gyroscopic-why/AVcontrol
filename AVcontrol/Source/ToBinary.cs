@@ -73,10 +73,7 @@ namespace AVcontrol
 
 
         public static Byte[] BigEndian<T>(T value) where T : unmanaged
-        {
-            Byte[] bytes = LittleEndian(value);
-            return Utils.Reverse(bytes);
-        }
+            => Utils.Reverse(LittleEndian(value));
         public static Byte[] BigEndian<T>(T[] values) where T : unmanaged
         {
             Int32 elementSize = Marshal.SizeOf<T>();
