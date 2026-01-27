@@ -41,11 +41,15 @@ namespace AVcontrol
 
         static private void TypeArgumentCheck<T>()
         {
-            if (typeof(T) != typeof(Byte) &&
-                typeof(T) != typeof(Int16) &&
-                typeof(T) != typeof(Int32) &&
-                typeof(T) != typeof(Int64))
-                throw new InvalidOperationException("Type T must be Byte, Int16, Int32, or Int64");
+            if (typeof(T) != typeof( Byte)  &&
+                typeof(T) != typeof(SByte)  &&
+                typeof(T) != typeof( Int16) &&
+                typeof(T) != typeof(UInt16) &&
+                typeof(T) != typeof( Int32) &&
+                typeof(T) != typeof(UInt32) &&
+                typeof(T) != typeof( Int64) &&
+                typeof(T) != typeof(UInt64))
+                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
         }
 
 
@@ -109,7 +113,7 @@ namespace AVcontrol
 
             while (current > 0)
             {
-                result.Add((T)(object)(current % newBase));
+                result.Add((T)Convert.ChangeType(current % newBase, typeof(T)));
                 current /= newBase;
             }
 
@@ -133,7 +137,7 @@ namespace AVcontrol
             TypeArgumentCheck<T>();
 
             List<T> result = [];
-            Int64 current = decimalValue;
+            Int64  current = decimalValue;
 
             while (current > 0)
             {

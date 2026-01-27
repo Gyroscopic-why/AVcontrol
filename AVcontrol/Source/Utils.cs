@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Globalization;
 using System.Collections.Generic;
 
 
@@ -8,6 +9,30 @@ namespace AVcontrol
 {
     static public class Utils
     {
+        static public T Reverse<T>(T initial) where T : struct, IConvertible
+        {
+            if (typeof(T).IsPrimitive && typeof(T) != typeof(bool) && typeof(T) != typeof(char))
+            {
+                Int64 value = Convert.ToInt64(initial, CultureInfo.InvariantCulture);
+                bool  isNegative = value < 0;
+
+                Int64 absValue = Math.Abs(value);
+
+                long reversed = 0;
+                while (absValue > 0)
+                {
+                    reversed  = reversed * 10 + absValue % 10;
+                    absValue /= 10;
+                }
+
+                reversed = isNegative ? -reversed : reversed;
+
+                return (T)Convert.ChangeType(reversed, typeof(T));
+            }
+
+            throw new NotSupportedException($"Unsupported type: {typeof(T)}");
+        }
+
         static public string Reverse(this string initial)
         {
             if (string.IsNullOrEmpty(initial)) return initial;
