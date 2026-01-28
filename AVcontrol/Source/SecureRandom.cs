@@ -14,7 +14,7 @@ namespace AVcontrol
         private bool   _disposed = false;
 
         private UInt64 _bytesGenerated = 0;
-        private readonly UInt64 RESEED_INTERVAL = 1024 * 1024;  //  Reseed every 1MB (default)
+        private readonly UInt64 RESEED_INTERVAL_BYTES = 1024 * 1024;  //  Reseed every 1MB (default)
 
         /// <summary>
         /// For rng reseeding interval in bytes generated. Minimum is 128 bytes. 
@@ -24,7 +24,7 @@ namespace AVcontrol
         public SecureRandom(UInt64 reseedAfterBytesGenerated = 1024 * 1024) : this(GenerateTrueHardwareSeed()) 
         {
             if (reseedAfterBytesGenerated < 128) reseedAfterBytesGenerated = 128;
-            RESEED_INTERVAL = reseedAfterBytesGenerated; 
+            RESEED_INTERVAL_BYTES = reseedAfterBytesGenerated; 
         }
         public SecureRandom(Byte[] seed)
         {
@@ -114,7 +114,7 @@ namespace AVcontrol
             _bytesGenerated += 64;
 
             //  Auto reseed
-            if (_bytesGenerated >= RESEED_INTERVAL)
+            if (_bytesGenerated >= RESEED_INTERVAL_BYTES)
             {
                 Reseed();
                 GenerateBlock();
@@ -153,17 +153,17 @@ namespace AVcontrol
             Reseed();
             return result;
         }
-        public Int32  SecureNext(Int32 maxValue)
+        public Int32  SecureNext(Int32 exclusiveMaxValue)
         {
             Reseed();
-            Int32 result = NextInternal(maxValue);
+            Int32 result = NextInternal(exclusiveMaxValue);
             Reseed();
             return result;
         }
-        public Int32  SecureNext(Int32 minValue, Int32 maxValue)
+        public Int32  SecureNext(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
         {
             Reseed();
-            Int32 result = NextInternal(minValue, maxValue);
+            Int32 result = NextInternal(inclusiveMinValue, exclusiveMaxValue);
             Reseed();
             return result;
         }
@@ -201,30 +201,33 @@ namespace AVcontrol
 
         public Int32  Next() => NextInternal();
         public Int32  Next(Int32 maxValue) => NextInternal(maxValue);
-        public Int32  Next(Int32 minValue, Int32 maxValue) => NextInternal(minValue, maxValue);
+        public Int32  Next(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
+            => NextInternal(inclusiveMinValue, exclusiveMaxValue);
 
         public UInt64 NextULong()  => NextULongInternal();
         public double NextDouble() => NextDoubleInternal();
-        public Byte   NextByte(Byte minValue = 0, Byte maxValue = 255)
-            => NextBytesInternal(new Byte[1], minValue, maxValue)[0];
+        public Byte   NextByte(Byte inclusiveMinValue = 0, Byte exclusiveMaxValue = 255)
+            => NextBytesInternal(new Byte[1], inclusiveMinValue, exclusiveMaxValue)[0];
         public Byte[] NextBytes(Int32 length) => NextBytesInternal(new Byte[length], 0, 255);
 
 
 
-        private Int32 NextInternal(Int32 maxValue)
+        private Int32 NextInternal(Int32 exclusiveMaxValue)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxValue);
+            if (exclusiveMaxValue == 0) return 0;
 
-            return (Int32)(NextULongInternal() % (UInt32)maxValue);
+            ArgumentOutOfRangeException.ThrowIfNegative(exclusiveMaxValue);
+
+            return (Int32)(NextULongInternal() % (UInt32)exclusiveMaxValue);
         }
-        private Int32 NextInternal(Int32 minValue, Int32 maxValue)
+        private Int32 NextInternal(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
         {
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(minValue, maxValue);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(inclusiveMinValue, exclusiveMaxValue);
 
-            Int64 range = (Int64)maxValue - minValue;
-            if (range <= 0) return minValue;
+            Int64 range = (Int64)exclusiveMaxValue - inclusiveMinValue;
+            if (range <= 0) return inclusiveMinValue;
 
-            return (Int32)(NextULongInternal() % (UInt64)range) + minValue;
+            return (Int32)(NextULongInternal() % (UInt64)range) + inclusiveMinValue;
         }
         private Int32 NextInternal() => (Int32)(NextULongInternal() & 0x7FFFFFFF);
 

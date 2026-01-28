@@ -18,22 +18,37 @@ namespace AVcontrol
 
 
         public Int32  Next() => (Int32)(NextULong() & 0x7FFFFFFF);
-        public Int32  Next(Int32 maxValue)
+        public Int32  Next(Int32 exclusiveMaxValue)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxValue);
+            if (exclusiveMaxValue == 0) return 0;
+            
+            ArgumentOutOfRangeException.ThrowIfNegative(exclusiveMaxValue);
 
-            return (Int32)(NextULong() % (uint)maxValue);
+            return (Int32)(NextULong() % (uint)exclusiveMaxValue);
         }
-        public Int32  Next(Int32 minValue, Int32 maxValue)
+        public Int32  Next(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
         {
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(minValue, maxValue);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(inclusiveMinValue, exclusiveMaxValue);
 
-            Int64 range = (Int64)maxValue - minValue;
-            if (range <= 0) return minValue;
+            Int64 range = (Int64)exclusiveMaxValue - inclusiveMinValue;
+            if (range <= 0) return inclusiveMinValue;
 
-            return (Int32)(NextULong() % (UInt64)range) + minValue;
+            return (Int32)(NextULong() % (UInt64)range) + inclusiveMinValue;
         }
+
         public Byte   NextByte() => (Byte)(NextULong() & 0xFF);
+        public Byte   NextByte(Byte exclusiveMaxValue)
+            => (Byte)((NextULong() & 0xFF) % exclusiveMaxValue);
+        public Byte   NextByte(Byte inclusiveMinValue, Byte exclusiveMaxValue)
+        {
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(inclusiveMinValue, exclusiveMaxValue);
+
+            Int64 range = (Int64)exclusiveMaxValue - inclusiveMinValue;
+            if (range <= 0) return inclusiveMinValue;
+
+            return (Byte)((NextULong() % (UInt64)range) + inclusiveMinValue);
+        }
+
         public void   NextBytes(byte[] buffer)
         {
             ArgumentNullException.ThrowIfNull(buffer);
