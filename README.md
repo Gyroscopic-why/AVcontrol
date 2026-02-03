@@ -2,7 +2,7 @@
 
 &nbsp;  
 
-# All functionality (v2.5):
+# All functionality (v2.5.1):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
      - **(Wildcard) Funcs for generating: (S)Byte, (U)Int16, (U)Int32, (U)Int64**
@@ -27,11 +27,14 @@
      - extending output to a minimal length
      - low base conversions (for bases less or equal to 10)
 - Utils, for:
-     - **Reverse methods for string, integer-types, Lists, arrays, and some other collection**
-     (Replacement of the inconsistent standart C# Linq implemetation)
+     - **Reverse methods for string, integer-types, Lists, arrays, and some other collection**  
+       (Replacement of the inconsistent standart C# Linq implemetation)
      - **Flag for checking if the number is prime**
+     - Conversions of List elements integer-types, supports:
+       Wildcard input type, wildcard output type (type selected from (S)Byte, (U)Int16, (U)Int32, (U)Int64)
      - Getting Intervals for strings, arrays and list (startId, endId)
-     - XOR operations on Arrays, Lists & <T> integers
+     - XOR operations on Arrays, Lists & \<T\> integers
+     - Conversions of List elements integer-types
 - ToBinary, for:
      - **Converting Lists of 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
      - **Converting 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
@@ -40,23 +43,19 @@
      - **Converting Byte arrays to any integer type, supports: BigEndian, LittleEndian**
      - **Converting Byte arrays into List<Int16>, supports BigEndian, LittleEndian**
      - Converting text from binary (bytes) to strings, supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
-- Conversions, for:
-     - **Conversions of Lists of different sized integers**
-     - Input: wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64   )
-     - Output: (S)Byte, (U)Int16, (U)Int32, (U)Int64
-     - Supports BigEndian, LittleEndian
  - Split (& Combine), for:
      - **Splitting integers into lists of smaller chunks
        (and combining them back together)**
-     - Input: wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64   )
-     - Output: (S)Byte, (U)Int16, (U)Int32, (U)Int64
+     - Input:    wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64  )
+     - Output: wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64  )
 
 
 &nbsp;  
 
 
 # Most stable versions
-- **>  [AVcontrol v2.5_________________(42 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5) (Windows/Linux/MacOS - Core 10)**
+- **>  [AVcontrol v2.5.1_______________(33 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5.1) (Windows/Linux/MacOS - Core 10)**
+-   [AVcontrol v2.5____________________(42 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5) (Windows/Linux/MacOS - Core 10)
 -   [AVcontrol v2.4____________________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.4) (Windows/Linux/MacOS - Core 10)
 - **>  [AVcontrol v2.2.2_______________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2) (Windows only)**
 -   [AVcontrol v2.1.1__________________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1) (Windows only)
@@ -70,6 +69,12 @@
 
 
 # Changes
+
+## v2.5.1 Changes:
++ Massive optimisation using dynamic types
++ Merged Conversions. functionality into -> Utils.
+
+
 
 ## v2.5 Changes:
 - Fully revamped Numsys with:
