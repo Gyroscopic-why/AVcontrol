@@ -1,32 +1,35 @@
-# AVcontrol - C# library for additional operations on variables
+# AVcontrol - C# library for common variable operations
 
-# All functionality (v2.4):
+&nbsp;  
+
+# All functionality (v2.5):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
-     - **Funcs for generating: Byte, Byte[], Int32, Int64, double**
-     - **Supports reseeding, autoReseeding, and SecureNext() for reseeding before generating**
+     - **(Wildcard) Funcs for generating: (S)Byte, (U)Int16, (U)Int32, (U)Int64**
+     - **(Standard) Funcs for generating: UInt64, Int32, Byte[], double**
+     - **Supports reseeding, autoReseeding, and SecureNext for reseeding before generating**
      - **Accepts minValue and maxValue for generating limits**
      - Is based on ChaCha20 algorithm
-     - slower than C# implementation
-- FastRandom (alternative to C# standart Random class)
+     - slower than standard C# implementation
+- FastRandom (alternative to C# standard Random class)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
-     - **Funcs for generating: Byte, Byte[], Int32, Int64, double**
+     - **(Wildcard) Funcs for generating: (S)Byte, (U)Int16, (U)Int32, (U)Int64**
+     - **(Standard) Funcs for generating: UInt64, Byte[], double**
      - **Accepts minValue and maxValue for generating limits**
      - Uses Xoshiro256++ algorithm
-     - a bit slower than C# Random
+     - a bit slower than standard C# Random
 - Numsys (short for numeric systems) - for Conversions of numbers from one numeric system to another, supports:
-     - **Auto<output Type here> (uses Fast versions if possible)**
+     - **Auto\<output Type here\> (uses Fast versions if possible)**
      - **Funcs supporting custom digits for conversions**
-     - **Support for binary variants of conversions (List<Byte> and List<Int16> (for more convinient operationwith Utf16 LittleEndian)**
+     - **Support for binary variants of conversions with wildcard type output, example: List<T (any integer type)>**
      - Fast conversions (only) for bases 2, 8, 10, 16 
      - Support for direct number conversions
      - extending output to a minimal length
      - low base conversions (for bases less or equal to 10)
-- Conversions, for:
-     - **Conversions of Lists of different sized integers (supports BigEndian, LittleEndian)**
-     - Bytes lists to Int16/UInt16 conversions (supports BigEndian, LittleEndian, fast unsafe version, and last element filling to 0)
 - Utils, for:
-     - **Reverse methods for string, Lists, arrays, and some other collection (To replace the standart C# Linq implemetation)**
+     - **Reverse methods for string, integer-types, Lists, arrays, and some other collection**
+     (Replacement of the inconsistent standart C# Linq implemetation)
+     - **Flag for checking if the number is prime**
      - Getting Intervals for strings, arrays and list (startId, endId)
      - XOR operations on Arrays, Lists & <T> integers
 - ToBinary, for:
@@ -37,21 +40,58 @@
      - **Converting Byte arrays to any integer type, supports: BigEndian, LittleEndian**
      - **Converting Byte arrays into List<Int16>, supports BigEndian, LittleEndian**
      - Converting text from binary (bytes) to strings, supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
+- Conversions, for:
+     - **Conversions of Lists of different sized integers**
+     - Input: wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64   )
+     - Output: (S)Byte, (U)Int16, (U)Int32, (U)Int64
+     - Supports BigEndian, LittleEndian
+ - Split (& Combine), for:
+     - **Splitting integers into lists of smaller chunks
+       (and combining them back together)**
+     - Input: wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64   )
+     - Output: (S)Byte, (U)Int16, (U)Int32, (U)Int64
+
+
+&nbsp;  
 
 
 # Most stable versions
-- **>  [AVcontrol v2.4_________________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2) (Core 10)**
-- **>  [AVcontrol v2.2.2_______________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2)**
--   [AVcontrol v2.1.1__________________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1)
--   [AVcontrol v1.9.2__________________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2)
-- **>  [AVcontrol v1.8.2_______________(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2)**
-- **>  [AVcontrol v1.7_________________(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7)**
--   [AVcontrol v1.4.1__________________(18 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.4.1)
+- **>  [AVcontrol v2.5_________________(42 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5) (Windows/Linux/MacOS - Core 10)**
+-   [AVcontrol v2.4____________________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.4) (Windows/Linux/MacOS - Core 10)
+- **>  [AVcontrol v2.2.2_______________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2) (Windows only)**
+-   [AVcontrol v2.1.1__________________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1) (Windows only)
+-   [AVcontrol v1.9.2__________________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2) (Windows only)
+- **>  [AVcontrol v1.8.2_______________(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2) (Windows only)**
+-   [AVcontrol v1.7____________________(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7) (Windows only)
+##### Starting from v2.3.10 and higher, all versions will be cross platform build with the .NET Core 10 framework
 
+
+&nbsp;  
 
 
 # Changes
 
+## v2.5 Changes:
+- Fully revamped Numsys with:
+     + Wildcard type for output
+     + Proper binary encoding & decoding
+     + Fixed AsList being inaccessible in any scenario in .Auto()
+     + Optimised lambda functions
+     + Optimised converters working with custom digits
+- Utils:
+     + Reverse() for wildcard Integer types
+- Random (Fast & Secure):
+     + Wildcard type for output
+     + QoL parameters renaming
+- Split:
+     +Added duplicate variants for unsigned counter-parts
+- Combine:
+     LE integers lists
+     BE integers lists
+     (Wildcard type for input)
+
+
+     
 ## v2.4 Changes
 - **Small features to SecureRandom class:**
    + NextByte(minValue, maxValue)   (also added to FastRandom)
@@ -99,7 +139,7 @@
 ## v2.1.1 Changes
 ### Fixed Numsys. bugs:
 - custom digit filling in .FromCustom() methods  
-(incorrect filling: customDigits[0] instead of "0" or gDigits[0])
+(incorrect filling: customDigits\[0\] instead of "0" or gDigits\[0\])
 - fixed incorrect Converts. in LowBase overloads
 - removed LowBase overloads with custom digits since they are impossible to make  
 (and honestly, they are pointless since you can just do Convert.ToInt32( ?CustomAsString( .. ))
@@ -174,14 +214,68 @@
 - ToCustom (string)
 
 **Also renamed old functions for better understanding:**
-- AsType > FromCustomAsType (Int32[], List)
-- AsString > CustomAsString (string)
+- AsType \> FromCustomAsType (Int32[], List)
+- AsString \> CustomAsString (string)
 
 
 
 ## v1.8 Changes
 - **Entire Numsys. class (still in testing)**
 Includes
-- Auto<T> functions
+- Auto\<T\> functions
 - Filtered Fast variants for bases 2, 4, 8, 10, 16
 - Custom variants for different bases (not 2, 4, 8, 10 or 16)
+
+
+
+---
+
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+
+
+ 
+---
+###### Whoa didn't expect you to scroll this far down, alright here's a bonus:
+---
+
+
+&nbsp;  
+
+
+
+# Most influential updates:
+- **№1 - v2.5:**  
+     + Numsys revamp with a lot of bugfixes, large scale transition to wildcard Type
+- **№2 - v2.2.2:**  
+     + Longest lasting stable version with Fast & Secure Random logic (almost 60 days)
+- **№3 - v1.8.2:**  
+     + Second longest lasting - first stable version with Numsys logic (almost 50 days)
+- **№4 - v2.1.1:**  
+     + Saved the day when the most broken build (2.0) was first released
+- №5 - v1.9.2:
+     + Until 2.1.1 was released, roll down from 2.0 was performed to 1.9.2
+- №6 - v1.7:
+     + In the early stages of development of 1.8s (before 1.8.2 came out) roll backs were often performed to 1.7
+- №7 - 1.4.1:
+     + Most used version by far in the early development phase
