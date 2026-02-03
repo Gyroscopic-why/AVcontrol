@@ -18,7 +18,7 @@ namespace AVcontrol
 
         /// <summary>
         /// For rng reseeding interval in bytes generated. Minimum is 128 bytes. 
-        /// If the minimum wi=ont be tolerated, it will be force set to 128 bytes.
+        /// If the minimum wont be tolerated, it will be force set to 128 bytes.
         /// </summary>
         /// <param name="reseedAfterBytesGenerated"></param> min value = 128 bytes
         public SecureRandom(UInt64 reseedAfterBytesGenerated = 1024 * 1024) : this(GenerateTrueHardwareSeed()) 
@@ -55,6 +55,19 @@ namespace AVcontrol
             result[15] = BitConverter.ToUInt32(seed, 20);
 
             Array.Copy(result, _state, 16);
+        }
+
+        static private void TypeArgumentCheck<T>()
+        {
+            if (typeof(T) != typeof(Byte) &&
+                typeof(T) != typeof(SByte) &&
+                typeof(T) != typeof(Int16) &&
+                typeof(T) != typeof(UInt16) &&
+                typeof(T) != typeof(Int32) &&
+                typeof(T) != typeof(UInt32) &&
+                typeof(T) != typeof(Int64) &&
+                typeof(T) != typeof(UInt64))
+                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
         }
 
 
@@ -150,6 +163,7 @@ namespace AVcontrol
         {
             Reseed();
             Int32 result = NextInternal();
+
             Reseed();
             return result;
         }
@@ -157,6 +171,7 @@ namespace AVcontrol
         {
             Reseed();
             Int32 result = NextInternal(exclusiveMaxValue);
+
             Reseed();
             return result;
         }
@@ -164,9 +179,55 @@ namespace AVcontrol
         {
             Reseed();
             Int32 result = NextInternal(inclusiveMinValue, exclusiveMaxValue);
+
             Reseed();
             return result;
         }
+
+        public T SecureNext<T>()
+        {
+            TypeArgumentCheck<T>();
+
+            Reseed();
+            T result = (T)Convert.ChangeType(NextULongInternal() & 0x7FFFFFFF, typeof(T));
+
+            Reseed();
+            return result;
+        }
+        public T SecureNext<T>(T positiveExclusiveMaxValue)
+        {
+            TypeArgumentCheck<T>();
+
+            UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
+            if (parsedMaxValue == 0) return (T)(object)0;
+
+            ArgumentOutOfRangeException.ThrowIfNegative(parsedMaxValue);
+
+            Reseed();
+            T result = (T)Convert.ChangeType(NextULongInternal() % parsedMaxValue, typeof(T));
+
+            Reseed();
+            return result;
+        }
+        public T SecureNext<T>(T positiveInclusiveMinValue, T positiveExclusiveMaxValue)
+        {
+            TypeArgumentCheck<T>();
+
+            UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
+            UInt64 parsedMinValue = Convert.ToUInt64(positiveInclusiveMinValue);
+
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(parsedMinValue, parsedMaxValue);
+
+            UInt64 range = parsedMaxValue - parsedMinValue;
+            if (range <= 0) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
+
+            Reseed();
+            T result = (T)Convert.ChangeType((NextULongInternal() % range) + parsedMinValue, typeof(T));
+
+            Reseed();
+            return result;
+        }
+
 
         public UInt64 SecureNextULong()
         {
@@ -199,15 +260,45 @@ namespace AVcontrol
 
 
 
-        public Int32  Next() => NextInternal();
-        public Int32  Next(Int32 maxValue) => NextInternal(maxValue);
-        public Int32  Next(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
+        public Int32 Next() => NextInternal();
+        public Int32 Next(Int32 maxValue) => NextInternal(maxValue);
+        public Int32 Next(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
             => NextInternal(inclusiveMinValue, exclusiveMaxValue);
+
+
+        public T Next<T>()
+        {
+            TypeArgumentCheck<T>();
+            return (T)Convert.ChangeType(NextULongInternal() & 0x7FFFFFFF, typeof(T));
+        }
+        public T Next<T>(T positiveExclusiveMaxValue)
+        {
+            TypeArgumentCheck<T>();
+
+            UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
+            if (parsedMaxValue == 0) return (T)(object)0;
+
+            ArgumentOutOfRangeException.ThrowIfNegative(parsedMaxValue);
+
+            return (T)Convert.ChangeType(NextULongInternal() % parsedMaxValue, typeof(T));
+        }
+        public T Next<T>(T positiveInclusiveMinValue, T positiveExclusiveMaxValue)
+        {
+            TypeArgumentCheck<T>();
+
+            UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
+            UInt64 parsedMinValue = Convert.ToUInt64(positiveInclusiveMinValue);
+
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(parsedMinValue, parsedMaxValue);
+
+            UInt64 range = parsedMaxValue - parsedMinValue;
+            if (range <= 0) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
+
+            return (T)Convert.ChangeType((NextULongInternal() % range) + parsedMinValue, typeof(T));
+        }
 
         public UInt64 NextULong()  => NextULongInternal();
         public double NextDouble() => NextDoubleInternal();
-        public Byte   NextByte(Byte inclusiveMinValue = 0, Byte exclusiveMaxValue = 255)
-            => NextBytesInternal(new Byte[1], inclusiveMinValue, exclusiveMaxValue)[0];
         public Byte[] NextBytes(Int32 length) => NextBytesInternal(new Byte[length], 0, 255);
 
 
@@ -251,7 +342,7 @@ namespace AVcontrol
             }
             return buffer;
         }
-        private Byte   CoerceByte(Byte value, Byte inclusiveMinValue, Byte inclusiveMaxValue)
+        private static Byte CoerceByte(Byte value, Byte inclusiveMinValue, Byte inclusiveMaxValue)
         {
             if (inclusiveMinValue > inclusiveMaxValue)
                 throw new ArgumentOutOfRangeException(

@@ -1,6 +1,7 @@
 ﻿using System;
 
 
+
 namespace AVcontrol
 {
     public class FastRandom  // Xoshiro256++
@@ -16,53 +17,69 @@ namespace AVcontrol
         }
 
 
-
-        public Int32  Next() => (Int32)(NextULong() & 0x7FFFFFFF);
-        public Int32  Next(Int32 exclusiveMaxValue)
+        static private void TypeArgumentCheck<T>()
         {
-            if (exclusiveMaxValue == 0) return 0;
-            
-            ArgumentOutOfRangeException.ThrowIfNegative(exclusiveMaxValue);
-
-            return (Int32)(NextULong() % (uint)exclusiveMaxValue);
-        }
-        public Int32  Next(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
-        {
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(inclusiveMinValue, exclusiveMaxValue);
-
-            Int64 range = (Int64)exclusiveMaxValue - inclusiveMinValue;
-            if (range <= 0) return inclusiveMinValue;
-
-            return (Int32)(NextULong() % (UInt64)range) + inclusiveMinValue;
+            if (typeof(T) != typeof(Byte) &&
+                typeof(T) != typeof(SByte) &&
+                typeof(T) != typeof(Int16) &&
+                typeof(T) != typeof(UInt16) &&
+                typeof(T) != typeof(Int32) &&
+                typeof(T) != typeof(UInt32) &&
+                typeof(T) != typeof(Int64) &&
+                typeof(T) != typeof(UInt64))
+                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
         }
 
-        public Byte   NextByte() => (Byte)(NextULong() & 0xFF);
-        public Byte   NextByte(Byte exclusiveMaxValue)
-            => (Byte)((NextULong() & 0xFF) % exclusiveMaxValue);
-        public Byte   NextByte(Byte inclusiveMinValue, Byte exclusiveMaxValue)
+
+
+        public T Next<T>()
         {
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(inclusiveMinValue, exclusiveMaxValue);
+            TypeArgumentCheck<T>();
+            return (T)Convert.ChangeType(NextULong() & 0x7FFFFFFF, typeof(T));
+        }
+        public T Next<T>(T positiveExclusiveMaxValue)
+        {
+            TypeArgumentCheck<T>();
 
-            Int64 range = (Int64)exclusiveMaxValue - inclusiveMinValue;
-            if (range <= 0) return inclusiveMinValue;
+            UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
+            if    (parsedMaxValue == 0) return (T)(object)0;
 
-            return (Byte)((NextULong() % (UInt64)range) + inclusiveMinValue);
+            ArgumentOutOfRangeException.ThrowIfNegative(parsedMaxValue);
+
+            return (T)Convert.ChangeType(NextULong() % parsedMaxValue, typeof(T));
+        }
+        public T Next<T>(T positiveInclusiveMinValue, T positiveExclusiveMaxValue)
+        {
+            TypeArgumentCheck<T>();
+
+            UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
+            UInt64 parsedMinValue = Convert.ToUInt64(positiveInclusiveMinValue);
+
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(parsedMinValue, parsedMaxValue);
+
+            UInt64 range = parsedMaxValue - parsedMinValue;
+            if (range <= 0) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
+
+            return (T)Convert.ChangeType((NextULong() % range) + parsedMinValue, typeof(T));
         }
 
-        public void   NextBytes(byte[] buffer)
+        public Byte[] NextBytes(Int32 length)
         {
-            ArgumentNullException.ThrowIfNull(buffer);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(length);
 
-            for (var i = 0; i < buffer.Length;)
+            Byte[] buffer = new Byte[length];
+
+            for (var i = 0; i < length;)
             {
                 UInt64 random = NextULong();
 
-                for (var j = 0; j < 8 && i < buffer.Length; j++, i++)
+                for (var j = 0; j < 8 && i < length; j++, i++)
                 {
-                    buffer[i] = (byte)(random & 0xFF);
+                    buffer[i] = (Byte)(random & 0xFF);
                     random >>= 8;
                 }
             }
+            return buffer;
         }
         public UInt64 NextULong()
         {
