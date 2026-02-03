@@ -13,7 +13,7 @@ namespace AVcontrol
     internal class Program
     {
         static void Main()
-        {
+        { 
             Stopwatch   timer = new();
             Random   standart = new();
             FastRandom   fast = new();
