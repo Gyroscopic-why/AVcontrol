@@ -9,6 +9,56 @@ namespace AVcontrol
 {
     static public class Utils
     {
+        static internal void TypeArgumentCheck<T>()
+        {
+            Type type = typeof(T);
+            if (type != typeof(Byte)   &&
+                type != typeof(SByte)  &&
+
+                type != typeof(Int16)  &&
+                type != typeof(UInt16) &&
+
+                type != typeof(Int32)  &&
+                type != typeof(UInt32) &&
+
+                type != typeof(Int64)  &&
+                type != typeof(UInt64))
+                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
+        }
+        static internal void TypeArgumentCheck(Type type)
+        {
+            if (type != typeof(Byte) &&
+                type != typeof(SByte) &&
+
+                type != typeof(Int16) &&
+                type != typeof(UInt16) &&
+
+                type != typeof(Int32) &&
+                type != typeof(UInt32) &&
+
+                type != typeof(Int64) &&
+                type != typeof(UInt64))
+                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
+        }
+
+        static internal readonly Dictionary<Type, UInt64> maxValues = new()
+        {
+            { typeof(Byte),      Byte.MaxValue},
+            { typeof(SByte),  (UInt64) SByte.MaxValue},
+
+            { typeof(Int16),  (UInt64) Int16.MaxValue},
+            { typeof(UInt16),  UInt16.MaxValue},
+
+            { typeof(Int32),    Int32.MaxValue},
+            { typeof(UInt32),  UInt32.MaxValue},
+
+            { typeof(Int64),    Int64.MaxValue},
+            { typeof(UInt64),  UInt64.MaxValue}
+        };
+        static internal UInt64 GetMaxValue(Type type)  => maxValues[type];
+        
+
+
         static public T Reverse<T>(T initial) where T : struct, IConvertible
         {
             if (typeof(T).IsPrimitive && typeof(T) != typeof(bool) && typeof(T) != typeof(char))
@@ -87,6 +137,35 @@ namespace AVcontrol
 
 
 
+        static public List<T_out> ConvertType<T_in, T_out>(List<T_in> initial) where T_in : unmanaged
+        {
+            TypeArgumentCheck<T_in>();
+            TypeArgumentCheck<T_out>();
+
+            ArgumentNullException.ThrowIfNull(initial);
+
+            var result = new List<T_out>(initial.Count);
+
+            for (var i = 0; i < initial.Count; i++)
+                result.Add((T_out)Convert.ChangeType(initial[i], typeof(T_out)));
+            return result;
+        }
+        static public T_out[] ConvertType<T_in, T_out>(T_in[] initial) where T_in : unmanaged
+        {
+            TypeArgumentCheck<T_in>();
+            TypeArgumentCheck<T_out>();
+
+            ArgumentNullException.ThrowIfNull(initial);
+
+            var result = new T_out[initial.Length];
+
+            for (var i = 0; i < initial.Length; i++)
+                result[i] = (T_out)Convert.ChangeType(initial[i], typeof(T_out));
+            return result;
+        }
+
+
+
         static public string  Interval(string input, Int32 startId, Int32 endId)
         {
             if (startId < endId) return input[startId..endId];
@@ -136,6 +215,8 @@ namespace AVcontrol
 
         static public T XOR<T>(T initial, T key) where T : unmanaged
         {
+            TypeArgumentCheck<T>();
+
             Byte[] initialBytes = ToBinary.LittleEndian(initial);
             Byte[] keyBytes     = ToBinary.LittleEndian(key);
             Byte[] resultBytes  = XOR(initialBytes, keyBytes);

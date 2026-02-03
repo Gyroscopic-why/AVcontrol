@@ -31,6 +31,8 @@ namespace AVcontrol
         
         public static T LittleEndian<T>(Byte[] bytes) where T : unmanaged
         {
+            Utils.TypeArgumentCheck<T>();
+
             if (bytes.Length != Marshal.SizeOf<T>())
                 throw new ArgumentException("Byte array size doesn't match type size");
 
@@ -41,123 +43,6 @@ namespace AVcontrol
                     return *(T*)ptr;
                 }
             }
-        }
-
-
-
-
-        static public List<Int16> BigEndianBytesToInt16(List<Byte> bytes)
-        {
-            if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
-
-            var result = new List<Int16>(bytes.Count / 2);
-
-            for (var curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Int16 value = (Int16)((bytes[curId] << 8) | bytes[curId + 1]);
-                result.Add(value);
-            }
-
-            return result;
-        }
-        static public List<Int16> AutoBEBytesToInt16(List<Byte> bytes)
-        {
-            var result = new List<Int16>((bytes.Count + 1) / 2);
-
-            for (var curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Byte high = bytes[curId];
-                Byte low = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
-                result.Add((Int16)((high << 8) | low));
-            }
-
-            return result;
-        }
-
-        static public List<Int16> LEBytesToInt16(List<Byte> bytes)
-        {
-            if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
-
-            var result = new List<Int16>(bytes.Count / 2);
-
-            for (var curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Int16 value = (Int16)(bytes[curId] | (bytes[curId + 1] << 8));
-                result.Add(value);
-            }
-
-            return result;
-        }
-        static public List<Int16> AutoLEBytesToInt16(List<Byte> bytes)
-        {
-            var result = new List<Int16>((bytes.Count + 1) / 2);
-
-            for (var curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Byte low = bytes[curId];
-                Byte high = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
-                result.Add((Int16)(low | (high << 8)));
-            }
-
-            return result;
-        }
-
-
-
-        static public List<UInt16> BEBytesToUInt16(List<Byte> bytes)
-        {
-            if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
-
-            var result = new List<UInt16>(bytes.Count / 2);
-
-            for (var curId = 0; curId < bytes.Count; curId += 2)
-            {
-                UInt16 value = (UInt16)((bytes[curId] << 8) | bytes[curId + 1]);
-                result.Add(value);
-            }
-
-            return result;
-        }
-        static public List<UInt16> AutoBEBytesToUInt16(List<Byte> bytes)
-        {
-            var result = new List<UInt16>((bytes.Count + 1) / 2);
-
-            for (var curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Byte high = bytes[curId];
-                Byte low = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
-                result.Add((UInt16)((high << 8) | low));
-            }
-
-            return result;
-        }
-
-        static public List<UInt16> LEBytesToUInt16(List<Byte> bytes)
-        {
-            if (bytes.Count % 2 != 0) throw new ArgumentException("Byte array length must be even", nameof(bytes));
-
-            var result = new List<UInt16>(bytes.Count / 2);
-
-            for (var curId = 0; curId < bytes.Count; curId += 2)
-            {
-                UInt16 value = (UInt16)(bytes[curId] | (bytes[curId + 1] << 8));
-                result.Add(value);
-            }
-
-            return result;
-        }
-        static public List<UInt16> AutoLEBytesToUInt16(List<Byte> bytes)
-        {
-            var result = new List<UInt16>((bytes.Count + 1) / 2);
-
-            for (var curId = 0; curId < bytes.Count; curId += 2)
-            {
-                Byte low = bytes[curId];
-                Byte high = (curId + 1 < bytes.Count) ? bytes[curId + 1] : (Byte)0;
-                result.Add((UInt16)(low | (high << 8)));
-            }
-
-            return result;
         }
     }
 }

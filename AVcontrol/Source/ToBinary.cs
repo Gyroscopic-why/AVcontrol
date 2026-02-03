@@ -28,6 +28,8 @@ namespace AVcontrol
 
         public static Byte[] LittleEndian<T>(T value) where T : unmanaged
         {
+            Utils.TypeArgumentCheck<T>();
+
             Int32 size = Marshal.SizeOf<T>();
             Byte[] bytes = new Byte[size];
 
@@ -43,6 +45,8 @@ namespace AVcontrol
         }
         public static Byte[] LittleEndian<T>(T[] values) where T : unmanaged
         {
+            Utils.TypeArgumentCheck<T>();
+
             Int32 elementSize = Marshal.SizeOf<T>();
             Byte[] result = new Byte[values.Length * elementSize];
             Int32 offset = 0;
@@ -58,6 +62,8 @@ namespace AVcontrol
         }
         public static List<Byte> LittleEndian<T>(List<T> values) where T : unmanaged
         {
+            Utils.TypeArgumentCheck<T>();
+
             Int32 elementSize = Marshal.SizeOf<T>();
             List<Byte> result = new(values.Count * elementSize);
 
@@ -76,6 +82,8 @@ namespace AVcontrol
             => Utils.Reverse(LittleEndian(value));
         public static Byte[] BigEndian<T>(T[] values) where T : unmanaged
         {
+            Utils.TypeArgumentCheck<T>();
+
             Int32 elementSize = Marshal.SizeOf<T>();
             Byte[] result = new Byte[values.Length * elementSize];
             Int32 offset = 0;
@@ -92,6 +100,8 @@ namespace AVcontrol
         }
         public static List<Byte> BigEndian<T>(List<T> values) where T : unmanaged
         {
+            Utils.TypeArgumentCheck<T>();
+
             Int32 elementSize = Marshal.SizeOf<T>();
             List<Byte> result = new(values.Count * elementSize);
 

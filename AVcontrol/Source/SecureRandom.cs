@@ -57,19 +57,6 @@ namespace AVcontrol
             Array.Copy(result, _state, 16);
         }
 
-        static private void TypeArgumentCheck<T>()
-        {
-            if (typeof(T) != typeof(Byte) &&
-                typeof(T) != typeof(SByte) &&
-                typeof(T) != typeof(Int16) &&
-                typeof(T) != typeof(UInt16) &&
-                typeof(T) != typeof(Int32) &&
-                typeof(T) != typeof(UInt32) &&
-                typeof(T) != typeof(Int64) &&
-                typeof(T) != typeof(UInt64))
-                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
-        }
-
 
 
         public  void Reseed()
@@ -186,17 +173,18 @@ namespace AVcontrol
 
         public T SecureNext<T>()
         {
-            TypeArgumentCheck<T>();
+            Type type = typeof(T);
+            Utils.TypeArgumentCheck(type);
 
             Reseed();
-            T result = (T)Convert.ChangeType(NextULongInternal() & 0x7FFFFFFF, typeof(T));
+            T result = (T)Convert.ChangeType(NextULongInternal() % Utils.GetMaxValue(type), type);
 
             Reseed();
             return result;
         }
         public T SecureNext<T>(T positiveExclusiveMaxValue)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
             if (parsedMaxValue == 0) return (T)(object)0;
@@ -211,7 +199,7 @@ namespace AVcontrol
         }
         public T SecureNext<T>(T positiveInclusiveMinValue, T positiveExclusiveMaxValue)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
             UInt64 parsedMinValue = Convert.ToUInt64(positiveInclusiveMinValue);
@@ -229,24 +217,10 @@ namespace AVcontrol
         }
 
 
-        public UInt64 SecureNextULong()
-        {
-            Reseed();
-            UInt64 result = NextULongInternal();
-            Reseed();
-            return result;
-        }
         public double SecureNextDouble()
         {
             Reseed();
             double result = NextDoubleInternal();
-            Reseed();
-            return result;
-        }
-        public Byte   SecureNextByte(Byte inclusiveMinValue = 0, Byte inclusiveMaxValue = 255)
-        {
-            Reseed();
-            Byte result = NextBytesInternal(new Byte[1], inclusiveMinValue, inclusiveMaxValue)[0];
             Reseed();
             return result;
         }
@@ -268,12 +242,14 @@ namespace AVcontrol
 
         public T Next<T>()
         {
-            TypeArgumentCheck<T>();
-            return (T)Convert.ChangeType(NextULongInternal() & 0x7FFFFFFF, typeof(T));
+            Type type = typeof(T);
+            Utils.TypeArgumentCheck(type);
+
+            return (T)Convert.ChangeType(NextULongInternal() % Utils.GetMaxValue(type), type);
         }
         public T Next<T>(T positiveExclusiveMaxValue)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
             if (parsedMaxValue == 0) return (T)(object)0;
@@ -284,7 +260,7 @@ namespace AVcontrol
         }
         public T Next<T>(T positiveInclusiveMinValue, T positiveExclusiveMaxValue)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
             UInt64 parsedMinValue = Convert.ToUInt64(positiveInclusiveMinValue);

@@ -29,27 +29,23 @@ namespace AVcontrol
 
 
 
-        static private bool BaseArgumentCheck(Int32 oldBase, Int32 newBase, Int32 maxBaseLimit)
+        static internal bool BaseArgumentCheck(Int32 oldBase, Int32 newBase, Int32 maxBaseLimit)
         {
             if (oldBase < 2 || oldBase > maxBaseLimit || newBase < 2 || newBase > maxBaseLimit)
                 throw new ArgumentOutOfRangeException("Bases must be between 2 and " + maxBaseLimit + ".");
             if (oldBase == newBase) return false;
             return true;
         }
-        static private bool BaseArgumentCheck(Int32 oldBase, Int32 newBase)
+        static internal bool BaseArgumentCheck(Int32 oldBase, Int32 newBase)
             => BaseArgumentCheck(oldBase, newBase, 36);
-
-        static private void TypeArgumentCheck<T>()
+        static internal void BaseArgumentCheck(Int32 numbase)
         {
-            if (typeof(T) != typeof( Byte)  &&
-                typeof(T) != typeof(SByte)  &&
-                typeof(T) != typeof( Int16) &&
-                typeof(T) != typeof(UInt16) &&
-                typeof(T) != typeof( Int32) &&
-                typeof(T) != typeof(UInt32) &&
-                typeof(T) != typeof( Int64) &&
-                typeof(T) != typeof(UInt64))
-                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
+            if (numbase < 2 || numbase > 36)
+                throw new ArgumentOutOfRangeException
+                (
+                    nameof(numbase),
+                    "the number base must be between 2 and 36."
+                );
         }
 
 
@@ -67,7 +63,7 @@ namespace AVcontrol
         }
         static public Int64 ToDecimal<T>(List<T> oldValue, Int32 oldBase)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             Int64 decimalValue = 0;
             foreach (T digit in oldValue)
@@ -93,7 +89,7 @@ namespace AVcontrol
         }
         static public Int64 ToDecimalFromCustom<T>(List<T> oldValue, Int32 oldBase, List<T> customDigits)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             Int64 decimalValue = 0;
             foreach (T digit in oldValue) decimalValue = decimalValue * oldBase + customDigits.IndexOf(digit);
@@ -106,7 +102,7 @@ namespace AVcontrol
             => FromDecimalToCustom(decimalValue, newBase, gDigits);
         static public List<T>  FromDecimal<T>(Int64 decimalValue, Int32 newBase)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             List<T> result = [];
             Int64 current = decimalValue;
@@ -134,7 +130,7 @@ namespace AVcontrol
         }
         static public List<T>  FromDecimalToCustom<T>(Int64 decimalValue, Int32 newBase, List<T> customDigits)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             List<T> result = [];
             Int64  current = decimalValue;
@@ -331,7 +327,7 @@ namespace AVcontrol
         }
         static public List<T>   ToCustomAsBinary<T>(List<T> oldValue, Int32 oldBase, Int32 newBase, List<T> customDigits)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             if (!BaseArgumentCheck(oldBase, newBase)) 
                 return [.. oldValue.Select(b => (T)(object)customDigits[Convert.ToInt32(b)]!)];
@@ -343,7 +339,7 @@ namespace AVcontrol
         }
         static public List<T>   ToCustomAsBinary<T>(List<T> oldValue, Int32 oldBase, Int32 newBase, List<T> customDigits, Int32 outputLength)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             List<T> result = ToCustomAsBinary(oldValue, oldBase, newBase, customDigits);
 
@@ -352,7 +348,7 @@ namespace AVcontrol
         }
         static public List<T> FromCustomAsBinary<T>(List<T> oldValue, Int32 oldBase, Int32 newBase, List<T> customDigits)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             if (!BaseArgumentCheck(oldBase, newBase)) return [.. oldValue.Select(c => (T)(object)customDigits.IndexOf(c))];
 
@@ -363,7 +359,7 @@ namespace AVcontrol
         }
         static public List<T> FromCustomAsBinary<T>(List<T> oldValue, Int32 oldBase, Int32 newBase, List<T> customDigits, Int32 outputLength)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             List<T> result = FromCustomAsBinary(oldValue, oldBase, newBase, customDigits);
             

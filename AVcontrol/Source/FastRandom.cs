@@ -17,29 +17,17 @@ namespace AVcontrol
         }
 
 
-        static private void TypeArgumentCheck<T>()
-        {
-            if (typeof(T) != typeof(Byte) &&
-                typeof(T) != typeof(SByte) &&
-                typeof(T) != typeof(Int16) &&
-                typeof(T) != typeof(UInt16) &&
-                typeof(T) != typeof(Int32) &&
-                typeof(T) != typeof(UInt32) &&
-                typeof(T) != typeof(Int64) &&
-                typeof(T) != typeof(UInt64))
-                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
-        }
-
-
 
         public T Next<T>()
         {
-            TypeArgumentCheck<T>();
-            return (T)Convert.ChangeType(NextULong() & 0x7FFFFFFF, typeof(T));
+            Type type = typeof(T);
+            Utils.TypeArgumentCheck(type);
+
+            return (T)Convert.ChangeType(NextULong() % Utils.GetMaxValue(type), type);
         }
         public T Next<T>(T positiveExclusiveMaxValue)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
             if    (parsedMaxValue == 0) return (T)(object)0;
@@ -50,7 +38,7 @@ namespace AVcontrol
         }
         public T Next<T>(T positiveInclusiveMinValue, T positiveExclusiveMaxValue)
         {
-            TypeArgumentCheck<T>();
+            Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
             UInt64 parsedMinValue = Convert.ToUInt64(positiveInclusiveMinValue);
