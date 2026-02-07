@@ -2,7 +2,7 @@
 
 &nbsp;  
 
-# All functionality (v2.5.1):
+# All functionality (v2.6):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
      - **(Wildcard) Funcs for generating: (S)Byte, (U)Int16, (U)Int32, (U)Int64**
@@ -35,6 +35,12 @@
      - Getting Intervals for strings, arrays and list (startId, endId)
      - XOR operations on Arrays, Lists & \<T\> integers
      - Conversions of List elements integer-types
+- Types (for custom types)
+     - **Datetime4b for compact datetime storing:**
+         - **Length per 1 datetime instance: 4 bytes**
+         - **Compatible with C# DateTime**
+         - Precision: 1 minute
+         - Starting date: 01.01.2025 (1 January 2025)
 - ToBinary, for:
      - **Converting Lists of 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
      - **Converting 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
@@ -46,7 +52,7 @@
  - Split (& Combine), for:
      - **Splitting integers into lists of smaller chunks
        (and combining them back together)**
-     - Input:    wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64  )
+     - Input:  wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64  )
      - Output: wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64  )
 
 
@@ -54,12 +60,12 @@
 
 
 # Most stable versions
+- **>  [AVcontrol v2.6_________________(36 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6) (Windows/Linux/MacOS - Core 10)**
 - **>  [AVcontrol v2.5.1_______________(33 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5.1) (Windows/Linux/MacOS - Core 10)**
 -   [AVcontrol v2.5____________________(42 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5) (Windows/Linux/MacOS - Core 10)
 -   [AVcontrol v2.4____________________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.4) (Windows/Linux/MacOS - Core 10)
 - **>  [AVcontrol v2.2.2_______________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2) (Windows only)**
 -   [AVcontrol v2.1.1__________________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1) (Windows only)
--   [AVcontrol v1.9.2__________________(40 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.9.2) (Windows only)
 - **>  [AVcontrol v1.8.2_______________(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2) (Windows only)**
 -   [AVcontrol v1.7____________________(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7) (Windows only)
 ##### Starting from v2.3.10 and higher, all versions will be cross platform build with the .NET Core 10 framework
@@ -69,6 +75,15 @@
 
 
 # Changes
+
+## v2.6 Changes:
++ Added DateTime4b class for storing datetime in 4 bytes
+  (alternative to C# DateTime which is 8 bytes)
+- Compatible with C# DateTime
+- Precision: 1 minute
+- Start date: 01.01.2025 (1 January 2025)
+
+
 
 ## v2.5.1 Changes:
 + Massive optimisation using dynamic types
@@ -270,16 +285,16 @@ Includes
 
 
 # Most influential updates:
-- **№1 - v2.5:**  
-     + Numsys revamp with a lot of bugfixes, large scale transition to wildcard Type
+- **№1 - v2.5.1:**  
+     + Numsys revamp with a lot of bugfixes, large scale transition to wildcard Type, and a lot of optimisation using double-wildcard type inputs
 - **№2 - v2.2.2:**  
      + Longest lasting stable version with Fast & Secure Random logic (almost 60 days)
 - **№3 - v1.8.2:**  
      + Second longest lasting - first stable version with Numsys logic (almost 50 days)
 - **№4 - v2.1.1:**  
      + Saved the day when the most broken build (2.0) was first released
-- №5 - v1.9.2:
-     + Until 2.1.1 was released, roll down from 2.0 was performed to 1.9.2
+- №5 - v2.6:
+     + Another project - DateTime4b - got merged into AVcontrol to make combined use more pleasant
 - №6 - v1.7:
      + In the early stages of development of 1.8s (before 1.8.2 came out) roll backs were often performed to 1.7
 - №7 - 1.4.1:
