@@ -30,7 +30,7 @@ namespace AVcontrol
             Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
-            if    (parsedMaxValue == 0) return (T)(object)0;
+            if    (parsedMaxValue <= 1) return (T)Convert.ChangeType(0, typeof(T));
 
             ArgumentOutOfRangeException.ThrowIfNegative(parsedMaxValue);
 
@@ -46,7 +46,7 @@ namespace AVcontrol
             ArgumentOutOfRangeException.ThrowIfGreaterThan(parsedMinValue, parsedMaxValue);
 
             UInt64 range = parsedMaxValue - parsedMinValue;
-            if (range <= 0) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
+            if (range <= 1) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
 
             return (T)Convert.ChangeType((NextULong() % range) + parsedMinValue, typeof(T));
         }
@@ -85,6 +85,12 @@ namespace AVcontrol
             return result;
         }
         public double NextDouble() => (NextULong() >> 11) * (1.0 / (1UL << 53));
+
+        public bool NextBool() => (NextULong() & 1) == 1;
+        public bool NextBoolChance(Int32  chanceInPercents) => (Int32)(NextULong() % 100) < chanceInPercents;
+        public bool NextBoolChance(double chanceInPercents) => (double)NextULong() % 100  < chanceInPercents;
+
+
 
         private static UInt64 RotateLeft(UInt64 value, Int32 offset) => (value << offset) | (value >> (64 - offset));
 

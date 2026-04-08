@@ -146,7 +146,7 @@ namespace AVcontrol
 
 
 
-        public Int32  SecureNext()
+        public Int32 SecureNext()
         {
             Reseed();
             Int32 result = NextInternal();
@@ -154,7 +154,7 @@ namespace AVcontrol
             Reseed();
             return result;
         }
-        public Int32  SecureNext(Int32 exclusiveMaxValue)
+        public Int32 SecureNext(Int32 exclusiveMaxValue)
         {
             Reseed();
             Int32 result = NextInternal(exclusiveMaxValue);
@@ -162,7 +162,7 @@ namespace AVcontrol
             Reseed();
             return result;
         }
-        public Int32  SecureNext(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
+        public Int32 SecureNext(Int32 inclusiveMinValue, Int32 exclusiveMaxValue)
         {
             Reseed();
             Int32 result = NextInternal(inclusiveMinValue, exclusiveMaxValue);
@@ -187,7 +187,7 @@ namespace AVcontrol
             Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
-            if (parsedMaxValue == 0) return (T)(object)0;
+            if (parsedMaxValue <= 1) return (T)Convert.ChangeType(0, typeof(T));
 
             ArgumentOutOfRangeException.ThrowIfNegative(parsedMaxValue);
 
@@ -207,7 +207,7 @@ namespace AVcontrol
             ArgumentOutOfRangeException.ThrowIfGreaterThan(parsedMinValue, parsedMaxValue);
 
             UInt64 range = parsedMaxValue - parsedMinValue;
-            if (range <= 0) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
+            if (range <= 1) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
 
             Reseed();
             T result = (T)Convert.ChangeType((NextULongInternal() % range) + parsedMinValue, typeof(T));
@@ -252,7 +252,7 @@ namespace AVcontrol
             Utils.TypeArgumentCheck<T>();
 
             UInt64 parsedMaxValue = Convert.ToUInt64(positiveExclusiveMaxValue);
-            if (parsedMaxValue == 0) return (T)(object)0;
+            if (parsedMaxValue <= 1) return (T)Convert.ChangeType(0, typeof(T));
 
             ArgumentOutOfRangeException.ThrowIfNegative(parsedMaxValue);
 
@@ -268,7 +268,7 @@ namespace AVcontrol
             ArgumentOutOfRangeException.ThrowIfGreaterThan(parsedMinValue, parsedMaxValue);
 
             UInt64 range = parsedMaxValue - parsedMinValue;
-            if (range <= 0) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
+            if (range <= 1) return (T)Convert.ChangeType(parsedMinValue, typeof(T));
 
             return (T)Convert.ChangeType((NextULongInternal() % range) + parsedMinValue, typeof(T));
         }
@@ -276,6 +276,10 @@ namespace AVcontrol
         public UInt64 NextULong()  => NextULongInternal();
         public double NextDouble() => NextDoubleInternal();
         public Byte[] NextBytes(Int32 length) => NextBytesInternal(new Byte[length], 0, 255);
+
+        public bool NextBool() => (NextULongInternal() & 1) == 1;
+        public bool NextBoolChance(Int32  chanceInPercents) => NextInternal() % 100 < chanceInPercents;
+        public bool NextBoolChance(double chanceInPercents) => (double)NextULongInternal() % 100 < chanceInPercents;
 
 
 
@@ -292,7 +296,7 @@ namespace AVcontrol
             ArgumentOutOfRangeException.ThrowIfGreaterThan(inclusiveMinValue, exclusiveMaxValue);
 
             Int64 range = (Int64)exclusiveMaxValue - inclusiveMinValue;
-            if (range <= 0) return inclusiveMinValue;
+            if (range <= 1) return inclusiveMinValue;
 
             return (Int32)(NextULongInternal() % (UInt64)range) + inclusiveMinValue;
         }

@@ -135,6 +135,27 @@ namespace AVcontrol
                 yield return collection[i];
         }
 
+        public static void Reverse<T>(this Span<T> span)
+        {
+            Int32 i = 0, j = span.Length - 1;
+            while (i < j)
+            {
+                T temp = span[i];
+                span[i] = span[j];
+                span[j] = temp;
+                i++;
+                j--;
+            }
+        }
+        public static T[]  Reverse<T>(this ReadOnlySpan<T> span)
+        {
+            T[] result = new T[span.Length];
+            for (Int32 i = 0; i < span.Length; i++)
+                result[i] = span[span.Length - 1 - i];
+            return result;
+        }
+        public static void Reverse<T>(this Memory<T> memory) => memory.Span.Reverse();
+
 
 
         static public List<T_out> ConvertType<T_in, T_out>(List<T_in> initial) where T_in : unmanaged
@@ -247,6 +268,54 @@ namespace AVcontrol
                 result.Add((Byte)(initial[i] ^ key[i % key.Count]));
 
             return result;
+        }
+
+
+
+        static public Int32 DigitCount(Int32 num)
+        {
+            if (num == Int32.MinValue ||
+                num == Int32.MaxValue  ) return 10;
+
+            UInt32 n = (UInt32)(num < 0 ? -num : num);
+
+            if (n <            10U) return 1;
+            if (n <           100U) return 2;
+            if (n <         1_000U) return 3;
+            if (n <        10_000U) return 4;
+            if (n <       100_000U) return 5;
+            if (n <     1_000_000U) return 6;
+            if (n <    10_000_000U) return 7;
+            if (n <   100_000_000U) return 8;
+            if (n < 1_000_000_000U) return 9;
+            return 10;
+        }
+        static public Int32 DigitCount(Int64 num)
+        {
+            if (num == Int64.MinValue ||
+                num == Int64.MaxValue  ) return 19;
+
+            UInt64 n = (UInt64)(num < 0 ? -num : num);
+
+            if (n <                        10UL) return 1;
+            if (n <                       100UL) return 2;
+            if (n <                     1_000UL) return 3;
+            if (n <                    10_000UL) return 4;
+            if (n <                   100_000UL) return 5;
+            if (n <                 1_000_000UL) return 6;
+            if (n <                10_000_000UL) return 7;
+            if (n <               100_000_000UL) return 8;
+            if (n <             1_000_000_000UL) return 9;
+            if (n <            10_000_000_000UL) return 10;
+            if (n <           100_000_000_000UL) return 11;
+            if (n <         1_000_000_000_000UL) return 12;
+            if (n <        10_000_000_000_000UL) return 13;
+            if (n <       100_000_000_000_000UL) return 14;
+            if (n <     1_000_000_000_000_000UL) return 15;
+            if (n <    10_000_000_000_000_000UL) return 16;
+            if (n <   100_000_000_000_000_000UL) return 17;
+            if (n < 1_000_000_000_000_000_000UL) return 18;
+            return 19;
         }
     }
 }
