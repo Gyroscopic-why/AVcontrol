@@ -1,8 +1,16 @@
 # AVcontrol - C# library for common variable operations
 
 &nbsp;  
+#  Quick README navigation
+### [Latest version functionality](https://github.com/Gyroscopic-why/AVcontrol#all-functionality-v261)
+### [Most stable versions](https://github.com/Gyroscopic-why/AVcontrol#most-stable-versions)
+### [Changelog](https://github.com/Gyroscopic-why/AVcontrol#changelog)
 
-# All functionality (v2.6):
+---
+
+&nbsp;
+
+# All functionality (v2.6.1):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => cant be compromised**
      - **(Wildcard) Funcs for generating: (S)Byte, (U)Int16, (U)Int32, (U)Int64**
@@ -42,13 +50,15 @@
          - Precision: 1 minute
          - Starting date: 01.01.2025 (1 January 2025)
 - ToBinary, for:
-     - **Converting Lists of 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
+     - **Converting Lists, Arrays and Spans of 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
      - **Converting 16, 32 and 64 bit numbers (supports BigEndian, LittleEndian)**
-     - Converting text (strings) to binary (bytes), supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
+     - Converting text (strings / spans) to binary (bytes),
+       supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
 - FromBinary, for:
      - **Converting Byte arrays to any integer type, supports: BigEndian, LittleEndian**
      - **Converting Byte arrays into List<Int16>, supports BigEndian, LittleEndian**
-     - Converting text from binary (bytes) to strings, supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
+     - Converting text from binary (Byte Arrays, Lists and Spans) to strings,  
+       supports: ASCII, UTF-8, UTF-16, BigEndian UTF-16, UTF-32
  - Split (& Combine), for:
      - **Splitting integers into lists of smaller chunks
        (and combining them back together)**
@@ -60,7 +70,8 @@
 
 
 # Most stable versions
-- **>  [AVcontrol v2.6_________________(36 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6) (Windows/Linux/MacOS - Core 10)**
+- **>  [AVcontrol v2.6.1_______________(39 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6.1) (Windows/Linux/MacOS - Core 10)**
+-   [AVcontrol v2.6____________________(36 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6) (Windows/Linux/MacOS - Core 10)
 - **>  [AVcontrol v2.5.1_______________(33 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5.1) (Windows/Linux/MacOS - Core 10)**
 -   [AVcontrol v2.5____________________(42 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5) (Windows/Linux/MacOS - Core 10)
 -   [AVcontrol v2.4____________________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.4) (Windows/Linux/MacOS - Core 10)
@@ -74,7 +85,15 @@
 &nbsp;  
 
 
-# Changes
+# Changelog
+
+
+## v2.6.1 Changes:
++ Added support for working with Spans/ReadOnlySpans in ToBinary. & FromBinary.
+-  Optimised FastRandom. & SecureRandom. in edge cases where interval (max - min) <= 1
+-  Fixed result '0' to custom type T conversion in FastRandom. & SecureRandom.
+
+
 
 ## v2.6 Changes:
 + Added DateTime4b class for storing datetime in 4 bytes
@@ -287,14 +306,14 @@ Includes
 # Most influential updates:
 - **№1 - v2.5.1:**  
      + Numsys revamp with a lot of bugfixes, large scale transition to wildcard Type, and a lot of optimisation using double-wildcard type inputs
-- **№2 - v2.2.2:**  
+- **#2 - v2.6.1:**
+     + Merged DateTime4b class with AVcontrol (v2.6), bugfixes and optimisations
+- **№3 - v2.2.2:**  
      + Longest lasting stable version with Fast & Secure Random logic (almost 60 days)
-- **№3 - v1.8.2:**  
+- **№4 - v1.8.2:**  
      + Second longest lasting - first stable version with Numsys logic (almost 50 days)
-- **№4 - v2.1.1:**  
+- **№5 - v2.1.1:**  
      + Saved the day when the most broken build (2.0) was first released
-- №5 - v2.6:
-     + Another project - DateTime4b - got merged into AVcontrol to make combined use more pleasant
 - №6 - v1.7:
      + In the early stages of development of 1.8s (before 1.8.2 came out) roll backs were often performed to 1.7
 - №7 - 1.4.1:
