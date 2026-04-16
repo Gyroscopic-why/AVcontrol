@@ -15,7 +15,7 @@ namespace AVcontrol
         private const UInt32 MinutesInHour     = 60;
         private const UInt32 MinutesInDay      = 1440; // 24 * 60
         private const UInt32 MinutesInYear     = 525_600; // 365 * 24 * 60
-        private static readonly UInt32[] DaysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        static private readonly UInt32[] DaysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 
         private readonly UInt32 _minutesFromBase;
@@ -51,7 +51,7 @@ namespace AVcontrol
 
             return days + 1;
         }
-        private static bool IsLeapYear(UInt32 year) => (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+        static private bool IsLeapYear(UInt32 year) => (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 
 
 
@@ -115,7 +115,7 @@ namespace AVcontrol
 
 
 
-        public static DateTime4b FromDateTime(DateTime dateTime)
+        static public DateTime4b FromDateTime(DateTime dateTime)
         {
             Int64 timestamp = new DateTimeOffset(dateTime).ToUnixTimeSeconds();
 
@@ -126,10 +126,10 @@ namespace AVcontrol
 
             return new DateTime4b(minutes);
         }
-        public static DateTime4b Now => FromDateTime(DateTime.UtcNow);
+        static public DateTime4b Now => FromDateTime(DateTime.UtcNow);
         public DateTime ToDateTime()
         {
-            ulong totalSeconds = UnixTimestamp2025 + (_minutesFromBase * SecondsInMinute);
+            UInt64 totalSeconds = UnixTimestamp2025 + (_minutesFromBase * SecondsInMinute);
             return DateTimeOffset.FromUnixTimeSeconds((Int64)totalSeconds).UtcDateTime;
         }
 

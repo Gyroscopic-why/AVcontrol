@@ -122,7 +122,7 @@ namespace AVcontrol
 
             Array.Clear(workingState, 0, workingState.Length);
         }
-        private static void AddExtraEntropy(Byte[] seed)
+        static private void AddExtraEntropy(Byte[] seed)
         {
             //  Hardware entropy
             Int64 extraEntropy = Stopwatch.GetTimestamp() ^ Environment.TickCount;
@@ -322,7 +322,7 @@ namespace AVcontrol
             }
             return buffer;
         }
-        private static Byte CoerceByte(Byte value, Byte inclusiveMinValue, Byte inclusiveMaxValue)
+        static private Byte CoerceByte(Byte value, Byte inclusiveMinValue, Byte inclusiveMaxValue)
         {
             if (inclusiveMinValue > inclusiveMaxValue)
                 throw new ArgumentOutOfRangeException(
@@ -342,7 +342,7 @@ namespace AVcontrol
 
 
 
-        private static Byte[] GenerateTrueHardwareSeed()
+        static private Byte[] GenerateTrueHardwareSeed()
         {
             Byte[] seed = new Byte[32];
 
@@ -352,7 +352,7 @@ namespace AVcontrol
 
             return seed;
         }
-        private static UInt64[] CollectHardwareEntropy()
+        static private UInt64[] CollectHardwareEntropy()
         {
             const bool forceFullCollection = true;
             UInt64[] entropy = new UInt64[8];
@@ -383,7 +383,7 @@ namespace AVcontrol
             return entropy;
         }
 
-        private static void MixEntropy(UInt64[] entropy, Byte[] output)
+        static private void MixEntropy(UInt64[] entropy, Byte[] output)
         {
             UInt64 mixer = 0;
 
@@ -407,7 +407,7 @@ namespace AVcontrol
                 Buffer.BlockCopy(bytes, 0, output, i, bytesToCopy);
             }
         }
-        private static void FinalMixWithTiming(Byte[] seed)
+        static private void FinalMixWithTiming(Byte[] seed)
         {
             Byte[] temp = new Byte[seed.Length];
             Array.Copy(seed, temp, seed.Length);
@@ -432,12 +432,12 @@ namespace AVcontrol
 
 
 
-        private static UInt64 RotateLeft(UInt64 value, Int32 offset) => (value << offset) | (value >> (64 - offset));
-        private static UInt32 RotateLeft(UInt32 value, Int32 offset) => (value << offset) | (value >> (32 - offset));
+        static private UInt64 RotateLeft(UInt64 value, Int32 offset) => (value << offset) | (value >> (64 - offset));
+        static private UInt32 RotateLeft(UInt32 value, Int32 offset) => (value << offset) | (value >> (32 - offset));
 
 
 
-        private static void QuarterRound(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref UInt32 d)
+        static private void QuarterRound(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref UInt32 d)
         {
             a += b; d = RotateLeft(d ^ a, 16);
             c += d; b = RotateLeft(b ^ c, 12);

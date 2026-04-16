@@ -92,7 +92,7 @@ namespace AVcontrol
 
 
 
-        private static UInt64 RotateLeft(UInt64 value, Int32 offset) => (value << offset) | (value >> (64 - offset));
+        static private UInt64 RotateLeft(UInt64 value, Int32 offset) => (value << offset) | (value >> (64 - offset));
 
 
 
