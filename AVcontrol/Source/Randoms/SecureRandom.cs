@@ -220,7 +220,21 @@ namespace AVcontrol
         public double SecureNextDouble()
         {
             Reseed();
-            double result = NextDoubleInternal();
+            double result = NextDouble();
+            Reseed();
+            return result;
+        }
+        public double SecureNextDouble(double exclusiveMaxValue)
+        {
+            Reseed();
+            double result = NextDouble(exclusiveMaxValue);
+            Reseed();
+            return result;
+        }
+        public double SecureNextDouble(double inclusiveMinValue, double exclusiveMaxValue)
+        {
+            Reseed();
+            double result = NextDouble(inclusiveMinValue, exclusiveMaxValue);
             Reseed();
             return result;
         }
@@ -274,7 +288,6 @@ namespace AVcontrol
         }
 
         public UInt64 NextULong()  => NextULongInternal();
-        public double NextDouble() => NextDoubleInternal();
         public Byte[] NextBytes(Int32 length) => NextBytesInternal(new Byte[length], 0, 255);
 
         public bool NextBool() => (NextULongInternal() & 1) == 1;
@@ -338,7 +351,44 @@ namespace AVcontrol
             if (inclusiveMaxValue == 0) return 0;
             return (Byte)(value % (inclusiveMaxValue - inclusiveMinValue + 1) + inclusiveMinValue);
         }
-        private double NextDoubleInternal() => (NextULongInternal() >> 11) * (1.0 / (1UL << 53));
+
+        public double NextDouble(double exclusiveMaxValue)
+        {
+            if (exclusiveMaxValue <= 0)
+                throw new ArgumentOutOfRangeException
+                (
+                    nameof(exclusiveMaxValue), 
+                    "exclusiveMaxValue must be > 0."
+                );
+
+            if (double.IsInfinity(exclusiveMaxValue) || double.IsNaN(exclusiveMaxValue))
+                throw new ArgumentOutOfRangeException
+                    (
+                        nameof(exclusiveMaxValue),
+                        "exclusiveMaxValue must be a finite number."
+                    );
+
+            return NextDouble() * exclusiveMaxValue;
+        }
+        public double NextDouble(double inclusiveMinValue, double exclusiveMaxValue)
+        {
+            if (inclusiveMinValue > exclusiveMaxValue)
+                throw new ArgumentOutOfRangeException
+                    (
+                        nameof(inclusiveMinValue),
+                        "inclusiveMinValue must be less than exclusiveMaxValue."
+                    );
+            
+            if (double.IsInfinity(inclusiveMinValue) || double.IsNaN(inclusiveMinValue) ||
+                double.IsInfinity(exclusiveMaxValue) || double.IsNaN(exclusiveMaxValue))
+                throw new ArgumentException("Arguments must be finite numbers.");
+
+            double range = exclusiveMaxValue - inclusiveMinValue;
+
+            if (range <= 0.0) return inclusiveMinValue;
+            return inclusiveMinValue + NextDouble() * range;
+        }
+        public double NextDouble() => (NextULongInternal() >> 11) * (1.0 / (1UL << 53));
 
 
 
