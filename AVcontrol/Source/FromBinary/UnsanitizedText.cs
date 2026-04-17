@@ -34,7 +34,11 @@ namespace AVcontrol
             return result;
         }
         static public string Unsanitized_Utf8(List<Byte> bytes, out List<Byte> leftover)
-            => Unsanitized_Utf8([.. bytes], out leftover);
+        {
+            (string result, Int32 bytesUsed) = DecodeUtf8([..bytes]);
+            leftover = bytes[bytesUsed..];
+            return result;
+        }
         static public string Unsanitized_Utf8(ReadOnlySpan<Byte> bytes, out ReadOnlySpan<Byte> leftover)
         {
             (string result, Int32 bytesUsed) = DecodeUtf8(bytes);
@@ -156,8 +160,16 @@ namespace AVcontrol
             return Encoding.UTF32.GetString(bytes, 0, validLen);
         }
         static public string Unsanitized_Utf32(List<Byte> bytes, out List<Byte> leftover)
-            => Unsanitized_Utf32([.. bytes], out leftover);
+        {
+            string result = Unsanitized_Utf32([.. bytes], out Byte[] leftoverArray);
+            leftover = [.. leftoverArray];
+            return result;
+        }
         static public string Unsanitized_Utf32(ReadOnlySpan<Byte> bytes, out ReadOnlySpan<Byte> leftover)
-            => Unsanitized_Utf32(bytes, out leftover);
+        {
+            string result = Unsanitized_Utf32([.. bytes], out Byte[] leftoverArray);
+            leftover = leftoverArray;
+            return result;
+        }
     }
 }
