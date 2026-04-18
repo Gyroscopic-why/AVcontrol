@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 
 
@@ -14,7 +15,7 @@ namespace AVcontrol
         private bool   _disposed = false;
 
         private UInt64 _bytesGenerated = 0;
-        private readonly UInt64 RESEED_INTERVAL_BYTES = 1024 * 1024;  //  Reseed every 1MB (default)
+        private UInt64 RESEED_INTERVAL_BYTES = 1024 * 1024;  //  Reseed every 1MB (default)
 
         /// <summary>
         /// For rng reseeding interval in bytes generated. Minimum is 128 bytes. 
@@ -55,6 +56,53 @@ namespace AVcontrol
             result[15] = BitConverter.ToUInt32(seed, 20);
 
             Array.Copy(result, _state, 16);
+        }
+        public  void UpdateReseedInterval(UInt64 newIntervalBytes)
+        {
+            if (newIntervalBytes < 128) newIntervalBytes = 128;
+            RESEED_INTERVAL_BYTES = newIntervalBytes;
+        }
+
+
+
+        public void Shuffle(ref string str)
+        {
+            ArgumentNullException.ThrowIfNull(str);
+            char[] chars = str.ToCharArray();
+            Shuffle(ref chars);
+            str = new string(chars);
+        }
+        public void Shuffle<T>(ref T[] array)
+        {
+            ArgumentNullException.ThrowIfNull(array);
+            Int32 n = array.Length;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (array[i], array[j]) = (array[j], array[i]);
+            }
+        }
+        public void Shuffle<T>(ref List<T> list)
+        {
+            ArgumentNullException.ThrowIfNull(list);
+            Int32 n = list.Count;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+        public void Shuffle<T>(ref Span<T> span)
+        {
+            Int32 n = span.Length;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (span[i], span[j]) = (span[j], span[i]);
+            }
         }
 
 
