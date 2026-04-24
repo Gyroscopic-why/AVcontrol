@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 
 
@@ -14,6 +15,48 @@ namespace AVcontrol
             var init = new SplitMix64(seed);
 
             for (var i = 0; i < 4; i++) _state[i] = init.Next();
+        }
+
+
+
+        public void Shuffle(ref string str)
+        {
+            ArgumentNullException.ThrowIfNull(str);
+            char[] chars = str.ToCharArray();
+            Shuffle(ref chars);
+            str = new string(chars);
+        }
+        public void Shuffle<T>(ref T[] array)
+        {
+            ArgumentNullException.ThrowIfNull(array);
+            Int32 n = array.Length;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (array[i], array[j]) = (array[j], array[i]);
+            }
+        }
+        public void Shuffle<T>(ref List<T> list)
+        {
+            ArgumentNullException.ThrowIfNull(list);
+            Int32 n = list.Count;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+        public void Shuffle<T>(ref Span<T> span)
+        {
+            Int32 n = span.Length;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (span[i], span[j]) = (span[j], span[i]);
+            }
         }
 
 
