@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 
 
@@ -14,7 +15,7 @@ namespace AVcontrol
         private bool   _disposed = false;
 
         private UInt64 _bytesGenerated = 0;
-        private readonly UInt64 RESEED_INTERVAL_BYTES = 1024 * 1024;  //  Reseed every 1MB (default)
+        private UInt64 RESEED_INTERVAL_BYTES = 1024 * 1024;  //  Reseed every 1MB (default)
 
         /// <summary>
         /// For rng reseeding interval in bytes generated. Minimum is 128 bytes. 
@@ -55,6 +56,53 @@ namespace AVcontrol
             result[15] = BitConverter.ToUInt32(seed, 20);
 
             Array.Copy(result, _state, 16);
+        }
+        public  void UpdateReseedInterval(UInt64 newIntervalBytes)
+        {
+            if (newIntervalBytes < 128) newIntervalBytes = 128;
+            RESEED_INTERVAL_BYTES = newIntervalBytes;
+        }
+
+
+
+        public void Shuffle(ref string str)
+        {
+            ArgumentNullException.ThrowIfNull(str);
+            char[] chars = str.ToCharArray();
+            Shuffle(ref chars);
+            str = new string(chars);
+        }
+        public void Shuffle<T>(ref T[] array)
+        {
+            ArgumentNullException.ThrowIfNull(array);
+            Int32 n = array.Length;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (array[i], array[j]) = (array[j], array[i]);
+            }
+        }
+        public void Shuffle<T>(ref List<T> list)
+        {
+            ArgumentNullException.ThrowIfNull(list);
+            Int32 n = list.Count;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+        public void Shuffle<T>(ref Span<T> span)
+        {
+            Int32 n = span.Length;
+
+            for (Int32 i = n - 1; i > 0; i--)
+            {
+                Int32 j = Next(i + 1);
+                (span[i], span[j]) = (span[j], span[i]);
+            }
         }
 
 
@@ -122,7 +170,7 @@ namespace AVcontrol
 
             Array.Clear(workingState, 0, workingState.Length);
         }
-        private static void AddExtraEntropy(Byte[] seed)
+        static private void AddExtraEntropy(Byte[] seed)
         {
             //  Hardware entropy
             Int64 extraEntropy = Stopwatch.GetTimestamp() ^ Environment.TickCount;
@@ -220,7 +268,21 @@ namespace AVcontrol
         public double SecureNextDouble()
         {
             Reseed();
-            double result = NextDoubleInternal();
+            double result = NextDouble();
+            Reseed();
+            return result;
+        }
+        public double SecureNextDouble(double exclusiveMaxValue)
+        {
+            Reseed();
+            double result = NextDouble(exclusiveMaxValue);
+            Reseed();
+            return result;
+        }
+        public double SecureNextDouble(double inclusiveMinValue, double exclusiveMaxValue)
+        {
+            Reseed();
+            double result = NextDouble(inclusiveMinValue, exclusiveMaxValue);
             Reseed();
             return result;
         }
@@ -274,7 +336,6 @@ namespace AVcontrol
         }
 
         public UInt64 NextULong()  => NextULongInternal();
-        public double NextDouble() => NextDoubleInternal();
         public Byte[] NextBytes(Int32 length) => NextBytesInternal(new Byte[length], 0, 255);
 
         public bool NextBool() => (NextULongInternal() & 1) == 1;
@@ -322,7 +383,7 @@ namespace AVcontrol
             }
             return buffer;
         }
-        private static Byte CoerceByte(Byte value, Byte inclusiveMinValue, Byte inclusiveMaxValue)
+        static private Byte CoerceByte(Byte value, Byte inclusiveMinValue, Byte inclusiveMaxValue)
         {
             if (inclusiveMinValue > inclusiveMaxValue)
                 throw new ArgumentOutOfRangeException(
@@ -338,11 +399,48 @@ namespace AVcontrol
             if (inclusiveMaxValue == 0) return 0;
             return (Byte)(value % (inclusiveMaxValue - inclusiveMinValue + 1) + inclusiveMinValue);
         }
-        private double NextDoubleInternal() => (NextULongInternal() >> 11) * (1.0 / (1UL << 53));
+
+        public double NextDouble(double exclusiveMaxValue)
+        {
+            if (exclusiveMaxValue <= 0)
+                throw new ArgumentOutOfRangeException
+                (
+                    nameof(exclusiveMaxValue), 
+                    "exclusiveMaxValue must be > 0."
+                );
+
+            if (double.IsInfinity(exclusiveMaxValue) || double.IsNaN(exclusiveMaxValue))
+                throw new ArgumentOutOfRangeException
+                    (
+                        nameof(exclusiveMaxValue),
+                        "exclusiveMaxValue must be a finite number."
+                    );
+
+            return NextDouble() * exclusiveMaxValue;
+        }
+        public double NextDouble(double inclusiveMinValue, double exclusiveMaxValue)
+        {
+            if (inclusiveMinValue > exclusiveMaxValue)
+                throw new ArgumentOutOfRangeException
+                    (
+                        nameof(inclusiveMinValue),
+                        "inclusiveMinValue must be less than exclusiveMaxValue."
+                    );
+            
+            if (double.IsInfinity(inclusiveMinValue) || double.IsNaN(inclusiveMinValue) ||
+                double.IsInfinity(exclusiveMaxValue) || double.IsNaN(exclusiveMaxValue))
+                throw new ArgumentException("Arguments must be finite numbers.");
+
+            double range = exclusiveMaxValue - inclusiveMinValue;
+
+            if (range <= 0.0) return inclusiveMinValue;
+            return inclusiveMinValue + NextDouble() * range;
+        }
+        public double NextDouble() => (NextULongInternal() >> 11) * (1.0 / (1UL << 53));
 
 
 
-        private static Byte[] GenerateTrueHardwareSeed()
+        static private Byte[] GenerateTrueHardwareSeed()
         {
             Byte[] seed = new Byte[32];
 
@@ -352,7 +450,7 @@ namespace AVcontrol
 
             return seed;
         }
-        private static UInt64[] CollectHardwareEntropy()
+        static private UInt64[] CollectHardwareEntropy()
         {
             const bool forceFullCollection = true;
             UInt64[] entropy = new UInt64[8];
@@ -383,7 +481,7 @@ namespace AVcontrol
             return entropy;
         }
 
-        private static void MixEntropy(UInt64[] entropy, Byte[] output)
+        static private void MixEntropy(UInt64[] entropy, Byte[] output)
         {
             UInt64 mixer = 0;
 
@@ -407,7 +505,7 @@ namespace AVcontrol
                 Buffer.BlockCopy(bytes, 0, output, i, bytesToCopy);
             }
         }
-        private static void FinalMixWithTiming(Byte[] seed)
+        static private void FinalMixWithTiming(Byte[] seed)
         {
             Byte[] temp = new Byte[seed.Length];
             Array.Copy(seed, temp, seed.Length);
@@ -432,12 +530,12 @@ namespace AVcontrol
 
 
 
-        private static UInt64 RotateLeft(UInt64 value, Int32 offset) => (value << offset) | (value >> (64 - offset));
-        private static UInt32 RotateLeft(UInt32 value, Int32 offset) => (value << offset) | (value >> (32 - offset));
+        static private UInt64 RotateLeft(UInt64 value, Int32 offset) => (value << offset) | (value >> (64 - offset));
+        static private UInt32 RotateLeft(UInt32 value, Int32 offset) => (value << offset) | (value >> (32 - offset));
 
 
 
-        private static void QuarterRound(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref UInt32 d)
+        static private void QuarterRound(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref UInt32 d)
         {
             a += b; d = RotateLeft(d ^ a, 16);
             c += d; b = RotateLeft(b ^ c, 12);
