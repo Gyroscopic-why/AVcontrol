@@ -9,36 +9,43 @@ namespace AVcontrol
 {
     static public partial class Numsys
     {
-        static public Int32 LowBase(string oldValue, Int32 oldBase, Int32 newBase)
+        static public Int64 LowBase(string oldValue, Int32 oldBase, Int32 newBase)
         {
-            if (!BaseArgumentCheck(oldBase, newBase, 10)) return Convert.ToInt32(oldValue);
+            if (!BaseArgumentCheck(oldBase, newBase, 10)) return Convert.ToInt64(oldValue);
 
-            Int64 decimalValue = ToDecimal(oldValue, oldBase);
-            return Convert.ToInt32(FromDecimal(decimalValue, newBase));
+            UInt64 decimalValue = ToDecimal64(oldValue, oldBase);
+            return Convert.ToInt64(FromDecimal64(decimalValue, newBase));
         }
 
-        static public Int32[] LowBaseArray(string oldValue, Int32 oldBase, Int32 newBase)
-            => [.. LowBaseList(oldValue, oldBase, newBase)];
-        static public Int32[] LowBaseArray(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-            => [.. LowBaseList(oldValue, oldBase, newBase, outputLength)];
+        static public T[] LowBaseArray<T>(string oldValue, Int32 oldBase, Int32 newBase)
+            => [.. LowBaseList<T>(oldValue, oldBase, newBase)];
+        static public T[] LowBaseArray<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
+            => [.. LowBaseList<T>(oldValue, oldBase, newBase, outputLength)];
 
-        static public List<Int32> LowBaseList(string oldValue, Int32 oldBase, Int32 newBase)
+        static public List<T> LowBaseList<T>(string oldValue, Int32 oldBase, Int32 newBase)
         {
-            if (!BaseArgumentCheck(oldBase, newBase, 10)) return [.. oldValue.Select(c => gDigits.IndexOf(c))];
+            if (!BaseArgumentCheck(oldBase, newBase, 10))
+                return [.. oldValue.Select(c => (T)Convert.ChangeType(gDigits.IndexOf(c), typeof(T)))];
 
             Int64 decimalValue = Convert.ToInt64(oldValue, oldBase);
-            string newValue = Convert.ToString(decimalValue, newBase).ToUpper();
+            string    newValue = Convert.ToString(decimalValue, newBase).ToUpper();
 
-            List<Int32> result = [];
-            foreach (char c in newValue) result.Add(Convert.ToInt32(c.ToString(), newBase));
+            List<T> result = new (newValue.Length);
+            foreach (char c in newValue)
+                result.Add
+                (   (T)Convert.ChangeType
+                    (
+                        Convert.ToInt64(c.ToString(), newBase),
+                        typeof(T)
+                )   );
 
             return result;
         }
-        static public List<Int32> LowBaseList(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
+        static public List<T> LowBaseList<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
         {
-            List<Int32> result = LowBaseList(oldValue, oldBase, newBase);
+            List<T> result  = LowBaseList<T>(oldValue, oldBase, newBase);
 
-            while (result.Count < outputLength) result.Insert(0, 0);
+            while (result.Count < outputLength) result.Insert(0, (T)(Convert.ChangeType(0, typeof(T))));
             return result;
         }
     }
