@@ -97,7 +97,7 @@ namespace AVcontrol
 
             return result;
         }
-        static public void ReverseVoid<T>(this Span<T> span)
+        static public void ReverseVoid<T>(ref this Span<T> span)
         {
             Int32 i = 0, j = span.Length - 1;
             while (i < j)
@@ -107,6 +107,6 @@ namespace AVcontrol
                 j--;
             }
         }
-        static public void ReverseVoid<T>(this Memory<T> memory) => memory.Span.Reverse();
+        static public void ReverseVoid<T>(ref this Memory<T> memory) => memory.Span.Reverse();
     }
 }
