@@ -51,10 +51,9 @@ namespace AVcontrol
         }
         static public T BigEndian<T>(ReadOnlySpan<Byte> bytes) where T : unmanaged
         {
-            Span<byte> reversed = stackalloc byte[bytes.Length];
-
-            bytes.CopyTo(reversed);
-            Utils.Reverse(reversed);
+            Span<Byte> reversed = stackalloc Byte[bytes.Length];
+            for (var i = 0; i < bytes.Length; i++)
+                reversed[i] = bytes[bytes.Length - 1 - i];
 
             return LittleEndian<T>(reversed);
         }
