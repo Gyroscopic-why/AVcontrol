@@ -2,7 +2,7 @@
 
 &nbsp;  
 #  Quick README navigation
-### [Latest version functionality](https://github.com/Gyroscopic-why/AVcontrol#all-functionality-v27)
+### [Latest version functionality](https://github.com/Gyroscopic-why/AVcontrol#all-functionality-v271)
 ### [Most stable versions](https://github.com/Gyroscopic-why/AVcontrol#most-stable-versions)
 ### [Changelog](https://github.com/Gyroscopic-why/AVcontrol#changelog)
 
@@ -10,7 +10,7 @@
 
 &nbsp;
 
-# All functionality (v2.7):
+# All functionality (v2.7.1):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => wont be compromised**
      - **(Wildcard) Funcs for generating: (S)Byte, (U)Int16, (U)Int32, (U)Int64**
@@ -73,7 +73,7 @@ _for Conversions of numbers from one numeric system to another, supports:_
 
 
 # Most stable versions
-- **>  [AVcontrol v2.7_________________(44 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.7) (Windows/Linux/MacOS - Core 10)**
+- **>  [AVcontrol v2.7.1_______________(44 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.7.1) (Windows/Linux/MacOS - Core 10)**
 - **>  [AVcontrol v2.6.1_______________(39 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6.1) (Windows/Linux/MacOS - Core 10)**
 -   [AVcontrol v2.6____________________(36 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6) (Windows/Linux/MacOS - Core 10)
 - **>  [AVcontrol v2.5.1_______________(33 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5.1) (Windows/Linux/MacOS - Core 10)**
@@ -89,6 +89,12 @@ _for Conversions of numbers from one numeric system to another, supports:_
 
 
 # Changelog
+
+
+## v2.7.1 Changes:
+- Fixed incorrect reversing of FromBinary.BigEndian(ReadOnlySpan) overload
+- Fixed ease of use for both Utils.ReverseVoid()
+
 
 
 ## v2.7 Changes:
@@ -246,8 +252,8 @@ _for Conversions of numbers from one numeric system to another, supports:_
 - **Added more Conversions. methods**
 - removed old ones because the new makes them obsolete and inconvenient
 
-- **Fixed Numsys. AsBinary overflows that had weird bugs with custom digits**
-- **Fixed Numsys. AsBinary overflows (custom digits and output extending) having wrong extender digits**
+- **Fixed Numsys. AsBinary overloads that had weird bugs with custom digits**
+- **Fixed Numsys. AsBinary overloads (custom digits and output extending) having wrong extender digits**
 
 - Moved some old Conversions. functions to FromBinary. since that is the proper place for them to be
 
@@ -324,7 +330,7 @@ Includes
 
 
 # Most influential updates:
-- **№1 - v2.7:**
+- **№1 - v2.7.1:**
      + Full code refactor, +.Unsanitized_.. to FromBinary. +.Shuffle to Random's classes, +.NextDouble w/ interval support
 - **№2 - v2.5.1:**  
      + Numsys revamp with a lot of bugfixes, large scale transition to wildcard Type, and a lot of optimisation using double-wildcard type inputs
