@@ -14,6 +14,56 @@ namespace AVcontrol
     {
         static void Main()
         {
+            //Span<Int32> aboba = [0, 1, 2, 3, 4, 5];
+
+            //Write("\n\tinitial sequns: ");
+            //foreach (int a in aboba) Write(a + " ");
+
+
+
+            //Span<int> reversed = stackalloc int[aboba.Length];
+
+            //aboba.CopyTo(reversed);
+            //Utils.Reverse(reversed);
+
+            //Write("\n\t'lol' reversed: ");
+            //foreach (int a in reversed) Write(a + " ");
+
+
+
+
+            //Span<int> actually1 = stackalloc int[aboba.Length];
+
+            //aboba.CopyTo(actually1);
+            //Utils.ReverseVoid(ref actually1);
+
+            //Write("\n\t.VoidReverse(): ");
+            //foreach (int a in actually1) Write(a + " ");
+
+
+
+            //Span<int> actually2 = stackalloc int[aboba.Length];
+
+            //aboba.CopyTo(actually2);
+            //actually2 = Utils.Reverse(actually2);
+
+            //Write("\n\tReasign-nt std: ");
+            //foreach (int a in actually2) Write(a + " ");
+
+
+            //ReadOnlySpan<Byte> bytes = [0, 1, 2, 3, 4, 5];
+            //Span<byte> reversed = stackalloc byte[bytes.Length];
+            //for (int i = 0; i < bytes.Length; i++)
+            //    reversed[i] = bytes[bytes.Length - 1 - i];
+            //foreach (int a in reversed) Write(a + " ");
+
+            //ReadKey();
+
+
+
+
+
+
             //Stopwatch timer = new();
             //Random standart = new();
             //FastRandom fast = new();
