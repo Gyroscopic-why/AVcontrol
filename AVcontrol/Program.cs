@@ -14,6 +14,26 @@ namespace AVcontrol
     {
         static void Main()
         {
+            Byte[] aboba = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            List<Byte[]> split = Split.ArrayFixedSize(aboba, 0, 5);
+            Byte[] lol = Combine.ToArray(split, [2, 1, 0, 3, 4, 5, 6, 7, 8]);
+
+            List<Byte> alist = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            List<List<Byte>> splitList = Split.ListFixedSize(alist, 0, 5);
+            List<Byte> combined = Combine.ToList(splitList, [2, 1, 0, 3, 4, 5, 6, 7, 8]);
+
+            ;
+
+
+
+
+
+
+
+
+
+
+
             //Span<Int32> aboba = [0, 1, 2, 3, 4, 5];
 
             //Write("\n\tinitial sequns: ");
