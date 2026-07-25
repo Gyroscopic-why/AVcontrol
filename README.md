@@ -2,7 +2,7 @@
 
 &nbsp;  
 #  Quick README navigation
-### [Latest version functionality](https://github.com/Gyroscopic-why/AVcontrol#all-functionality-v271)
+### [Latest version functionality](https://github.com/Gyroscopic-why/AVcontrol#all-functionality-v28)
 ### [Most stable versions](https://github.com/Gyroscopic-why/AVcontrol#most-stable-versions)
 ### [Changelog](https://github.com/Gyroscopic-why/AVcontrol#changelog)
 
@@ -10,7 +10,7 @@
 
 &nbsp;
 
-# All functionality (v2.7.1):
+# All functionality (v2.8):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => wont be compromised**
      - **(Wildcard) Funcs for generating: (S)Byte, (U)Int16, (U)Int32, (U)Int64**
@@ -34,10 +34,12 @@ _for Conversions of numbers from one numeric system to another, supports:_
      - **Auto\<output Type here\> (uses Fast versions if possible)**
      - **Funcs supporting custom digits for conversions**  
        _Support for binary variants of conversions with wildcard type output, example: List\<(any integer type)\>_
+     - Works with any base >= 2 if calculations fit in selected precision level
+     - Selecting calculation precision of 64 or 128 bits
      - Fast conversions (only) for bases 2, 8, 10, 16 
        _Support for direct number conversions_
      - extending output to a minimal length
-     - low base conversions (for bases less or equal to 10)
+     - low base conversions with wildcard type output (for bases <= 10)
 - Utils, for:
      - **Reverse methods for string, integer-types, Lists, arrays, spans and some other collection**
      (Replacement of the inconsistent standart C# Linq implemetation)
@@ -73,9 +75,9 @@ _for Conversions of numbers from one numeric system to another, supports:_
 
 
 # Most stable versions
+- **>  [AVcontrol v2.8_________________(52 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.8) (Windows/Linux/MacOS - Core 10)**
 - **>  [AVcontrol v2.7.1_______________(44 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.7.1) (Windows/Linux/MacOS - Core 10)**
-- **>  [AVcontrol v2.6.1_______________(39 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6.1) (Windows/Linux/MacOS - Core 10)**
--   [AVcontrol v2.6____________________(36 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6) (Windows/Linux/MacOS - Core 10)
+-   [AVcontrol v2.6.1__________________(39 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6.1) (Windows/Linux/MacOS - Core 10)
 - **>  [AVcontrol v2.5.1_______________(33 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5.1) (Windows/Linux/MacOS - Core 10)**
 -   [AVcontrol v2.4____________________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.4) (Windows/Linux/MacOS - Core 10)
 - **>  [AVcontrol v2.2.2_______________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2) (Windows only)**
@@ -90,6 +92,24 @@ _for Conversions of numbers from one numeric system to another, supports:_
 
 # Changelog
 
+
+## v2.8 Changes:
+### Numsys:
++ BROKEN LIMITATION for bases (oldBase and newBase) for functions that works with custom digits
+(no longer a limit for 36 custom digit count - it can be anything as long as it fits in a 64 or 128 depending on what precision you choose)
+
++ Increased precision of decimal conversion for some variants
++ Added the selection between 64 and 128 bit for the conversions in advanced methods
+~ wip: implementing 256 bit precision (eta: v3.0)
+
+#### Added wildcard output for some variants:
+- Auto(...) & (..., outputLength)
+- Fast_2_8_10_16(...) & (..., outputLength)
+- T[] and List\<T\> LowBase(...) & (..., outputLength)
+- AsArray & AsList
+- FromCustomAsArray & FromCustomAsList
+
+#### Fixed FromBinary.BigEndian data not reversing
 
 ## v2.7.1 Changes:
 - Fixed incorrect reversing of FromBinary.BigEndian(ReadOnlySpan) overload
@@ -334,15 +354,17 @@ Includes
      + Full code refactor, +.Unsanitized_.. to FromBinary. +.Shuffle to Random's classes, +.NextDouble w/ interval support
 - **№2 - v2.5.1:**  
      + Numsys revamp with a lot of bugfixes, large scale transition to wildcard Type, and a lot of optimisation using double-wildcard type inputs
-- **#3 - v2.6.1:**
+- **№3 - v2.8:**
+     + The largest Numsys enchancement: No more limitations on bases, precision selection & full wildcard support
+- **#4 - v2.6.1:**
      + Merged DateTime4b class with AVcontrol (v2.6), bugfixes and optimisations
-- **№4 - v2.2.2:**  
+- **№5 - v2.2.2:**  
      + Longest lasting stable version with Fast & Secure Random logic (almost 60 days)
-- **№5 - v1.8.2:**  
+- **№6 - v1.8.2:**  
      + Second longest lasting - first stable version with Numsys logic (almost 50 days)
-- №6 - v2.1.1:  
-     + Saved the day when the most broken build (2.0) was first released
-- №7 - v1.7:
+- №7 - v2.1.1:  
+     + First stable version after the most broken build (2.0) was first released
+- №8 - v1.7:
      + In the early stages of development of 1.8s (before 1.8.2 came out) roll backs were often performed to 1.7
-- №8 - 1.4.1:
+- №9 - 1.4.1:
      + Most used version by far in the early development phase
