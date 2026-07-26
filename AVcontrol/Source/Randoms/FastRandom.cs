@@ -19,6 +19,14 @@ namespace AVcontrol
 
 
 
+        static public FastRandom LazyInstance
+        {
+            get => field ??= new FastRandom();
+            private set;
+        } = null;
+
+
+
         public void Shuffle(ref string str)
         {
             ArgumentNullException.ThrowIfNull(str);
