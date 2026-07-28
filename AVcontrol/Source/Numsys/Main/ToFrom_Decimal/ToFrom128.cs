@@ -76,7 +76,7 @@ namespace AVcontrol
 
             while (current > 0)
             {
-                result.Add((T)Convert.ChangeType(current % newBaseConv, typeof(T)));
+                result.Add((T)Convert.ChangeType((UInt64)(current % newBaseConv), typeof(T)));
                 current /= newBaseConv;
             }
 

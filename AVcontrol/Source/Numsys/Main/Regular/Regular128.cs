@@ -30,6 +30,7 @@ namespace AVcontrol
 
         static public List<T> AsList128<T>(string oldValue, Int32 oldBase, Int32 newBase)
         {
+            Utils.TypeArgumentCheck<T>();
             if (!BaseArgumentCheck(oldBase, newBase))
                 return [.. oldValue.Select(c => (T)Convert.ChangeType(gDigits.IndexOf(c), typeof(T)))];
 
