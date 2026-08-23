@@ -13,10 +13,10 @@ namespace AVcontrol
         {
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length)) return oldValue;
 
-            UInt128 decimalValue = ToDecimalFromCustom128(oldValue, oldBase, customDigits);
+            UInt128 decimalValue = ToDecimalFromCustom128(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return customDigits[0].ToString();
-            else return FromDecimalToCustom128(decimalValue, newBase, customDigits);
+            else return FromDecimalToCustom128(decimalValue, customDigits, newBase);
         }
         static public string CustomAsString128(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
             => CustomAsString128(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
@@ -29,7 +29,7 @@ namespace AVcontrol
             UInt128 decimalValue = ToDecimal128(oldValue, oldBase);
 
             if (decimalValue == 0) return customDigits[0].ToString();
-            else return FromDecimalToCustom128(decimalValue, newBase, customDigits);
+            else return FromDecimalToCustom128(decimalValue, customDigits, newBase);
         }
         static public string ToCustomAsString128(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
             => ToCustomAsString128(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
@@ -39,7 +39,7 @@ namespace AVcontrol
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length, 36))
                 return (string)oldValue.Select(c => gDigits[customDigits.IndexOf(c)]);
 
-            UInt128 decimalValue = ToDecimalFromCustom128(oldValue, oldBase, customDigits);
+            UInt128 decimalValue = ToDecimalFromCustom128(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return "0";
             else return FromDecimal128(decimalValue, newBase);
@@ -61,7 +61,7 @@ namespace AVcontrol
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length, 26))
                 return [.. oldValue.Select(c => (T)Convert.ChangeType(customDigits.IndexOf(c), typeof(T)))];
 
-            UInt128 decimalValue = ToDecimalFromCustom128(oldValue, oldBase, customDigits);
+            UInt128 decimalValue = ToDecimalFromCustom128(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return [(T)Convert.ChangeType(0, typeof(T))];
             else return FromDecimal128<T>(decimalValue, newBase);
