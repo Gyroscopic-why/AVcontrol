@@ -2,7 +2,7 @@
 
 &nbsp;  
 #  Quick README navigation
-### [Latest version functionality](https://github.com/Gyroscopic-why/AVcontrol#all-functionality-v28)
+### [Latest version functionality](https://github.com/Gyroscopic-why/AVcontrol#all-functionality-v29)
 ### [Most stable versions](https://github.com/Gyroscopic-why/AVcontrol#most-stable-versions)
 ### [Changelog](https://github.com/Gyroscopic-why/AVcontrol#changelog)
 
@@ -10,7 +10,7 @@
 
 &nbsp;
 
-# All functionality (v2.8):
+# All functionality (v2.9):
 - SecureRandom (alternative to C# Cryptography.RandomNumberGenerator)
      - **Does not rely on any dependencies, uses only hardware randomness => wont be compromised**
      - **(Wildcard) Funcs for generating: (S)Byte, (U)Int16, (U)Int32, (U)Int64**
@@ -19,6 +19,7 @@
        _Supports reseeding, autoReseeding, and SecureNext for reseeding before generating_  
        _Accepts minValue and maxValue for generating limits_
      - _Supports changing the RESEED_AFTER_BYTES_GENERATED interval_
+     - Has a static LazyInstance object you can use at any time
      - Is based on ChaCha20 algorithm
      - slower than standard C# implementation
 - FastRandom (alternative to C# standard Random class)
@@ -27,6 +28,7 @@
      - **(Wildcard) Shuffling of Array\<T\>, List\<T\>, Span\<T\> and strings**
      - (Standard) Funcs for generating: UInt64, Byte[], double  
        _Accepts minValue and maxValue for generating limits_
+     - Has a static LazyInstance object you can use at any time
      - Uses Xoshiro256++ algorithm
      - a bit slower than standard C# Random
 - Numsys (short for numeric systems)  
@@ -34,12 +36,12 @@ _for Conversions of numbers from one numeric system to another, supports:_
      - **Auto\<output Type here\> (uses Fast versions if possible)**
      - **Funcs supporting custom digits for conversions**  
        _Support for binary variants of conversions with wildcard type output, example: List\<(any integer type)\>_
-     - Works with any base >= 2 if calculations fit in selected precision level
+     - Works with any base \>= 2 if calculations fit in selected precision level
      - Selecting calculation precision of 64 or 128 bits
      - Fast conversions (only) for bases 2, 8, 10, 16 
        _Support for direct number conversions_
      - extending output to a minimal length
-     - low base conversions with wildcard type output (for bases <= 10)
+     - low base conversions with wildcard type output (for bases \<= 10)
 - Utils, for:
      - **Reverse methods for string, integer-types, Lists, arrays, spans and some other collection**
      (Replacement of the inconsistent standart C# Linq implemetation)
@@ -65,8 +67,17 @@ _for Conversions of numbers from one numeric system to another, supports:_
      - .Unsanitized_\<Encoding here\> for unfinished string byte sequences
         (supports: ASCII, Utf8, Utf16, BigEndianUtf16, Utf32)
  - Split (& Combine), for:
+     - **(Wildcard) Splitting 1D Data collections into 2D grids of List\<T[]\> or List\<List\<T\>\>, 3 variants**:
+         - .FixedSize\<T\> (Int32 minSize, Int32 maxSize)
+             > splits into chunks of maxSize, while not leaving a single smaller than minSize
+         - .UniformSize\<T\> (Int32 fragmentCount, bool oversizeInFront)
+             > splits into 'fragmentCount' chunks of the same length +- 1 if the elements is not divisable by chosen chunk count  
+         - RandomSize\<T\> (Int32 minSize, Int32 maxSize)
+             > splits into chunks of the sizes [minSize; maxSize)   
      - **Splitting integers into lists of smaller chunks
        (and combining them back together)**
+     - Merging of a List\<T[]\> -> T[] & List\<List\<T\>\> -\> List\<T\>
+         >  _also supports custom order input_
      - Input:  wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64  )
      - Output: wildcard Type (  (S)Byte, (U)Int16, (U)Int32, (U)Int64  )
 
@@ -75,13 +86,13 @@ _for Conversions of numbers from one numeric system to another, supports:_
 
 
 # Most stable versions
+- **>  [AVcontrol v2.9_________________(56 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.9) (Windows/Linux/MacOS - Core 10)**
 - **>  [AVcontrol v2.8_________________(52 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.8) (Windows/Linux/MacOS - Core 10)**
 - **>  [AVcontrol v2.7.1_______________(44 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.7.1) (Windows/Linux/MacOS - Core 10)**
 -   [AVcontrol v2.6.1__________________(39 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.6.1) (Windows/Linux/MacOS - Core 10)
 - **>  [AVcontrol v2.5.1_______________(33 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.5.1) (Windows/Linux/MacOS - Core 10)**
 -   [AVcontrol v2.4____________________(35 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.4) (Windows/Linux/MacOS - Core 10)
-- **>  [AVcontrol v2.2.2_______________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2) (Windows only)**
--   [AVcontrol v2.1.1__________________(26 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.1.1) (Windows only)
+-   [AVcontrol v2.2.2__________________(32 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v2.2.2) (Windows only)
 - **>  [AVcontrol v1.8.2_______________(25 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.8.2) (Windows only)**
 -   [AVcontrol v1.7____________________(22 kb)](https://github.com/Gyroscopic-why/AVcontrol/releases/tag/v1.7) (Windows only)
 ##### Starting from v2.3.10 and higher, all versions will be cross platform build with the .NET Core 10 framework
@@ -91,6 +102,29 @@ _for Conversions of numbers from one numeric system to another, supports:_
 
 
 # Changelog
+
+
+
+## v2.9 Changes:
+### Split. enhancements:
+- .FixedSize\<T\> (Int32 minSize, Int32 maxSize)
+    > splits into chunks of maxSize, while not leaving a single smaller than minSize   
+- .UniformSize\<T\> (Int32 fragmentCount, bool oversizeInFront)
+    > splits into 'fragmentCount' chunks of the same length +- 1 if the elements is not divisable by chosen chunk count    
+- RandomSize\<T\> (Int32 minSize, Int32 maxSize)
+    > splits into chunks of the sizes [minSize; maxSize)   
+
+### Combining:
+- Regular merging of a List\<T[]\> -> T[] & List\<List\<T\>\> -\> List\<T\>
+- Merging with custom orders
+
+### FastRandom & SecureRandom:
++ LazyInstance of FastRandom & SecureRandom
+
+### Numsys:
++ Improved QoL for working with arguments in .To/From- Decimal
++ Fixed Conversion: UInt128 \<---\> \<T\>
+
 
 
 ## v2.8 Changes:
