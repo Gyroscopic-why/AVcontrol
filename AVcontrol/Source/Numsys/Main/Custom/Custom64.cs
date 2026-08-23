@@ -13,10 +13,10 @@ namespace AVcontrol
         {
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length)) return oldValue;
 
-            UInt64 decimalValue = ToDecimalFromCustom64(oldValue, oldBase, customDigits);
+            UInt64 decimalValue = ToDecimalFromCustom64(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return customDigits[0].ToString();
-            else return FromDecimalToCustom64(decimalValue, newBase, customDigits);
+            else return FromDecimalToCustom64(decimalValue, customDigits, newBase);
         }
         static public string CustomAsString64(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
             => CustomAsString64(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
@@ -29,7 +29,7 @@ namespace AVcontrol
             UInt64 decimalValue = ToDecimal64(oldValue, oldBase);
 
             if (decimalValue == 0) return customDigits[0].ToString();
-            else return FromDecimalToCustom64(decimalValue, newBase, customDigits);
+            else return FromDecimalToCustom64(decimalValue, customDigits, newBase);
         }
         static public string ToCustomAsString64(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
             => ToCustomAsString64(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, customDigits[0]);
@@ -39,7 +39,7 @@ namespace AVcontrol
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length, 36))
                 return (string)oldValue.Select(c => gDigits[customDigits.IndexOf(c)]);
 
-            UInt64 decimalValue = ToDecimalFromCustom64(oldValue, oldBase, customDigits);
+            UInt64 decimalValue = ToDecimalFromCustom64(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return "0";
             else return FromDecimal64(decimalValue, newBase);
@@ -61,7 +61,7 @@ namespace AVcontrol
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length, 26))
                 return [.. oldValue.Select(c => (T)Convert.ChangeType(customDigits.IndexOf(c), typeof(T)))];
 
-            UInt64 decimalValue = ToDecimalFromCustom64(oldValue, oldBase, customDigits);
+            UInt64 decimalValue = ToDecimalFromCustom64(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return [(T)Convert.ChangeType(0, typeof(T))];
             else return FromDecimal64<T>(decimalValue, newBase);

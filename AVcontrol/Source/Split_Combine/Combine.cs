@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 
 
-namespace AVcontrol.Source.Split_Combine
+namespace AVcontrol
 {
     static public class Combine
     {
@@ -30,9 +30,68 @@ namespace AVcontrol.Source.Split_Combine
 
             return (T_out)Convert.ChangeType(result, typeof(T_out));
         }
-
-
         static public T_out BigEndian<T_in, T_out>(List<T_in> initial, Int32 numbase)
             => LittleEndian<T_in, T_out>(Utils.Reverse(initial), numbase);
+
+
+        public static T[] ToArray<T>(List<T[]> chunks)
+        {
+            ArgumentNullException.ThrowIfNull(chunks);
+
+            var total = 0;
+            for (var i = 0; i < chunks.Count; i++) total += chunks[i].Length;
+
+            var result = new T[total];
+            var offset = 0;
+            for (var i = 0; i < chunks.Count; i++)
+            {
+                var c = chunks[i];
+                Array.Copy(c, 0, result, offset, c.Length);
+                offset += c.Length;
+            }
+            return result;
+        }
+        public static T[] ToArray<T>(List<T[]> chunks, Int32[] includeOrder)
+        {
+            ArgumentNullException.ThrowIfNull(chunks);
+            ArgumentNullException.ThrowIfNull(includeOrder);
+
+            var total = 0;
+            for (var i = 0; i < chunks.Count; i++) total += chunks[includeOrder[i]].Length;
+
+            var result = new T[total];
+            var offset = 0;
+            for (var i = 0; i < chunks.Count; i++)
+            {
+                var c = chunks[includeOrder[i]];
+                Array.Copy(c, 0, result, offset, c.Length);
+                offset += c.Length;
+            }
+            return result;
+        }
+
+        public static List<T> ToList<T>(List<List<T>> chunks)
+        {
+            ArgumentNullException.ThrowIfNull(chunks);
+
+            var total = 0;
+            for (var i = 0; i < chunks.Count; i++) total += chunks[i].Count;
+
+            List<T> result = new(total);
+            for (var i = 0; i < chunks.Count; i++) result.AddRange(chunks[i]);
+            return result;
+        }
+        public static List<T> ToList<T>(List<List<T>> chunks, Int32[] includeOrder)
+        {
+            ArgumentNullException.ThrowIfNull(chunks);
+            ArgumentNullException.ThrowIfNull(includeOrder);
+
+            var total = 0;
+            for (var i = 0; i < chunks.Count; i++) total += chunks[includeOrder[i]].Count;
+
+            List<T> result = new(total);
+            for (var i = 0; i < chunks.Count; i++) result.AddRange(chunks[includeOrder[i]]);
+            return result;
+        }
     }
 }

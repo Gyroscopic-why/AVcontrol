@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 
@@ -40,23 +41,24 @@ namespace AVcontrol
 
             return decimalValue;
         }
-        static public UInt128 ToDecimalFromCustom128(string oldValue, Int32 oldBase, string customDigits)
+        static public UInt128 ToDecimalFromCustom128(string oldValue, string customDigits, Int32? oldBase = null)
         {
-            UInt128 decimalValue = 0, oldBaseConv = (UInt128)oldBase;
+            Int32 safeOldBase = oldBase ?? customDigits.Length;
+            UInt128 decimalValue = 0, oldBaseConv = (UInt128)safeOldBase;
 
             foreach (char c in oldValue)
             {
-                UInt128 digit = CharToDigit128(c, oldBase, customDigits);
+                UInt128 digit = CharToDigit128(c, safeOldBase, customDigits);
                 decimalValue  = decimalValue * oldBaseConv + digit;
             }
 
             return decimalValue;
         }
-        static public UInt128 ToDecimalFromCustom128<T>(List<T> oldValue, Int32 oldBase, List<T> customDigits)
+        static public UInt128 ToDecimalFromCustom128<T>(List<T> oldValue, List<T> customDigits, Int32? oldBase = null)
         {
             Utils.TypeArgumentCheck<T>();
 
-            UInt128 decimalValue = 0, oldBaseConv = (UInt128)oldBase;
+            UInt128 decimalValue = 0, oldBaseConv = (UInt128)(oldBase ?? customDigits.Count);
             foreach (T digit in oldValue)
                 decimalValue = decimalValue * oldBaseConv + (UInt128)customDigits.IndexOf(digit);
 
@@ -66,7 +68,7 @@ namespace AVcontrol
 
 
         static public string  FromDecimal128(UInt128 decimalValue, Int32 newBase)
-            => FromDecimalToCustom128(decimalValue, newBase, gDigits);
+            => FromDecimalToCustom128(decimalValue, gDigits[..newBase]);
         static public List<T> FromDecimal128<T>(UInt128 decimalValue, Int32 newBase)
         {
             Utils.TypeArgumentCheck<T>();
@@ -76,16 +78,16 @@ namespace AVcontrol
 
             while (current > 0)
             {
-                result.Add((T)Convert.ChangeType(current % newBaseConv, typeof(T)));
+                result.Add((T)Convert.ChangeType((UInt64)(current % newBaseConv), typeof(T)));
                 current /= newBaseConv;
             }
 
             return Utils.Reverse(result);
         }
-        static public string  FromDecimalToCustom128(UInt128 decimalValue, Int32 newBase, string customDigits)
+        static public string  FromDecimalToCustom128(UInt128 decimalValue, string customDigits, Int32? newBase = null)
         {
             string result = "";
-            UInt128 current = decimalValue, newBaseConv = (UInt128)newBase;
+            UInt128 current = decimalValue, newBaseConv = (UInt128)(newBase ?? customDigits.Length);
 
             while (current > 0)
             {
@@ -96,12 +98,12 @@ namespace AVcontrol
 
             return Utils.Reverse(result);
         }
-        static public List<T> FromDecimalToCustom128<T>(UInt128 decimalValue, Int32 newBase, List<T> customDigits)
+        static public List<T> FromDecimalToCustom128<T>(UInt128 decimalValue, List<T> customDigits, Int32? newBase = null)
         {
             Utils.TypeArgumentCheck<T>();
 
             List<T> result = [];
-            UInt128 current = decimalValue, newBaseConv = (UInt128)newBase;
+            UInt128 current = decimalValue, newBaseConv = (UInt128)(newBase ?? customDigits.Count);
 
             while (current > 0)
             {

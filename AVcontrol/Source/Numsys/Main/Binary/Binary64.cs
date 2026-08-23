@@ -13,10 +13,10 @@ namespace AVcontrol
         {
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Count)) return oldValue;
 
-            UInt64 decimalValue = ToDecimalFromCustom64(oldValue, oldBase, customDigits);
+            UInt64 decimalValue = ToDecimalFromCustom64(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return [customDigits[0]];
-            else return FromDecimalToCustom64(decimalValue, newBase, customDigits);
+            else return FromDecimalToCustom64(decimalValue, customDigits, newBase);
         }
         static public List<T> CustomAsBinary64<T>(List<T> oldValue, Int32 oldBase, Int32 newBase, List<T> customDigits, Int32 outputLength)
         {
@@ -36,7 +36,7 @@ namespace AVcontrol
             UInt64 decimalValue = ToDecimal64(oldValue, oldBase);
 
             if (decimalValue == 0) return [customDigits[0]];
-            else return FromDecimalToCustom64(decimalValue, newBase, customDigits);
+            else return FromDecimalToCustom64(decimalValue, customDigits, newBase);
         }
         static public List<T> ToCustomAsBinary64<T>(List<T> oldValue, Int32 oldBase, Int32 newBase, List<T> customDigits, Int32 outputLength)
         {
@@ -55,7 +55,7 @@ namespace AVcontrol
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Count, 36))
                 return [.. oldValue.Select(c => (T)Convert.ChangeType(customDigits.IndexOf(c), typeof(T)))];
 
-            UInt64 decimalValue = ToDecimalFromCustom64<T>(oldValue, oldBase, customDigits);
+            UInt64 decimalValue = ToDecimalFromCustom64<T>(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return [(T)Convert.ChangeType(0, typeof(T))];
             else return FromDecimal64<T>(decimalValue, newBase);

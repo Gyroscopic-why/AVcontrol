@@ -40,23 +40,24 @@ namespace AVcontrol
 
             return decimalValue;
         }
-        static public UInt64 ToDecimalFromCustom64(string oldValue, Int32 oldBase, string customDigits)
+        static public UInt64 ToDecimalFromCustom64(string oldValue, string customDigits, Int32? oldBase = null)
         {
-            UInt64 decimalValue = 0, oldBaseConv = (UInt64)oldBase;
+            Int32 safeOldBase = oldBase ?? customDigits.Length;
+            UInt64 decimalValue = 0, oldBaseConv = (UInt64)safeOldBase;
 
             foreach (char c in oldValue)
             {
-                UInt64 digit = CharToDigit64(c, oldBase, customDigits);
+                UInt64 digit = CharToDigit64(c, safeOldBase, customDigits);
                 decimalValue = decimalValue * oldBaseConv + digit;
             }
 
             return decimalValue;
         }
-        static public UInt64 ToDecimalFromCustom64<T>(List<T> oldValue, Int32 oldBase, List<T> customDigits)
+        static public UInt64 ToDecimalFromCustom64<T>(List<T> oldValue, List<T> customDigits, Int32? oldBase = null)
         {
             Utils.TypeArgumentCheck<T>();
 
-            UInt64 decimalValue = 0, oldBaseConv = (UInt64)oldBase;
+            UInt64 decimalValue = 0, oldBaseConv = (UInt64)(oldBase ?? customDigits.Count);
             foreach (T digit in oldValue)
                 decimalValue = decimalValue * oldBaseConv + (UInt64)customDigits.IndexOf(digit);
 
@@ -66,7 +67,7 @@ namespace AVcontrol
 
 
         static public string  FromDecimal64(UInt64 decimalValue, Int32 newBase)
-            => FromDecimalToCustom64(decimalValue, newBase, gDigits);
+            => FromDecimalToCustom64(decimalValue, gDigits[..newBase]);
         static public List<T> FromDecimal64<T>(UInt64 decimalValue, Int32 newBase)
         {
             Utils.TypeArgumentCheck<T>();
@@ -82,10 +83,10 @@ namespace AVcontrol
 
             return Utils.Reverse(result);
         }
-        static public string  FromDecimalToCustom64(UInt64 decimalValue, Int32 newBase, string customDigits)
+        static public string  FromDecimalToCustom64(UInt64 decimalValue, string customDigits, Int32? newBase = null)
         {
             string result = "";
-            UInt64 current = decimalValue, newBaseConv = (UInt64)newBase;
+            UInt64 current = decimalValue, newBaseConv = (UInt64)(newBase ?? customDigits.Length);
 
             while (current > 0)
             {
@@ -96,12 +97,12 @@ namespace AVcontrol
             
             return Utils.Reverse(result);
         }
-        static public List<T> FromDecimalToCustom64<T>(UInt64 decimalValue, Int32 newBase, List<T> customDigits)
+        static public List<T> FromDecimalToCustom64<T>(UInt64 decimalValue, List<T> customDigits, Int32? newBase = null)
         {
             Utils.TypeArgumentCheck<T>();
 
             List<T> result = [];
-            UInt64 current = decimalValue, newBaseConv = (UInt64)newBase;
+            UInt64 current = decimalValue, newBaseConv = (UInt64)(newBase ?? customDigits.Count);
 
             while (current > 0)
             {

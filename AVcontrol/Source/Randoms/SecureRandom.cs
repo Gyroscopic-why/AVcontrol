@@ -36,6 +36,16 @@ namespace AVcontrol
             _bufferPos = 64;  //  Force generate first block
         }
 
+
+
+        static public SecureRandom LazyInstance
+        {
+            get => field ??= new SecureRandom();
+            private set;
+        } = null;
+
+
+
         private void InitializeState(Byte[] seed)
         {
             UInt32[] result = new UInt32[16];
