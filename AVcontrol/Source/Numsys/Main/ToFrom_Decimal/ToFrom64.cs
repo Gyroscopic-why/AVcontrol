@@ -67,7 +67,7 @@ namespace AVcontrol
 
 
         static public string  FromDecimal64(UInt64 decimalValue, Int32 newBase)
-            => FromDecimalToCustom64(decimalValue, gDigits[..newBase]);
+            => FromDecimalToCustom64(decimalValue, gDigits[..newBase], newBase);
         static public List<T> FromDecimal64<T>(UInt64 decimalValue, Int32 newBase)
         {
             Utils.TypeArgumentCheck<T>();

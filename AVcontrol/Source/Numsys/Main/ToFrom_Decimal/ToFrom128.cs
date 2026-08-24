@@ -67,7 +67,7 @@ namespace AVcontrol
 
 
         static public string  FromDecimal128(UInt128 decimalValue, Int32 newBase)
-            => FromDecimalToCustom128(decimalValue, gDigits[..newBase]);
+            => FromDecimalToCustom128(decimalValue, gDigits[..newBase], newBase);
         static public List<T> FromDecimal128<T>(UInt128 decimalValue, Int32 newBase)
         {
             Utils.TypeArgumentCheck<T>();

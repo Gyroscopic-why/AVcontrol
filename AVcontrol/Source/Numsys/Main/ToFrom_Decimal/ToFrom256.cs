@@ -40,23 +40,24 @@ namespace AVcontrol
 
             return decimalValue;
         }
-        static public UInt256 ToDecimalFromCustom256(string oldValue, Int32 oldBase, string customDigits)
+        static public UInt256 ToDecimalFromCustom256(string oldValue, string customDigits, Int32? oldBase = null)
         {
-            UInt256 decimalValue = 0, oldBaseConv = (UInt256)oldBase;
+            Int32 safeOldBase = oldBase ?? customDigits.Length;
+            UInt256 decimalValue = 0, oldBaseConv = (UInt256)safeOldBase;
 
             foreach (char c in oldValue)
             {
-                UInt256 digit = CharToDigit256(c, oldBase, customDigits);
+                UInt256 digit = CharToDigit256(c, safeOldBase, customDigits);
                 decimalValue = decimalValue * oldBaseConv + digit;
             }
 
             return decimalValue;
         }
-        static public UInt256 ToDecimalFromCustom256<T>(List<T> oldValue, Int32 oldBase, List<T> customDigits)
+        static public UInt256 ToDecimalFromCustom256<T>(List<T> oldValue, List<T> customDigits, Int32? oldBase = null)
         {
             Utils.TypeArgumentCheck<T>();
 
-            UInt256 decimalValue = 0, oldBaseConv = (UInt256)oldBase;
+            UInt256 decimalValue = 0, oldBaseConv = (UInt256)(oldBase ?? customDigits.Count);
             foreach (T digit in oldValue)
                 decimalValue = decimalValue * oldBaseConv + (UInt256)customDigits.IndexOf(digit);
 
@@ -66,7 +67,7 @@ namespace AVcontrol
 
 
         static public string  FromDecimal256(UInt256 decimalValue, Int32 newBase)
-            => FromDecimalToCustom256(decimalValue, newBase, gDigits);
+            => FromDecimalToCustom256(decimalValue, gDigits[..newBase], newBase);
         static public List<T> FromDecimal256<T>(UInt256 decimalValue, Int32 newBase)
         {
             Utils.TypeArgumentCheck<T>();
@@ -82,10 +83,10 @@ namespace AVcontrol
 
             return Utils.Reverse(result);
         }
-        static public string  FromDecimalToCustom256(UInt256 decimalValue, Int32 newBase, string customDigits)
+        static public string  FromDecimalToCustom256(UInt256 decimalValue, string customDigits, Int32? newBase = null)
         {
             string result = "";
-            UInt256 current = decimalValue, newBaseConv = (UInt256)newBase;
+            UInt256 current = decimalValue, newBaseConv = (UInt256)(newBase ?? customDigits.Length);
 
             while (current > 0)
             {
@@ -96,12 +97,12 @@ namespace AVcontrol
 
             return Utils.Reverse(result);
         }
-        static public List<T> FromDecimalToCustom256<T>(UInt256 decimalValue, Int32 newBase, List<T> customDigits)
+        static public List<T> FromDecimalToCustom256<T>(UInt256 decimalValue, List<T> customDigits, Int32? newBase = null)
         {
             Utils.TypeArgumentCheck<T>();
 
             List<T> result = [];
-            UInt256 current = decimalValue, newBaseConv = (UInt256)newBase;
+            UInt256 current = decimalValue, newBaseConv = (UInt256)(newBase ?? customDigits.Count);
 
             while (current > 0)
             {

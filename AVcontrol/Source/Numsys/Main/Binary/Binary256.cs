@@ -13,10 +13,10 @@ namespace AVcontrol
         {
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Count)) return oldValue;
 
-            UInt256 decimalValue = ToDecimalFromCustom256(oldValue, oldBase, customDigits);
+            UInt256 decimalValue = ToDecimalFromCustom256(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return [customDigits[0]];
-            else return FromDecimalToCustom256(decimalValue, newBase, customDigits);
+            else return FromDecimalToCustom256(decimalValue, customDigits, newBase);
         }
         static public List<T> CustomAsBinary256<T>(List<T> oldValue, Int32 oldBase, Int32 newBase, List<T> customDigits, Int32 outputLength)
         {
@@ -36,7 +36,7 @@ namespace AVcontrol
             UInt256 decimalValue = ToDecimal256(oldValue, oldBase);
 
             if (decimalValue == 0) return [customDigits[0]];
-            else return FromDecimalToCustom256(decimalValue, newBase, customDigits);
+            else return FromDecimalToCustom256(decimalValue, customDigits, newBase);
         }
         static public List<T> ToCustomAsBinary256<T>(List<T> oldValue, Int32 oldBase, Int32 newBase, List<T> customDigits, Int32 outputLength)
         {
@@ -55,7 +55,7 @@ namespace AVcontrol
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Count, 36))
                 return [.. oldValue.Select(c => (T)Convert.ChangeType(customDigits.IndexOf(c), typeof(T)))];
 
-            UInt256 decimalValue = ToDecimalFromCustom256<T>(oldValue, oldBase, customDigits);
+            UInt256 decimalValue = ToDecimalFromCustom256<T>(oldValue, customDigits, oldBase);
 
             if (decimalValue == 0) return [(T)Convert.ChangeType(0, typeof(T))];
             else return FromDecimal256<T>(decimalValue, newBase);
