@@ -43,14 +43,14 @@ namespace AVcontrol
             return (oldBase == 2 || oldBase == 8 || oldBase == 10 || oldBase == 16)
                 && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
                 ? Unsafe_2_8_10_16_AsString(oldValue, oldBase, newBase)
-                : AsString64(oldValue, oldBase, newBase);
+                : AsStringBigInteger(oldValue, oldBase, newBase);
         }
         static public string AutoAsString(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
         {
             return (oldBase == 2 || oldBase == 8 || oldBase == 10 || oldBase == 16)
                 && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
                 ? Unsafe_2_8_10_16_AsString(oldValue, oldBase, newBase, outputLength)
-                : AsString64(oldValue, oldBase, newBase, outputLength);
+                : AsStringBigInteger(oldValue, oldBase, newBase, outputLength);
         }
 
         static public T[] AutoAsArray<T>(string oldValue, Int32 oldBase, Int32 newBase)
@@ -58,14 +58,14 @@ namespace AVcontrol
             return (oldBase == 2 || oldBase == 8 || oldBase == 10 || oldBase == 16)
                 && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
                 ? Unsafe_2_8_10_16_AsArray<T>(oldValue, oldBase, newBase)
-                : [.. AsList64<T>(oldValue, oldBase, newBase)];
+                : [.. AsListBigInteger<T>(oldValue, oldBase, newBase)];
         }
         static public T[] AutoAsArray<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
         {
             return (oldBase == 2 || oldBase == 8 || oldBase == 10 || oldBase == 16)
                 && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
                 ? Unsafe_2_8_10_16_AsArray<T>(oldValue, oldBase, newBase, outputLength)
-                : [.. AsList64<T>(oldValue, oldBase, newBase, outputLength)];
+                : [.. AsListBigInteger<T>(oldValue, oldBase, newBase, outputLength)];
         }
 
         static public List<T> AutoAsList<T>(string oldValue, Int32 oldBase, Int32 newBase)
@@ -73,14 +73,14 @@ namespace AVcontrol
             return (oldBase == 2 || oldBase == 8 || oldBase == 10 || oldBase == 16)
                 && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
                 ? Unsafe_2_8_10_16_AsList<T>(oldValue, oldBase, newBase)
-                : AsList64<T>(oldValue, oldBase, newBase);
+                : AsListBigInteger<T>(oldValue, oldBase, newBase);
         }
         static public List<T> AutoAsList<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
         {
             return (oldBase == 2 || oldBase == 8 || oldBase == 10 || oldBase == 16)
                 && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
                 ? Unsafe_2_8_10_16_AsList<T>(oldValue, oldBase, newBase, outputLength)
-                : AsList64<T>(oldValue, oldBase, newBase, outputLength);
+                : AsListBigInteger<T>(oldValue, oldBase, newBase, outputLength);
         }
     }
 }
