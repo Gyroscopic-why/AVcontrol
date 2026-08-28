@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../AVcontrol/AVcontrol.csproj" />
+  <Project Path="AVcontrolXT.csproj" />
+</Solution>
