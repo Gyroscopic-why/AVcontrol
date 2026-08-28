@@ -48,14 +48,6 @@ namespace AVcontrol
             => FromCustomAsString128(oldValue, oldBase, newBase, customDigits).PadLeft(outputLength, '0');
 
 
-
-        static public T[] FromCustomAsArray128<T>(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
-            => [.. FromCustomAsList128<T>(oldValue, oldBase, newBase, customDigits)];
-        static public T[] FromCustomAsArray128<T>(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-            => [.. FromCustomAsList128<T>(oldValue, oldBase, newBase, customDigits, outputLength)];
-
-
-
         static public List<T> FromCustomAsList128<T>(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length, 26))

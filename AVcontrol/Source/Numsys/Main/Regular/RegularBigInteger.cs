@@ -22,13 +22,6 @@ namespace AVcontrol
         static public string AsStringBigInteger(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
             => AsStringBigInteger(oldValue, oldBase, newBase).PadLeft(outputLength, '0');
 
-
-        static public T[] AsArrayBigInteger<T>(string oldValue, Int32 oldBase, Int32 newBase)
-            => [.. AsListBigInteger<T>(oldValue, oldBase, newBase)];
-        static public T[] AsArrayBigInteger<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-            => [.. AsListBigInteger<T>(oldValue, oldBase, newBase, outputLength)];
-
-
         static public List<T> AsListBigInteger<T>(string oldValue, Int32 oldBase, Int32 newBase)
         {
             if (!BaseArgumentCheck(oldBase, newBase))

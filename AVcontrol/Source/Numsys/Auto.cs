@@ -11,8 +11,8 @@ namespace AVcontrol
         {
             return typeof(T) switch
             {
-                Type t when t == typeof(string)  => (T)(object)AutoAsString(value, oldBase, newBase),
-                Type t when t == typeof(T[])     => (T)(object)AutoAsArray<T>(value, oldBase, newBase),
+                Type t when t == typeof(string)  => (T)(object)AutoAsString (value, oldBase, newBase),
+                Type t when t == typeof(T[])     => (T)(object)AutoAsList<T>(value, oldBase, newBase).ToArray(),
                 Type t when t == typeof(List<T>) => (T)(object)AutoAsList<T>(value, oldBase, newBase),
                 _ => throw new ArgumentException
                 (
@@ -25,8 +25,8 @@ namespace AVcontrol
         {
             return typeof(T) switch
             {
-                Type t when t == typeof(string)  => (T)(object)AutoAsString(value, oldBase, newBase, outputLength),
-                Type t when t == typeof(T[])     => (T)(object)AutoAsArray<T>(value, oldBase, newBase, outputLength),
+                Type t when t == typeof(string)  => (T)(object)AutoAsString (value, oldBase, newBase, outputLength),
+                Type t when t == typeof(T[])     => (T)(object)AutoAsList<T>(value, oldBase, newBase, outputLength).ToArray(),
                 Type t when t == typeof(List<T>) => (T)(object)AutoAsList<T>(value, oldBase, newBase, outputLength),
                 _ => throw new ArgumentException
                 (
@@ -35,8 +35,6 @@ namespace AVcontrol
                 ),
             };
         }
-
-
 
         static public string AutoAsString(string oldValue, Int32 oldBase, Int32 newBase)
         {
@@ -51,21 +49,6 @@ namespace AVcontrol
                 && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
                 ? Unsafe_2_8_10_16_AsString(oldValue, oldBase, newBase, outputLength)
                 : AsStringBigInteger(oldValue, oldBase, newBase, outputLength);
-        }
-
-        static public T[] AutoAsArray<T>(string oldValue, Int32 oldBase, Int32 newBase)
-        {
-            return (oldBase == 2 || oldBase == 8 || oldBase == 10 || oldBase == 16)
-                && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
-                ? Unsafe_2_8_10_16_AsArray<T>(oldValue, oldBase, newBase)
-                : [.. AsListBigInteger<T>(oldValue, oldBase, newBase)];
-        }
-        static public T[] AutoAsArray<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-        {
-            return (oldBase == 2 || oldBase == 8 || oldBase == 10 || oldBase == 16)
-                && (newBase == 2 || newBase == 8 || newBase == 10 || newBase == 16)
-                ? Unsafe_2_8_10_16_AsArray<T>(oldValue, oldBase, newBase, outputLength)
-                : [.. AsListBigInteger<T>(oldValue, oldBase, newBase, outputLength)];
         }
 
         static public List<T> AutoAsList<T>(string oldValue, Int32 oldBase, Int32 newBase)

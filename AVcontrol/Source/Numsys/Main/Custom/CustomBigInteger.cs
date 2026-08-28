@@ -50,13 +50,6 @@ namespace AVcontrol
 
 
 
-        static public T[] FromCustomAsArrayBigInteger<T>(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
-            => [.. FromCustomAsListBigInteger<T>(oldValue, oldBase, newBase, customDigits)];
-        static public T[] FromCustomAsArrayBigInteger<T>(string oldValue, Int32 oldBase, Int32 newBase, string customDigits, Int32 outputLength)
-            => [.. FromCustomAsListBigInteger<T>(oldValue, oldBase, newBase, customDigits, outputLength)];
-
-
-
         static public List<T> FromCustomAsListBigInteger<T>(string oldValue, Int32 oldBase, Int32 newBase, string customDigits)
         {
             if (!BaseArgumentCheck(oldBase, newBase, customDigits.Length, 26))

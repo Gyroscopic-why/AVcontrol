@@ -21,13 +21,6 @@ namespace AVcontrol
         static public string AsString128(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
             => AsString128(oldValue, oldBase, newBase).PadLeft(outputLength, '0');
 
-
-        static public T[] AsArray128<T>(string oldValue, Int32 oldBase, Int32 newBase)
-            => [.. AsList128<T>(oldValue, oldBase, newBase)];
-        static public T[] AsArray128<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-            => [.. AsList128<T>(oldValue, oldBase, newBase, outputLength)];
-
-
         static public List<T> AsList128<T>(string oldValue, Int32 oldBase, Int32 newBase)
         {
             Utils.TypeArgumentCheck<T>();

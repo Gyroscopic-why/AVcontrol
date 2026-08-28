@@ -21,13 +21,6 @@ namespace AVcontrol
         static public string AsString256(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
             => AsString256(oldValue, oldBase, newBase).PadLeft(outputLength, '0');
 
-
-        static public T[] AsArray256<T>(string oldValue, Int32 oldBase, Int32 newBase)
-            => [.. AsList256<T>(oldValue, oldBase, newBase)];
-        static public T[] AsArray256<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-            => [.. AsList256<T>(oldValue, oldBase, newBase, outputLength)];
-
-
         static public List<T> AsList256<T>(string oldValue, Int32 oldBase, Int32 newBase)
         {
             if (!BaseArgumentCheck(oldBase, newBase))

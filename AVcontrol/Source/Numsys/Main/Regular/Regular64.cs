@@ -21,13 +21,6 @@ namespace AVcontrol
         static public string AsString64(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
             => AsString64(oldValue, oldBase, newBase).PadLeft(outputLength, '0');
 
-
-        static public T[] AsArray64<T>(string oldValue, Int32 oldBase, Int32 newBase)
-            => [.. AsList64<T>(oldValue, oldBase, newBase)];
-        static public T[] AsArray64<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-            => [.. AsList64<T>(oldValue, oldBase, newBase, outputLength)];
-
-
         static public List<T> AsList64<T>(string oldValue, Int32 oldBase, Int32 newBase)
         {
             if (!BaseArgumentCheck(oldBase, newBase))
