@@ -17,11 +17,6 @@ namespace AVcontrol
             return Convert.ToInt64(FromDecimal64(decimalValue, newBase));
         }
 
-        static public T[] LowBaseArray<T>(string oldValue, Int32 oldBase, Int32 newBase)
-            => [.. LowBaseList<T>(oldValue, oldBase, newBase)];
-        static public T[] LowBaseArray<T>(string oldValue, Int32 oldBase, Int32 newBase, Int32 outputLength)
-            => [.. LowBaseList<T>(oldValue, oldBase, newBase, outputLength)];
-
         static public List<T> LowBaseList<T>(string oldValue, Int32 oldBase, Int32 newBase)
         {
             if (!BaseArgumentCheck(oldBase, newBase, 10))
