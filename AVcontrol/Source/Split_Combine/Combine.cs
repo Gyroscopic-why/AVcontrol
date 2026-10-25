@@ -34,7 +34,7 @@ namespace AVcontrol
             => LittleEndian<T_in, T_out>(Utils.Reverse(initial), numbase);
 
 
-        public static T[] ToArray<T>(List<T[]> chunks)
+        static public T[] ToArray<T>(List<T[]> chunks)
         {
             ArgumentNullException.ThrowIfNull(chunks);
 
@@ -51,7 +51,7 @@ namespace AVcontrol
             }
             return result;
         }
-        public static T[] ToArray<T>(List<T[]> chunks, Int32[] includeOrder)
+        static public T[] ToArray<T>(List<T[]> chunks, Int32[] includeOrder)
         {
             ArgumentNullException.ThrowIfNull(chunks);
             ArgumentNullException.ThrowIfNull(includeOrder);
@@ -70,7 +70,7 @@ namespace AVcontrol
             return result;
         }
 
-        public static List<T> ToList<T>(List<List<T>> chunks)
+        static public List<T> ToList<T>(List<List<T>> chunks)
         {
             ArgumentNullException.ThrowIfNull(chunks);
 
@@ -81,7 +81,7 @@ namespace AVcontrol
             for (var i = 0; i < chunks.Count; i++) result.AddRange(chunks[i]);
             return result;
         }
-        public static List<T> ToList<T>(List<List<T>> chunks, Int32[] includeOrder)
+        static public List<T> ToList<T>(List<List<T>> chunks, Int32[] includeOrder)
         {
             ArgumentNullException.ThrowIfNull(chunks);
             ArgumentNullException.ThrowIfNull(includeOrder);

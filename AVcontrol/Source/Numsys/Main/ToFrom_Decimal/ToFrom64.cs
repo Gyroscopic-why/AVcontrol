@@ -40,6 +40,25 @@ namespace AVcontrol
 
             return decimalValue;
         }
+        static public UInt64 ToDecimal64<T>(T[] oldValue, Int32 oldBase)
+        {
+            Utils.TypeArgumentCheck<T>();
+
+            UInt64 decimalValue = 0, oldBaseConv = (UInt64)oldBase;
+            foreach (T digit in oldValue)
+            {
+                UInt64 parsedDigit = (UInt64)Convert.ToInt64(digit);
+                if (parsedDigit >= oldBaseConv)
+                    throw new ArgumentException
+                    (
+                        $"Digit '{parsedDigit}' is invalid for base {oldBase}."
+                    );
+
+                decimalValue = decimalValue * oldBaseConv + parsedDigit;
+            }
+
+            return decimalValue;
+        }
         static public UInt64 ToDecimalFromCustom64(string oldValue, string customDigits, Int32? oldBase = null)
         {
             Int32 safeOldBase = oldBase ?? customDigits.Length;
@@ -58,6 +77,16 @@ namespace AVcontrol
             Utils.TypeArgumentCheck<T>();
 
             UInt64 decimalValue = 0, oldBaseConv = (UInt64)(oldBase ?? customDigits.Count);
+            foreach (T digit in oldValue)
+                decimalValue = decimalValue * oldBaseConv + (UInt64)customDigits.IndexOf(digit);
+
+            return decimalValue;
+        }
+        static public UInt64 ToDecimalFromCustom64<T>(T[] oldValue, T[] customDigits, Int32? oldBase = null)
+        {
+            Utils.TypeArgumentCheck<T>();
+
+            UInt64 decimalValue = 0, oldBaseConv = (UInt64)(oldBase ?? customDigits.Length);
             foreach (T digit in oldValue)
                 decimalValue = decimalValue * oldBaseConv + (UInt64)customDigits.IndexOf(digit);
 
@@ -103,6 +132,22 @@ namespace AVcontrol
 
             List<T> result = [];
             UInt64 current = decimalValue, newBaseConv = (UInt64)(newBase ?? customDigits.Count);
+
+            while (current > 0)
+            {
+                Int32 remainder = (Int32)(current % newBaseConv);
+                result.Add(customDigits[remainder]);
+                current /= newBaseConv;
+            }
+
+            return Utils.Reverse(result);
+        }
+        static public List<T> FromDecimalToCustom64<T>(UInt64 decimalValue, T[] customDigits, Int32? newBase = null)
+        {
+            Utils.TypeArgumentCheck<T>();
+
+            List<T> result = [];
+            UInt64 current = decimalValue, newBaseConv = (UInt64)(newBase ?? customDigits.Length);
 
             while (current > 0)
             {

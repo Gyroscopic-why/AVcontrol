@@ -10,18 +10,7 @@ namespace AVcontrol
         static internal void TypeArgumentCheck<T>()
         {
             Type type = typeof(T);
-            if (type != typeof(Byte) &&
-                type != typeof(SByte) &&
-
-                type != typeof(Int16) &&
-                type != typeof(UInt16) &&
-
-                type != typeof(Int32) &&
-                type != typeof(UInt32) &&
-
-                type != typeof(Int64) &&
-                type != typeof(UInt64))
-                throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
+            TypeArgumentCheck(type);
         }
         static internal void TypeArgumentCheck(Type type)
         {
@@ -38,6 +27,7 @@ namespace AVcontrol
                 type != typeof(UInt64))
                 throw new InvalidOperationException("Type T must be (S)Byte, (U)Int16, (U)Int32, or (U)Int64");
         }
+
 
         static internal readonly Dictionary<Type, UInt64> maxValues = new()
         {

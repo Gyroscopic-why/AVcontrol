@@ -44,6 +44,27 @@ namespace AVcontrol
 
             return decimalValue;
         }
+        static public BigInteger ToDecimalBigInteger<T>(T[] oldValue, Int32 oldBase)
+        {
+            Utils.TypeArgumentCheck<T>();
+
+            BigInteger decimalValue = 0;
+            UInt64 oldBaseConv = (UInt64)oldBase;
+
+            foreach (T digit in oldValue)
+            {
+                UInt64 parsedDigit = Convert.ToUInt64(digit);
+                if (parsedDigit >= oldBaseConv)
+                    throw new ArgumentException
+                    (
+                        $"Digit '{parsedDigit}' is invalid for base {oldBase}."
+                    );
+
+                decimalValue = decimalValue * oldBaseConv + parsedDigit;
+            }
+
+            return decimalValue;
+        }
         static public BigInteger ToDecimalFromCustomBigInteger(string oldValue, string customDigits, Int32? oldBase = null)
         {
             BigInteger decimalValue = 0;
@@ -64,6 +85,17 @@ namespace AVcontrol
 
             BigInteger decimalValue = 0;
             UInt64 oldBaseConv = (UInt64)(oldBase ?? customDigits.Count);
+            foreach (T digit in oldValue)
+                decimalValue = decimalValue * oldBaseConv + (UInt64)customDigits.IndexOf(digit);
+
+            return decimalValue;
+        }
+        static public BigInteger ToDecimalFromCustomBigInteger<T>(T[] oldValue, T[] customDigits, Int32? oldBase = null)
+        {
+            Utils.TypeArgumentCheck<T>();
+
+            BigInteger decimalValue = 0;
+            UInt64 oldBaseConv = (UInt64)(oldBase ?? customDigits.Length);
             foreach (T digit in oldValue)
                 decimalValue = decimalValue * oldBaseConv + (UInt64)customDigits.IndexOf(digit);
 
@@ -112,6 +144,23 @@ namespace AVcontrol
             List<T> result = [];
             BigInteger current = decimalValue;
             UInt64 newBaseConv = (UInt64)(newBase ?? customDigits.Count);
+
+            while (current > 0)
+            {
+                Int32 remainder = (Int32)(current % newBaseConv);
+                result.Add(customDigits[remainder]);
+                current /= newBaseConv;
+            }
+
+            return Utils.Reverse(result);
+        }
+        static public List<T> FromDecimalToCustomBigInteger<T>(BigInteger decimalValue, T[] customDigits, Int32? newBase = null)
+        {
+            Utils.TypeArgumentCheck<T>();
+
+            List<T> result = [];
+            BigInteger current = decimalValue;
+            UInt64 newBaseConv = (UInt64)(newBase ?? customDigits.Length);
 
             while (current > 0)
             {
